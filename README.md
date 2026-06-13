@@ -12,7 +12,7 @@ O aplicativo funciona como uma ponte digital entre pais e filhos, criando respon
 
 ## Fundadores
 
-- Alexandre
+- Alexandre Vieira Barbosa
 - Augusto Abalen Dias Duarte de Faria
 - Daniel Corradi Lavarini
 - Guilherme Wille Guimarães
