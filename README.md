@@ -8,7 +8,7 @@ O aplicativo funciona como uma ponte digital entre pais e filhos, criando respon
 
 - **Frontend:** HTML e CSS
 - **Backend:** Python | Flask
-- **Banco de dados:** SQL
+- **Banco de dados:** MySQL
 
 ## Fundadores
 
