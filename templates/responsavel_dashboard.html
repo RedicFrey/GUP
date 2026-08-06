@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% from "_nav.html" import nav %}
+{% block titulo %}Atividades{% if crianca %} - {{ crianca.nome }}{% endif %}{% endblock %}
+
+{% block corpo %}
+<div class="tela">
+
+  <div class="header">
+    <div>
+      <div class="saudacao">Olá,</div>
+      <div class="nome-usuario">{{ session.get('nome_usuario', '') }}</div>
+    </div>
+    <a class="sino" href="{{ url_for('logout') }}" title="Sair">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+      </svg>
+      <span class="ponto"></span>
+    </a>
+  </div>
+
+  {% with mensagens = get_flashed_messages() %}
+    {% if mensagens %}
+      {% for m in mensagens %}<div class="flash">{{ m }}</div>{% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  {% if not crianca %}
+    <div class="flash">Nenhum filho(a) cadastrado(a) nesta conta ainda.</div>
+  {% else %}
+
+    <div class="perfil">
+      <div class="avatar">🥷</div>
+      <div class="perfil-info">
+        <div class="filho">{{ crianca.nome }}, <span style="font-weight:400">{{ crianca.nivel }}</span></div>
+        {% if criancas|length > 1 %}
+          {% set outros = criancas|rejectattr('id_crianca', 'equalto', crianca.id_crianca)|list %}
+          {% if outros %}
+            <a href="{{ url_for('responsavel_dashboard', crianca_id=outros[0].id_crianca) }}">
+              <button class="btn-trocar" type="button">Trocar</button>
+            </a>
+          {% endif %}
+        {% endif %}
+      </div>
+      <div class="perfil-saldo">
+        <div class="rotulo">Saldo de Moedas</div>
+        <div class="valor">{{ "{:,}".format(crianca.moedas).replace(",", ".") }} <span class="m">M</span></div>
+        <div class="hoje">+{{ moedas_hoje }} hoje</div>
+      </div>
+    </div>
+
+    <a class="link-topo" href="{{ url_for('nova_tarefa', crianca_id=crianca.id_crianca) }}">+ Nova atividade</a>
+
+    <div class="titulo-secao">Atividades de {{ crianca.nome }}</div>
+    <div class="lista">
+      {% for t in tarefas %}
+        <div class="item" style="flex-direction:column; align-items:stretch;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            {% if t.status == 'concluido' %}
+              <div class="icone verde">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              </div>
+            {% elif t.status == 'verificar' %}
+              <div class="icone amarelo">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 8v5M12 17h.01"/></svg>
+              </div>
+            {% elif t.status == 'refazer' %}
+              <div class="icone vermelho">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              </div>
+            {% else %}
+              <div class="icone cinza">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><circle cx="12" cy="12" r="9"/></svg>
+              </div>
+            {% endif %}
+
+            <div class="item-info">
+              <div class="nome">{{ t.titulo }}</div>
+              <div class="valor">{{ t.moedas_ganhas }}M</div>
+            </div>
+
+            {% if t.status == 'verificar' %}
+              <div class="item-acoes">
+                <form method="POST" action="{{ url_for('aprovar_tarefa', id_tarefa=t.id_tarefa) }}">
+                  <button class="btn-acao aprovar" type="submit">Aprovar</button>
+                </form>
+                <form method="POST" action="{{ url_for('recusar_tarefa', id_tarefa=t.id_tarefa) }}">
+                  <button class="btn-acao recusar" type="submit">Recusar</button>
+                </form>
+              </div>
+            {% elif t.status == 'concluido' %}
+              <div class="status concluido">Concluído</div>
+            {% elif t.status == 'refazer' %}
+              <div class="status refazer">Refazer</div>
+            {% else %}
+              <div class="status pendente">Pendente</div>
+            {% endif %}
+          </div>
+
+          {% if t.foto_comprovacao %}
+            <img class="foto-comprovacao" src="{{ url_for('static', filename='uploads/' + t.foto_comprovacao) }}" alt="Comprovação de {{ t.titulo }}">
+          {% endif %}
+        </div>
+      {% else %}
+        <div class="valor">Nenhuma atividade cadastrada ainda.</div>
+      {% endfor %}
+    </div>
+
+  {% endif %}
+</div>
+
+{{ nav('inicio') }}
+{% endblock %}

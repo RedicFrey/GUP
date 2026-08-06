@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block titulo %}Nova Atividade{% endblock %}
+
+{% block corpo %}
+<div class="tela">
+  <div class="header">
+    <div>
+      <div class="saudacao">Nova atividade para</div>
+      <div class="nome-usuario">{{ crianca.nome }}</div>
+    </div>
+  </div>
+
+  {% with mensagens = get_flashed_messages() %}
+    {% if mensagens %}
+      {% for m in mensagens %}<div class="flash">{{ m }}</div>{% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST" action="{{ url_for('nova_tarefa') }}">
+    {% if criancas|length > 1 %}
+      <div class="form-campo">
+        <label for="crianca_id">Filho(a)</label>
+        <select name="crianca_id" id="crianca_id">
+          {% for c in criancas %}
+            <option value="{{ c.id_crianca }}" {% if c.id_crianca == crianca.id_crianca %}selected{% endif %}>{{ c.nome }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    {% else %}
+      <input type="hidden" name="crianca_id" value="{{ crianca.id_crianca }}">
+    {% endif %}
+
+    <div class="form-campo">
+      <label for="titulo">Título</label>
+      <input type="text" id="titulo" name="titulo" maxlength="100" required placeholder="Ex: Lavar a louça">
+    </div>
+
+    <div class="form-campo">
+      <label for="descricao">Descrição (opcional)</label>
+      <textarea id="descricao" name="descricao" rows="2" placeholder="Detalhes da atividade"></textarea>
+    </div>
+
+    <div class="form-campo">
+      <label for="horario_limite">Prazo</label>
+      <input type="datetime-local" id="horario_limite" name="horario_limite" required>
+    </div>
+
+    <div class="form-linha">
+      <div class="form-campo">
+        <label for="moedas_ganhas">Moedas ao concluir</label>
+        <input type="number" id="moedas_ganhas" name="moedas_ganhas" min="0" value="100" required>
+      </div>
+      <div class="form-campo">
+        <label for="xp_ganho">XP ganho</label>
+        <input type="number" id="xp_ganho" name="xp_ganho" min="0" value="10" required>
+      </div>
+    </div>
+
+    <div class="form-linha">
+      <div class="form-campo">
+        <label for="moedas_perda">Moedas se não fizer</label>
+        <input type="number" id="moedas_perda" name="moedas_perda" min="0" value="0" required>
+      </div>
+      <div class="form-campo">
+        <label for="moedas_atraso">Moedas se atrasar</label>
+        <input type="number" id="moedas_atraso" name="moedas_atraso" min="0" value="0" required>
+      </div>
+    </div>
+
+    <button class="btn-salvar" type="submit">Criar atividade</button>
+  </form>
+
+  <a class="btn-secundario" style="margin-top:12px;" href="{{ url_for('responsavel_dashboard') }}">Cancelar</a>
+</div>
+{% endblock %}

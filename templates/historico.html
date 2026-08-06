@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% from "_nav.html" import nav %}
+{% block titulo %}Histórico{% endblock %}
+
+{% block corpo %}
+<div class="tela">
+  <div class="header">
+    <div>
+      <div class="saudacao">Histórico de</div>
+      <div class="nome-usuario">{{ crianca.nome }}</div>
+    </div>
+  </div>
+
+  {% if eh_responsavel and criancas|length > 1 %}
+    <div class="form-campo" style="margin-bottom:18px;">
+      <label for="crianca_id">Filho(a)</label>
+      <select id="crianca_id" onchange="window.location.href='{{ url_for('historico') }}?crianca_id=' + this.value">
+        {% for c in criancas %}
+          <option value="{{ c.id_crianca }}" {% if c.id_crianca == crianca.id_crianca %}selected{% endif %}>{{ c.nome }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  {% endif %}
+
+  <div class="perfil" style="margin-bottom:20px;">
+    <div class="perfil-saldo" style="text-align:left; flex:1;">
+      <div class="rotulo">Saldo atual</div>
+      <div class="valor">{{ "{:,}".format(crianca.moedas).replace(",", ".") }} <span class="m">M</span></div>
+    </div>
+  </div>
+
+  <div class="titulo-secao">Movimentações</div>
+  <div class="lista" style="gap:0;">
+    {% for h in historico %}
+      <div class="historico-item">
+        <div>
+          <div class="desc">{{ 'Moedas ganhas' if h.tipo else 'Moedas gastas' }}</div>
+          <div class="data">{{ h.data_hora.strftime('%d/%m/%Y %H:%M') }}</div>
+        </div>
+        <div class="{{ 'valor-positivo' if h.tipo else 'valor-negativo' }}">
+          {{ '+' if h.tipo else '-' }}{{ h.valor }}M
+        </div>
+      </div>
+    {% else %}
+      <div class="valor">Nenhuma movimentação registrada ainda.</div>
+    {% endfor %}
+  </div>
+</div>
+
+{{ nav('historico') }}
+{% endblock %}

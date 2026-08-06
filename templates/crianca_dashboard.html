@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% from "_nav.html" import nav %}
+{% block titulo %}Minhas Atividades{% endblock %}
+
+{% block corpo %}
+<div class="tela">
+
+  <div class="header">
+    <div>
+      <div class="saudacao">Olá,</div>
+      <div class="nome-usuario">{{ crianca.nome }}</div>
+    </div>
+    <a class="sino" href="{{ url_for('logout') }}" title="Sair">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+      </svg>
+      <span class="ponto"></span>
+    </a>
+  </div>
+
+  {% with mensagens = get_flashed_messages() %}
+    {% if mensagens %}
+      {% for m in mensagens %}<div class="flash">{{ m }}</div>{% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="perfil">
+    <div class="avatar">🥷</div>
+    <div class="perfil-info">
+      <div class="filho">Nível {{ crianca.nivel }}</div>
+      <div style="font-size:12px; color:var(--cor-texto-fraco); margin-top:4px;">{{ crianca.xp }} XP</div>
+    </div>
+    <div class="perfil-saldo">
+      <div class="rotulo">Saldo de Moedas</div>
+      <div class="valor">{{ "{:,}".format(crianca.moedas).replace(",", ".") }} <span class="m">M</span></div>
+      <div class="hoje">+{{ moedas_hoje }} hoje</div>
+    </div>
+  </div>
+
+  <div class="titulo-secao">Minhas Atividades</div>
+  <div class="lista">
+    {% for t in tarefas %}
+      <div class="item" style="flex-direction:column; align-items:stretch;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          {% if t.status == 'concluido' %}
+            <div class="icone verde">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </div>
+          {% elif t.status == 'verificar' %}
+            <div class="icone amarelo">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 8v5M12 17h.01"/></svg>
+            </div>
+          {% elif t.status == 'refazer' %}
+            <div class="icone vermelho">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </div>
+          {% else %}
+            <div class="icone cinza">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><circle cx="12" cy="12" r="9"/></svg>
+            </div>
+          {% endif %}
+
+          <div class="item-info">
+            <div class="nome">{{ t.titulo }}</div>
+            <div class="valor">{{ t.moedas_ganhas }}M</div>
+          </div>
+
+          {% if t.status == 'verificar' %}
+            <div class="status verificar">Aguardando</div>
+          {% elif t.status == 'concluido' %}
+            <div class="status concluido">Concluído</div>
+          {% endif %}
+        </div>
+
+        {% if t.foto_comprovacao %}
+          <img class="foto-comprovacao" src="{{ url_for('static', filename='uploads/' + t.foto_comprovacao) }}" alt="Foto enviada para {{ t.titulo }}">
+        {% endif %}
+
+        {% if t.status == 'pendente' or t.status == 'refazer' %}
+          <form method="POST" action="{{ url_for('concluir_tarefa', id_tarefa=t.id_tarefa) }}" enctype="multipart/form-data" style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">
+            <label class="upload-campo">
+              📷 Foto de comprovação (opcional)
+              <input type="file" name="foto" accept="image/*" style="display:block; margin-top:6px;">
+            </label>
+            <button class="btn-acao concluir" type="submit" style="align-self:flex-end;">
+              {{ 'Reenviar' if t.status == 'refazer' else 'Concluir' }}
+            </button>
+          </form>
+        {% endif %}
+      </div>
+    {% else %}
+      <div class="valor">Nenhuma atividade por aqui ainda. 🎉</div>
+    {% endfor %}
+  </div>
+</div>
+
+{{ nav('inicio') }}
+{% endblock %}

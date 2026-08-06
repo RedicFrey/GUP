@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% from "_nav.html" import nav %}
+{% block titulo %}Calendário{% endblock %}
+
+{% block corpo %}
+<div class="tela">
+  <div class="header">
+    <div>
+      <div class="saudacao">Calendário de</div>
+      <div class="nome-usuario">{{ crianca.nome }}</div>
+    </div>
+  </div>
+
+  {% with mensagens = get_flashed_messages() %}
+    {% if mensagens %}
+      {% for m in mensagens %}<div class="flash">{{ m }}</div>{% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  {% if eh_responsavel and criancas|length > 1 %}
+    <div class="form-campo" style="margin-bottom:18px;">
+      <label for="crianca_id">Filho(a)</label>
+      <select id="crianca_id" onchange="window.location.href='{{ url_for('calendario') }}?crianca_id=' + this.value">
+        {% for c in criancas %}
+          <option value="{{ c.id_crianca }}" {% if c.id_crianca == crianca.id_crianca %}selected{% endif %}>{{ c.nome }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  {% endif %}
+
+  <div class="titulo-secao">Próximas atividades</div>
+  {% for t in futuras %}
+    <div class="evento-card">
+      <div class="titulo">{{ t.titulo }}</div>
+      <div class="quando">
+        {{ t.horario_limite.strftime('%d/%m/%Y às %H:%M') }}
+        {% if t.horario_limite < agora %}<span style="color:var(--cor-vermelho);">· atrasada</span>{% endif %}
+        {% if t.status == 'refazer' %}<span style="color:var(--cor-vermelho);">· refazer</span>{% endif %}
+      </div>
+      {% if t.descricao %}<div class="desc">{{ t.descricao }}</div>{% endif %}
+      <div class="desc">{{ t.moedas_ganhas }}M · {{ t.xp_ganho }}XP</div>
+    </div>
+  {% else %}
+    <div class="valor">Nenhuma atividade futura no momento.</div>
+  {% endfor %}
+
+  {% if aguardando %}
+    <div class="titulo-secao" style="margin-top:20px;">Aguardando aprovação</div>
+    {% for t in aguardando %}
+      <div class="evento-card">
+        <div class="titulo">{{ t.titulo }}</div>
+        <div class="quando">Enviada em {{ t.data_conclusao.strftime('%d/%m/%Y às %H:%M') }}</div>
+        {% if t.foto_comprovacao %}
+          <img class="foto-comprovacao" src="{{ url_for('static', filename='uploads/' + t.foto_comprovacao) }}" alt="Comprovação de {{ t.titulo }}">
+        {% endif %}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="titulo-secao" style="margin-top:20px;">Atividades realizadas</div>
+  {% for t in realizadas %}
+    <div class="evento-card">
+      <div class="titulo">{{ t.titulo }}</div>
+      <div class="quando">Concluída em {{ t.data_conclusao.strftime('%d/%m/%Y às %H:%M') }}</div>
+      <div class="desc">+{{ t.moedas_ganhas }}M · +{{ t.xp_ganho }}XP</div>
+      {% if t.foto_comprovacao %}
+        <img class="foto-comprovacao" src="{{ url_for('static', filename='uploads/' + t.foto_comprovacao) }}" alt="Comprovação de {{ t.titulo }}">
+      {% endif %}
+    </div>
+  {% else %}
+    <div class="valor">Nenhuma atividade concluída ainda.</div>
+  {% endfor %}
+
+  <div class="divisor"></div>
+
+  <div class="titulo-secao">Compromissos da família</div>
+
+  {% if eh_responsavel %}
+    <form method="POST" action="{{ url_for('novo_evento') }}" style="margin-bottom:20px;">
+      <div class="form-campo">
+        <label for="titulo">Título</label>
+        <input type="text" id="titulo" name="titulo" maxlength="30" required placeholder="Ex: Consulta médica">
+      </div>
+      <div class="form-campo">
+        <label for="descricao">Descrição (opcional)</label>
+        <input type="text" id="descricao" name="descricao" maxlength="50">
+      </div>
+      <div class="form-campo">
+        <label for="data_hora">Data e hora</label>
+        <input type="datetime-local" id="data_hora" name="data_hora" required>
+      </div>
+      <button class="btn-salvar" type="submit">Adicionar compromisso</button>
+    </form>
+  {% endif %}
+
+  {% for e in eventos %}
+    <div class="evento-card">
+      <div class="titulo">{{ e.titulo }}</div>
+      <div class="quando">{{ e.data_hora.strftime('%d/%m/%Y às %H:%M') }}</div>
+      {% if e.descricao %}<div class="desc">{{ e.descricao }}</div>{% endif %}
+      {% if eh_responsavel %}
+        <div class="rodape">
+          <form method="POST" action="{{ url_for('excluir_evento', id_evento=e.id_evento) }}">
+            <button class="btn-excluir" type="submit">Remover</button>
+          </form>
+        </div>
+      {% endif %}
+    </div>
+  {% else %}
+    <div class="valor">Nenhum compromisso cadastrado ainda.</div>
+  {% endfor %}
+</div>
+
+{{ nav('calendario') }}
+{% endblock %}
