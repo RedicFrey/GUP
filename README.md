@@ -18,6 +18,7 @@ O aplicativo funciona como uma ponte digital entre pais e filhos, criando respon
 - Guilherme Wille Guimarães
 - Miguel Oliveira
 - Pedro Henrique Texeira
+- Rafael Almeida Schmitberger
 
 
 ## Como rodar
