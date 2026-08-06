@@ -13,3 +13,5 @@ SECRET_KEY = 'numeros'
 # pasta onde as fotos de comprovação de tarefa ficam salvas porfavor olhem dps >.<
 UPLOAD_FOLDER = 'static/uploads'
 MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5 MB por upload para n foder meu pc 
+
+#mudar nome de config_commit para apenas config se for executar
