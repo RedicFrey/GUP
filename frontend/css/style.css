@@ -1,0 +1,198 @@
+:root {
+  --azul: #4a6fa5;
+  --azul-escuro: #345680;
+  --verde: #2e8b57;
+  --vermelho: #c0392b;
+  --cinza: #666;
+  --fundo: #f4f6f9;
+  --card: #ffffff;
+  --borda: #ddd;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: var(--fundo);
+  color: #222;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px 60px;
+}
+
+.cabecalho {
+  margin-bottom: 20px;
+}
+
+.tag {
+  color: var(--azul);
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 12px;
+  margin: 0 0 4px;
+}
+
+h1 {
+  margin: 0 0 4px;
+}
+
+nav.menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+nav.menu a, .botao-link {
+  background: var(--azul);
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  display: inline-block;
+}
+
+nav.menu a.secundario, .botao-link.secundario {
+  background: #888;
+}
+
+nav.menu a.perigo {
+  background: var(--vermelho);
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  padding: 18px;
+  margin-bottom: 18px;
+}
+
+label {
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 4px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+button {
+  cursor: pointer;
+  background: var(--azul);
+  color: #fff;
+  border: none;
+  padding: 9px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-top: 14px;
+}
+
+button.secundario {
+  background: #888;
+}
+
+button.perigo {
+  background: var(--vermelho);
+}
+
+button.sucesso {
+  background: var(--verde);
+}
+
+button:disabled {
+  background: #bbb;
+  cursor: not-allowed;
+}
+
+.mensagem {
+  margin-top: 12px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.mensagem.sucesso {
+  background: #e3f7e9;
+  color: var(--verde);
+  border: 1px solid var(--verde);
+}
+
+.mensagem.erro {
+  background: #fdecea;
+  color: var(--vermelho);
+  border: 1px solid var(--vermelho);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid var(--borda);
+  padding: 8px;
+  text-align: left;
+  font-size: 14px;
+}
+
+th {
+  background: #eee;
+}
+
+.tarefa-card {
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.tarefa-card img {
+  max-width: 250px;
+  border-radius: 6px;
+  display: block;
+  margin: 8px 0;
+}
+
+.acoes {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.chip {
+  background: #eee;
+  padding: 5px 10px;
+  border-radius: 999px;
+  text-decoration: none;
+  color: #222;
+  font-size: 13px;
+}
+
+.chip.ativo {
+  background: var(--azul);
+  color: #fff;
+}
+
+.entrada { color: var(--verde); font-weight: bold; }
+.saida { color: var(--vermelho); font-weight: bold; }
+
+.nao-visivel {
+  display: None
+}

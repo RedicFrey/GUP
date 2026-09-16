@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja de Recompensas - GUP</title>
+    <script src="js/api.js" defer></script>
+    <script src="js/recompensa.js" defer></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <main class="container">
+        <h2>🎁 Loja de Recompensas</h2>
+
+        <div id="form-criar-recompensa" style="display:none;" class="card">
+            <h3>Criar Nova Recompensa</h3>
+            <form id="form-recompensa">
+                <label>O que é a recompensa?</label>
+                <input type="text" id="nome-recompensa" placeholder="Ex: 1h de Videogame" required>
+
+                <label>Custa quantas moedas?</label>
+                <input type="number" id="custo-recompensa" required>
+
+                <button type="submit" class="sucesso">Adicionar à Loja</button>
+            </form>
+        </div>
+
+        <h3>Recompensas Disponíveis:</h3>
+        <div id="lista-recompensas">Carregando...</div>
+
+        <p id="mensagem" class="mensagem"></p>
+
+        <br>
+        <a href="dashboard.html">Voltar para o Dashboard</a>
+    </main>
+
+</body>
+</html>

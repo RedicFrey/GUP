@@ -1,0 +1,4 @@
+.env
+/backend/static/
+__pycache__/
+*.pyc

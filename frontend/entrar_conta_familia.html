@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar em uma família - GUP</title>
+    <script src="js/api.js" defer></script>
+    <script src="js/entrar_conta_familia.js" defer></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <main class="container">
+        <header class="cabecalho">
+            <h1>Entrar em uma família</h1>
+        </header>
+
+        <section class="card">
+            <form id="form-entrar-familia">
+                <label for="email_dono">Email do dono da conta</label>
+                <input type="email" id="email_dono" required>
+
+                <label for="pin">Pin</label>
+                <input type="password" id="pin" required>
+
+                <button type="submit">Entrar</button>
+            </form>
+
+            <p id="mensagem" class="mensagem"></p>
+        </section>
+
+        <a href="lobby.html">Voltar</a>
+    </main>
+
+</body>
+</html>

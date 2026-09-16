@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - GUP</title>
+    <script src="js/api.js" defer></script>
+    <script src="js/dashboard.js" defer></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <main class="container">
+        <nav class="menu" id="menu-nav">
+        </nav>
+
+        <article id="info-usuario" class="info-usuario">
+        </article>
+
+        <div id="meta-escolhida">
+
+        </div>
+
+        <div id="acoes-topo" class="acoes"></div>
+
+        <section id="secao-tarefas">
+            <h2 id="titulo-tarefas">Tarefas</h2>
+            <div id="lista-tarefas">Carregando tarefas...</div>
+        </section>
+
+        <section id="secao-eventos" style="display:none;">
+            <h2>Meus Eventos</h2>
+            <a class="botao-link" href="evento.html">Criar evento</a>
+            <div id="lista-eventos"></div>
+        </section>
+
+        <p id="mensagem" class="mensagem"></p>
+    </main>
+</body>
+</html>

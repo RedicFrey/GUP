@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar tarefa - GUP</title>
+    <script src="js/api.js" defer></script>
+    <script src="js/tarefa.js" defer></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <main class="container">
+        <header class="cabecalho">
+            <h1>Criar tarefa</h1>
+        </header>
+
+        <p id="aviso-sem-criancas" class="mensagem erro" style="display:none;">
+            Nenhuma criança cadastrada nessa família ainda. Cadastre uma criança antes de criar tarefas.
+        </p>
+
+        <section class="card">
+            <form id="form-tarefa">
+                <label for="titulo">Título</label>
+                <input type="text" id="titulo" required>
+
+                <label for="descricao">Descrição</label>
+                <input type="text" id="descricao">
+
+                <label for="crianca_id">Criança</label>
+                <select id="crianca_id" required>
+                    <option value="" disabled selected>Selecione...</option>
+                </select>
+
+                <label for="horario_limite">Horário limite</label>
+                <input type="datetime-local" id="horario_limite" required>
+
+                <label for="xp_ganho">Xp ganho</label>
+                <input type="number" id="xp_ganho" min="0" value="0">
+
+                <label for="moedas_ganha">Moedas ganhas</label>
+                <input type="number" id="moedas_ganha" min="0" value="0">
+                
+                <button type="submit">Pronto</button>
+            </form>
+
+            <p id="mensagem" class="mensagem"></p>
+        </section>
+
+        <a href="dashboard.html">Voltar para o Dashboard</a>
+    </main>
+
+</body>
+</html>
