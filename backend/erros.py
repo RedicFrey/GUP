@@ -1,14 +1,14 @@
 from flask import jsonify
 from mysql.connector import Error as MySQLError
-from exceptions import NaoEncontrado, DadosInvalidos
+from exceptions import NotFound, InvalidData
 
 def register_error_handlers(app):
 
-    @app.errorhandler(DadosInvalidos)
+    @app.errorhandler(InvalidData)
     def dados_invalidos(e):
         return jsonify({"erro": str(e)}), 400
 
-    @app.errorhandler(NaoEncontrado)
+    @app.errorhandler(NotFound)
     def nao_encontrado(e):
         return jsonify({"erro": str(e)}), 404
 

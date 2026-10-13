@@ -1,0 +1,14 @@
+
+.coin-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+}
+.coin-badge { display: flex; align-items: center; gap: 6px; font-weight: 700; }
+
+.coin-credit { background: #e6f6ea; color: #1e7a3a; }
+.coin-debit  { background: #fdeaea; color: #a12727; }
+.coin-zero   { background: #eeeeee; color: #666666; }

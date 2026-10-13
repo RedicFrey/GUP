@@ -5,174 +5,206 @@
 CREATE DATABASE IF NOT EXISTS gup_db;
 USE gup_db;
 
-CREATE TABLE IF NOT EXISTS contas_familia (
+CREATE TABLE IF NOT EXISTS family_accounts (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(30) NOT NULL,
-    pin VARCHAR(255) NOT NULL,
-    email_dono VARCHAR(100) NOT NULL UNIQUE,
-
-    data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL
-)ENGINE=InnoDB;
-
-CREATE TABLE IF NOT EXISTS usuarios (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
+    name VARCHAR(30) NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
-    senha VARCHAR(255) NOT NULL,
-    data_nasc DATE NOT NULL,
-    tipo_usuario VARCHAR(20) NOT NULL DEFAULT 'crianca',
+    birth_date DATE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL
+)  ENGINE=INNODB;
 
-    conta_id INT,
-    data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
-
-    FOREIGN KEY (conta_id) REFERENCES contas_familia(id)
-)ENGINE=InnoDB;
-
-CREATE TABLE IF NOT EXISTS responsaveis (
-    usuario_id INT PRIMARY KEY,
-    cargo VARCHAR(20),
-    
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
-)ENGINE=InnoDB;
-
-CREATE TABLE IF NOT EXISTS niveis (
+CREATE TABLE IF NOT EXISTS levels (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    acessorio VARCHAR(20) NOT NULL DEFAULT 'Nenhum',
-    xp_necessario INT NOT NULL,
+    required_xp INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL
+)  ENGINE=INNODB;
 
-    data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL
-)ENGINE=InnoDB;
+INSERT INTO levels (required_xp) VALUES (100);
 
-INSERT INTO niveis (id, acessorio, xp_necessario) VALUES (1, 'Nenhum', 0);
-
-CREATE TABLE IF NOT EXISTS recompensas (
+CREATE TABLE IF NOT EXISTS rewards (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(30) NOT NULL,
-    custo_moedas INT NOT NULL,
+    name VARCHAR(30) NOT NULL,
+    amount INT NOT NULL,
+    family_account_id INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+    FOREIGN KEY (family_account_id)
+        REFERENCES family_accounts (id) ON DELETE CASCADE
+)  ENGINE=INNODB;
 
-    conta_id INT NOT NULL,
-    data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
-
-    FOREIGN KEY (conta_id) REFERENCES contas_familia(id)
-)ENGINE=InnoDB;
-
-CREATE TABLE IF NOT EXISTS criancas (
-    usuario_id INT PRIMARY KEY,
-    moedas INT NOT NULL DEFAULT 0,
+CREATE TABLE IF NOT EXISTS profiles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    family_account_id INT NOT NULL,
+    name VARCHAR(20) NOT NULL,
+    profile_type ENUM('child', 'responsible') NOT NULL,
+    notification_email VARCHAR(100) NULL,
+    pin_hash VARCHAR(255) NULL,
+    coins INT NOT NULL DEFAULT 0,
     xp INT NOT NULL DEFAULT 0,
-    strike INT NOT NULL DEFAULT 0,
-    freezer INT NOT NULL DEFAULT 1,
+    level_id INT NULL,
+    goal_id INT NULL,
+    strikes INT NOT NULL DEFAULT 0,
+    role VARCHAR(20) NULL,
+    created_by INT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+    FOREIGN KEY (family_account_id)
+        REFERENCES family_accounts (id) ON DELETE CASCADE,
+    FOREIGN KEY (level_id)
+        REFERENCES levels (id) ON DELETE CASCADE,
+    FOREIGN KEY (goal_id)
+        REFERENCES rewards (id) ON DELETE CASCADE,
+	FOREIGN KEY (created_by)
+		REFERENCES profiles (id) ON DELETE CASCADE
+)  ENGINE=INNODB;
 
-    meta_id INT,
-    nivel_id INT NOT NULL DEFAULT '1',
-    
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
-    FOREIGN KEY (meta_id) REFERENCES recompensas(id),
-    FOREIGN KEY (nivel_id) REFERENCES niveis(id)
-)ENGINE=InnoDB;
-
-CREATE TABLE IF NOT EXISTS eventos (
+CREATE TABLE IF NOT EXISTS events (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    titulo VARCHAR(30) NOT NULL,
-    data DATE NOT NULL,
+    name VARCHAR(30) NOT NULL,
+    event_date DATE NOT NULL,
+    family_account_id INT NOT NULL,
+    created_by INT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+    FOREIGN KEY (family_Account_id)
+        REFERENCES family_accounts (id) ON DELETE CASCADE,
+    FOREIGN KEY (created_by)
+        REFERENCES profiles (id) ON DELETE CASCADE
+)  ENGINE=INNODB;
 
-    usuario_id INT,
-    data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
-
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
-)ENGINE=InnoDB;
-
-CREATE TABLE IF NOT EXISTS tarefas (
+CREATE TABLE IF NOT EXISTS tasks (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    titulo VARCHAR(100) NOT NULL,
-    descricao TEXT DEFAULT NULL,
-    status VARCHAR(30) NOT NULL DEFAULT 'pendente',
-    horario_limite DATETIME NOT NULL,
-    data_conclusao DATETIME DEFAULT NULL,
-    moedas_ganha INT NOT NULL DEFAULT 0,
-    xp_ganho INT NOT NULL DEFAULT 0,
-    foto_comprovacao VARCHAR(255) DEFAULT NULL,
-    
-    crianca_id INT NOT NULL,
-    responsavel_id INT NOT NULL,
-    conta_id INT,
-    data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
-    
-    FOREIGN KEY (crianca_id) REFERENCES criancas(usuario_id),
-    FOREIGN KEY (responsavel_id) REFERENCES responsaveis(usuario_id),
-    FOREIGN KEY (conta_id) REFERENCES contas_familia(id)
-)ENGINE=InnoDB;
+    name VARCHAR(100) NOT NULL,
+    description TEXT DEFAULT NULL,
+    deadline DATETIME NOT NULL,
+    coins_reward INT NOT NULL DEFAULT 0,
+    xp_reward INT NOT NULL DEFAULT 0,
+    required_proof BOOLEAN NOT NULL DEFAULT TRUE,
+    created_by INT NOT NULL,
+    family_account_id INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+    FOREIGN KEY (created_by)
+        REFERENCES profiles (id) ON DELETE CASCADE,
+    FOREIGN KEY (family_account_id)
+        REFERENCES family_accounts (id) ON DELETE CASCADE
+)  ENGINE=INNODB;
 
-CREATE TABLE IF NOT EXISTS historico_moedas (
+CREATE TABLE IF NOT EXISTS task_assignments (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    titulo VARCHAR(50) NOT NULL,
-    origem VARCHAR(15) NOT NULL,
-    tipo_valor VARCHAR(8) NOT NULL,
-    valor INT NOT NULL,
+    task_id INT NOT NULL,
+    child_profile_id INT NOT NULL,
+    status ENUM('pending', 'awaiting_approval', 'done', 'not_done') NOT NULL DEFAULT 'pending',
+    submitted_at DATETIME NULL,
+    completion_date DATETIME NULL,
+    proof_photo VARCHAR(255) NULL,
+    coins_earned INT NOT NULL DEFAULT 0,
+    xp_earned INT NOT NULL DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+    UNIQUE (task_id , child_profile_id),
+    FOREIGN KEY (task_id)
+        REFERENCES tasks (id) ON DELETE CASCADE,
+    FOREIGN KEY (child_profile_id)
+        REFERENCES profiles (id) ON DELETE CASCADE
+)  ENGINE=INNODB;
 
-    crianca_id INT NOT NULL,
-    data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,       
-
-    FOREIGN KEY (crianca_id) REFERENCES criancas(usuario_id)
-)ENGINE=InnoDB;
-
-CREATE TABLE IF NOT EXISTS resgates (
+CREATE TABLE IF NOT EXISTS coin_history (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(30) NOT NULL,
-    status ENUM('pendente', 'concluido', 'cancelado') NOT NULL DEFAULT 'pendente',
-    custo INT NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    source VARCHAR(15) NOT NULL,
+    amount_type VARCHAR(8) NOT NULL,
+    amount INT NOT NULL,
+    child_profile_id INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+    FOREIGN KEY (child_profile_id)
+        REFERENCES profiles (id) ON DELETE CASCADE
+)  ENGINE=INNODB;
 
-    crianca_id INT NOT NULL,
-    recompensa_id INT NOT NULL,
-    data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
-
-    FOREIGN KEY (crianca_id) REFERENCES criancas(usuario_id),
-    FOREIGN KEY (recompensa_id) REFERENCES recompensas(id)
-)ENGINE=InnoDB;
-
-CREATE TABLE IF NOT EXISTS mensagens (
+CREATE TABLE IF NOT EXISTS redemptions (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(30) NOT NULL,
+    status ENUM('pending', 'done') NOT NULL DEFAULT 'pending',
+    amount INT NOT NULL,
+    child_profile_id INT NOT NULL,
+    reward_id INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+    FOREIGN KEY (child_profile_id)
+        REFERENCES profiles (id) ON DELETE CASCADE,
+    FOREIGN KEY (reward_id)
+        REFERENCES rewards (id) ON DELETE CASCADE
+)  ENGINE=INNODB;
 
-    remetente_id INT NOT NULL,
-    destinatario_id INT NOT NULL,
-    tarefa_id INT NOT NULL,
-    data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
-
-    FOREIGN KEY (remetente_id) REFERENCES usuarios(id),
-    FOREIGN KEY (destinatario_id) REFERENCES usuarios(id),
-    FOREIGN KEY (tarefa_id) REFERENCES tarefas(id)
-)ENGINE=InnoDB;
-
-CREATE TABLE IF NOT EXISTS girafas (
+CREATE TABLE IF NOT EXISTS giraffe_colors (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    cor_primaria VARCHAR(20) NOT NULL DEFAULT 'amarelo',
-    cor_secundaria VARCHAR(20) NOT NULL DEFAULT 'marrom',
+    primary_color VARCHAR(20) NOT NULL,
+    secondary_color VARCHAR(20) NOT NULL,
+    required_level INT NOT NULL DEFAULT 1,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL
+)  ENGINE=INNODB;
 
-    crianca_id INT NOT NULL,
-    data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
-
-    FOREIGN KEY (crianca_id) REFERENCES criancas(usuario_id)
-)ENGINE=InnoDB;
-
-CREATE TABLE IF NOT EXISTS solicitacoes_familia (
+CREATE TABLE IF NOT EXISTS giraffe_accessories (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    usuario_id INT NOT NULL,
-    conta_id INT NOT NULL,
-    status ENUM('pendente', 'aprovado', 'recusado') NOT NULL DEFAULT 'pendente',
+    name VARCHAR(50) NOT NULL,
+    image_url VARCHAR(255) NULL,
+    required_level INT NOT NULL DEFAULT 1,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL
+)  ENGINE=INNODB;
 
-    data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+CREATE TABLE IF NOT EXISTS giraffe_backgrounds (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    image_url VARCHAR(255) NULL,
+    required_level INT NOT NULL DEFAULT 1,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL
+)  ENGINE=INNODB;
 
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
-    FOREIGN KEY (conta_id) REFERENCES contas_familia(id)
-) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS giraffes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    child_profile_id INT NOT NULL UNIQUE,
+    color_id INT NOT NULL,
+    accessory_id INT NULL,
+    background_id INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+    FOREIGN KEY (child_profile_id)
+        REFERENCES profiles (id) ON DELETE CASCADE,
+    FOREIGN KEY (color_id)
+        REFERENCES giraffe_colors (id) ON DELETE CASCADE,
+    FOREIGN KEY (accessory_id)
+        REFERENCES giraffe_accessories (id) ON DELETE CASCADE,
+    FOREIGN KEY (background_id)
+        REFERENCES giraffe_backgrounds (id) ON DELETE CASCADE
+)  ENGINE=INNODB;
+
+INSERT INTO giraffe_colors (primary_color, secondary_color, required_level) VALUES
+    ('amarelo', 'marrom', 1),
+    ('rosa', 'branco', 3),
+    ('azul', 'prata', 5);
+
+INSERT INTO giraffe_backgrounds (name, image_url, required_level) VALUES
+    ('savana', '/static/giraffes/backgrounds/background1.png', 1),
+    ('praia', '/static/giraffes/backgrounds/background2.png', 3),
+    ('espaco', '/static/giraffes/backgrounds/background3.png', 5);
+
+INSERT INTO giraffe_accessories (name, image_url, required_level) VALUES
+    ('chapeu', '/static/giraffes/accessories/accessory1.png', 1),
+    ('oculos', '/static/giraffes/accessories/accessory2.png', 3),
+    ('coroa', '/static/giraffes/accessories/accessory3.png', 5);
+
+IF NOT EXISTS CREATE TABLE notification_preferences (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    profile_id INT NOT NULL,
+    type ENUM('task_submitted', 'reward_redeemed', 'event_created') NOT NULL,
+    enabled BOOLEAN NOT NULL DEFAULT FALSE,
+    UNIQUE (profile_id, type),
+    FOREIGN KEY (profile_id) REFERENCES profiles(id) ON DELETE CASCADE
+);

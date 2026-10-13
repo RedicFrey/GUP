@@ -3,15 +3,15 @@
 // ========================================
 
 document.addEventListener("DOMContentLoaded", async() => {
-  const { dados } = await apiFetch("/auth-usuarios/me");
+  const { dados } = await apiFetch("/perfil/me");
 
   if (!dados || !dados.logado) {
-    window.location.href = "cadastro.html";
+    window.location.href = "auth.html";
     return;
   }
 
   if (!dados.tem_familia) {
-    window.location.href = "lobby.html";
+    window.location.href = "auth.html";
     return;
   }
 

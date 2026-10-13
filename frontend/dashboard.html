@@ -3,37 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - GUP</title>
-    <script src="js/api.js" defer></script>
-    <script src="js/dashboard.js" defer></script>
+    <title>Pagina Inicial</title>
+    <script src="js/api.js"></script>
+    <script type="module" src="js/dashboard.js" defer></script>
+    <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/task.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <main class="container">
-        <nav class="menu" id="menu-nav">
-        </nav>
+    <div class="app-layout">
+        <main class="container">
+            <h1>Gup</h1>
 
-        <article id="info-usuario" class="info-usuario">
-        </article>
+            <div id="meta-escolhida">
+            </div>
 
-        <div id="meta-escolhida">
+            <div id="acoes-topo" class="acoes"></div>
 
-        </div>
+            <section id="tasks-section">
+            </section>
 
-        <div id="acoes-topo" class="acoes"></div>
+            <div id="section-events" style="display: none;">
+            </div>
 
-        <section id="secao-tarefas">
-            <h2 id="titulo-tarefas">Tarefas</h2>
-            <div id="lista-tarefas">Carregando tarefas...</div>
-        </section>
+            <p id="mensagem" class="mensagem"></p>
+        </main>
 
-        <section id="secao-eventos" style="display:none;">
-            <h2>Meus Eventos</h2>
-            <a class="botao-link" href="evento.html">Criar evento</a>
-            <div id="lista-eventos"></div>
-        </section>
-
-        <p id="mensagem" class="mensagem"></p>
-    </main>
+    </div>
 </body>
 </html>

@@ -32,10 +32,13 @@ function mostrarMensagem(elemento, texto, tipo) {
   elemento.className = `mensagem ${tipo}`;
 }
 
+// ===============================================================
+// fazer também o exigir perfil
+// ===============================================================
 async function exigirLogin() {
   const { dados } = await apiFetch("/auth-usuarios/me");
   if (!dados || !dados.logado) {
-    window.location.href = "login.html";
+    window.location.href = "auth.html";
     return null;
   }
   return dados;

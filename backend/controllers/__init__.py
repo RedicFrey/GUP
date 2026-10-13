@@ -1,30 +1,30 @@
-from controllers.conta_familia_controller import conta_bp
-from controllers.usuario_controller import usuario_bp
+from controllers.family_account_controller import family_account_bp
+# from controllers.usuario_controller import usuario_bp
 from controllers.dashboard_controller import dashboard_bp
-from controllers.recompensa_controller import recompensa_bp
-from controllers.tarefa_controller import tarefa_bp
-from controllers.historico_controller import historico_bp
-from controllers.evento_controller import evento_bp
-from controllers.ajuste_moedas_controller import ajuste_moedas_bp
-from controllers.relatorio_controller import relatorio_bp
-from controllers.resgate_controller import resgate_bp
-from controllers.auth.auth_conta_familia_controller import auth_conta_bp
-from controllers.auth.auth_usuario_controller import auth_usuario_bp
-from controllers.pedido_familia_controller import pedidos_familia_bp
+from controllers.profile_controller import profile_bp
+from controllers.reward_controller import reward_bp
+from controllers.task_controller import task_bp
+from controllers.coin_history_controller import coin_history_bp
+from controllers.event_controller import event_bp
+from controllers.manager_coin_controller import manager_coin_bp
+from controllers.report_controller import report_bp
+from controllers.redemption_controller import redemption_bp
+from controllers.notification_controller import notification_bp
+from controllers.auth_controller import auth_bp
 
 all_blueprints = [
-                  usuario_bp,
+                #   usuario_bp,
                   dashboard_bp,
-                  conta_bp,
-                  historico_bp,
-                  recompensa_bp,
-                  tarefa_bp,
-                  evento_bp,
-                  ajuste_moedas_bp,
-                  relatorio_bp,
-                  resgate_bp,
-                  auth_conta_bp,
-                  auth_usuario_bp,
-                  pedidos_familia_bp
+                  profile_bp,
+                  family_account_bp,
+                  coin_history_bp,
+                  reward_bp,
+                  task_bp,
+                  event_bp,
+                  manager_coin_bp,
+                  report_bp,
+                  redemption_bp,
+                  notification_bp,
+                  auth_bp,
                   ]
 

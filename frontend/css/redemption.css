@@ -1,0 +1,10 @@
+
+.resgates-realizados { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+
+.redeem-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border: 0; border-radius: 50%; cursor: pointer;
+}
+.redeem-pending { background: #e6f6ea; color: #1e7a3a; }   /* V */
+.redeem-done    { background: #fdeaea; color: #a12727; }   /* X */
+.redeem-btn:disabled { opacity: .5; cursor: wait; }

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - GUP</title>
+    <script src="js/api.js" defer></script>
+    <script src="js/user/auth/init_cadastro.js" defer type="module"></script>
+    <script src="js/user/auth/sign_in.js" defer type="module"></script>
+    <script src="js/user/auth/sign_up.js" defer type="module"></script>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <main>
+
+        <!-- ================================================================================== -->
+         <!-- Parte de escolher qual ação vai fazer (login / cadastro ) -->
+        <!-- ================================================================================== -->
+
+        <section id="gateway">
+            <h1>Olá, seja bem vindo ao GUP</h1>
+            <div>
+                <button type="button" data-ir-para="campo-cadastro-usuario" id="sign-up">Cadastro</button>
+                <button type="button" data-ir-para="campo-login" id="sign-in">Login</button>
+            </div>
+        </section>
+
+        <!-- ================================================================================== -->
+         <!-- Área de fazer cadastro do usuário dono da conta família -->
+        <!-- ================================================================================== -->
+
+        <section id="campo-cadastro-usuario" class="nao-visivel auth-type">
+
+            <div class="auth-name" >
+                <p>G</p>
+                <p>U</p>
+                <p>P</p>
+            </div>
+            <div class="auth-containt">
+                <h1 class="type-gateway">Cadastro</h1>
+
+                <form id="form-cadastro" class="forms">
+                    
+                    <div>
+                        <label for="nome-cadastro">Nome</label>
+                        <input type="text" id="nome-cadastro" placeholder="Daniel" maxlength="30" required>
+                    </div>
+
+                    <div><label for="email-cadastro">Email</label>
+                    <input type="email" id="email-cadastro" placeholder="user@gmail.com" maxlength="100" required></div>
+                    
+
+                    <div><label for="senha-cadastro">Senha</label>
+                    <input type="password" id="senha-cadastro" placeholder="Sua senha" minlength="8" maxlength="64" autocomplete="new-password" required></div>
+                    
+
+                    <div><label for="confirmacao-senha-cadastro">Confirmação de senha</label>
+                    <input type="password" id="confirmacao-senha-cadastro" placeholder="Digite novamente" required></div>
+                    
+
+                    <div><label for="data-nasc-cadastro">Data de nascimento</label>
+                    <input type="date" id="data-nasc-cadastro" required></div>
+
+                    <button type="submit">Cadastrar</button>
+
+                    <p id="mensagem-erro-cadastro" class="mensagem"></p>
+                </form>
+
+                <p>Já tem conta? Então faça <button type="button" data-ir-para="campo-login">Login</button></p>
+            </div>
+
+        </section>
+
+        <!-- ================================================================================== -->
+         <!-- Área de fazer login -->
+        <!-- ================================================================================== -->
+
+        <section id="campo-login" class="nao-visivel auth-type">
+
+            <div class="auth-name" >
+                <p>G</p>
+                <p>U</p>
+                <p>P</p>
+            </div>
+            <div class="auth-containt">
+                <h1 class="type-gateway">Login</h1>
+
+                <form id="form-login" class="forms">
+
+                    <div><label for="email-dono">E-mail do dono</label>
+                    <input type="email" id="email-dono" placeholder="user@gmail.com" required></div>
+                    
+
+                    <div><label for="senha-dono">Senha</label>
+                    <input type="password" id="senha-dono" placeholder="Sua senha" autocomplete="current-password" required></div>
+                    
+
+                    <button type="submit">Entrar</button>
+                    
+                    <p id="mensagem-erro-login" class="mensagem"></p>
+                </form>
+
+                <p>Não tem conta? Então <button type="button" data-ir-para="campo-cadastro-usuario">Cadastro</button></p>
+            </div>
+        </section>
+
+    </main>
+
+</body>
+</html>

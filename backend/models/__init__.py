@@ -1,17 +1,19 @@
-from .conta_familia_model import ContaFamilia
-from .crianca_model import Crianca
-from .historico_moeda_model import HistoricoMoeda
-from .mensagem_model import MensagemTarefa
-from .recompensa_model import Recompensa
-from .resgate_model import Resgate
-from .responsavel_model import Responsavel
-from .tarefa_model import Tarefa
+from models.family_account_model import FamilyAccountModel
+from models.child_model import ChildProfile
+from models.coin_history_model import CoinHistoryModel
+# from .message_model import MensagemTarefa
+from models.reward_model import RewardModel
+from models.redemption_model import RedemptionModel
+from models.responsible_model import ResponsibleProfile
+from models.task_model import TaskModel
+from models.event_model import EventModel
 
-__all__ = ["ContaFamilia", 
-           "Crianca", 
-           "HistoricoMoeda",
-           "MensagemTarefa", 
+__all__ = ["FamilyAccountModel", 
+           "ChildProfile", 
+           "CoinHistoryModel",
+           "RewardModel", 
            "Recompensa", 
-           "Resgate", 
-           "Responsavel", 
-           "Tarefa"]
+           "RedemptionModel", 
+           "ResponsibleProfile", 
+           "TaskModel",
+           "EventModel"]

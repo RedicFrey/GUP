@@ -1,0 +1,92 @@
+
+#setting-containt{
+    padding: 0 50px 0 0;
+}
+
+#profile-info-section{
+    margin-bottom: 30px;
+}
+
+.profile-view{
+    display: flex;
+    flex-direction: column;
+    /* gap: 30px; */
+    background-color: purple;
+}
+
+.profiles-fields{
+    width: 600px
+}
+
+.profiles-fields>label{
+    background-color: red
+}
+
+.profiles-fields input{
+    border: 1px solid var(--text-tertiary);
+    height: 25px;
+    width: 200px;
+    color: var(--text-secondary);
+    font-family: var(--font-family);
+    border-radius: var(--border-radius-primary);
+    padding-left: 8px;
+}
+
+.btn-change-field{
+    background-color: transparent;
+    border: none;
+}
+
+.btn-change-field svg{
+    width: 25px;
+    height: 25px;
+    fill: var(--text-secondary);
+}
+
+.character-toggle {
+    width: 40px;
+    height: 40px;
+    background-color: transparent;
+    border: transparent;
+    cursor: pointer;
+    font-size: 20px;
+    position: absolute; 
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%); 
+}
+
+.input-blocked {
+    border: none;
+    background: transparent;
+    outline: none;
+    cursor: default;
+}
+
+.profile-input-field{
+    background: transparent
+}
+
+#go-to-family-account{
+    display: flex;
+    justify-content: space-between;
+    box-sizing: border-box;
+    border-top: 1px solid var(--text-primary);
+    padding: 22px 0;
+}
+
+#go-to-family-account>p{
+    font-family: var(--font-family);
+    font-size: 15px;
+    color: var(--text-secondary);
+}
+
+#go-to-family-account>a{
+    font-family: var(--font-family);
+    font-size: 15px;
+    background-color: var(--color-secondary);
+    color: var(--text-secondary);
+    padding: 4px 16px;
+    border-radius: var(--border-radius-primary);
+    text-decoration: none
+}

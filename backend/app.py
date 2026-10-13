@@ -38,15 +38,15 @@ def criar_app():
     def abrir_conexao():
         if request.method == "OPTIONS":
             return
-        g.conexao = get_connection()
+        g.connection = get_connection()
 
     @app.teardown_appcontext
     def fechar_conexao(exception=None):
-        conexao = g.pop("conexao", None)
-        if conexao is not None:
+        connection = g.pop("connection", None)
+        if connection is not None:
             if exception is not None:
-                conexao.rollback()
-            conexao.close()
+                connection.rollback()
+            connection.close()
 
     @app.errorhandler(413)
     def arquivo_muito_grande(e):
@@ -81,6 +81,7 @@ def criar_app():
             }
         })
 
+    # print(app.url_map)
     return app
 
 
