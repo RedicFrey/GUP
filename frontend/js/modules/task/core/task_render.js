@@ -1,5 +1,5 @@
 import { escapeHtml, isResponsible, proofFileName, proofUrl } from './task_utils.js'
-import { paginate } from '../../../generic/pagination.js'
+import { paginateRemote } from '../../../generic/pagination.js'
 import { showChildrenTask } from '../dialog/selects_task.js'
 import { openPhotoDialog } from '../dialog/task_modal.js'
 
@@ -21,11 +21,11 @@ const canSend = (task) => !["awaiting_approval", "done"].includes(task.status)
 //   onInfoClick(assignment)        -> "Ver Detalhes"
 //   onSendProof(assignment, file)  -> "Enviar comprovação" (file = null quando a tarefa não pede foto)
 //   onReview(assignment, approve)  -> "Aprovar" (true) / "Recusar" (false)
-export function renderDashboardTasks(tasksList, container, profile_type, { onSendProof, onReview, onChanged }) {
+export function renderDashboardTasks(loadPage, container, profile_type, { onSendProof, onReview, onChanged }) {
 
-    const tasks = tasksList?.tasks ?? []
+    // const tasks = tasksList?.tasks ?? []
     const responsible = isResponsible(profile_type)
-    const byAssignment = new Map(tasks.map(t => [String(t.assignment_id), t]))
+    const byAssignment = new Map()
 
     // Botão de envio: só criança, e só enquanto ainda dá para enviar
     function sendProofHtml(task) {
@@ -74,10 +74,13 @@ export function renderDashboardTasks(tasksList, container, profile_type, { onSen
     `
 
     // mostra 6 por vez; "Mostrar mais" acrescenta o resto no mesmo container
-    paginate({
-        items: tasks,
+    paginateRemote({
+        loadPage,
         container,
-        renderItems: (parte) => parte.map(taskSummaryCardHtml).join(""),
+        renderItems: (parte) => {
+            parte.forEach(t => byAssignment.set(String(t.assignment_id), t))
+            return parte.map(taskSummaryCardHtml).join("")
+        },
         pageSize: 6,
         mode: "more",
         empty: "<p>Nenhuma tarefa encontrada.</p>",
@@ -172,23 +175,22 @@ const taskSummaryCardHtml = (task, responsible) => {
     `
 }
 
-export function renderTasksList(tasks, container, { onInfoClick, profile_type } = {}) {
+export function renderTasksList(loadPage, container, { onInfoClick, profile_type } = {}) {
     const responsible = isResponsible(profile_type)
 
-    paginate({
-        items: tasks ?? [],
-        container,
-        renderItems: (parte) => parte.map((task) => taskSummaryCardHtml(task, responsible)).join(""),
-        pageSize: 6,
-        mode: "more",
-        empty: "<p>Nenhuma tarefa encontrada.</p>",
-    })
-
-    // o container.onclick fica igual
     container.onclick = (event) => {
         const btn = event.target.closest(".btn-more")
         if (!btn) return
 
         onInfoClick?.({ task_id: btn.dataset.taskId })
     }
+
+    return paginateRemote({
+        loadPage,
+        container,
+        renderItems: (parte) => parte.map((task) => taskSummaryCardHtml(task, responsible)).join(""),
+        pageSize: 6,
+        mode: "more",
+        empty: "<p>Nenhuma tarefa encontrada.</p>",
+    })
 }

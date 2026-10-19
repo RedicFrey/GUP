@@ -25,12 +25,12 @@ class ChildRepository(BaseRepository):
         child_kwargs = {k: v for k, v in row.items() if k in ChildProfile.CHILD_FIELDS}
         return ChildProfile(**base_kwargs, **child_kwargs)
 
-    def add_coins_xp(self, child_profile_id, amount, xp):
+    def add_coins(self, child_profile_id, amount):
         cursor = self.connection.cursor()
         try:
             cursor.execute(
-                "UPDATE profiles SET coins = coins + %s, xp = xp + %s WHERE id = %s",  
-                (amount, xp, child_profile_id),
+                "UPDATE profiles SET coins = coins + %s WHERE id = %s",
+                (amount, child_profile_id),
             )
             if cursor.rowcount == 0:
                 raise NotFound("Criança não encontrada para receber a recompensa.")

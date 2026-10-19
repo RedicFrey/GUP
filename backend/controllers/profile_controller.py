@@ -71,7 +71,7 @@ def delete_profile(profile_id):
     return jsonify({"resultado": response}), 200
 
 @profile_bp.get('/criancas')
-@responsible_required
+@profile_required
 def list_children():
 
     connection = g.connection

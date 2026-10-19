@@ -3,7 +3,31 @@
     padding: 0 50px 0 0;
 }
 
+#edit-giraffe-section{
+    border-bottom: 1px solid var(--text-primary);
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 0;
+}
+
+#edit-giraffe-section>p{
+    font-family: var(--font-family);
+    font-size: 15px;
+    color: var(--text-secondary);
+}
+
+#edit-giraffe-section>div>a{
+    font-family: var(--font-family);
+    font-size: 15px;
+    background-color: var(--color-secondary);
+    color: var(--text-secondary);
+    padding: 4px 16px;
+    border-radius: var(--border-radius-primary);
+    text-decoration: none
+}
+
 #profile-info-section{
+    margin-top: 30px;
     margin-bottom: 30px;
 }
 
@@ -90,3 +114,4 @@
     border-radius: var(--border-radius-primary);
     text-decoration: none
 }
+

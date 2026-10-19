@@ -55,3 +55,143 @@
   color: var(--warning-color);
   border-color: var(--warning-color);
 }
+
+/* .preview { position: relative; width: 256px; height: 384px; } */
+/* .camada  { position: absolute; inset: 0; width: 100%; height: 100%;
+           image-rendering: pixelated; }  */
+
+/* corpo e bolinhas: o PNG vira "molde" e a cor vem do CSS */
+/* .corpo, .bolinhas {
+  -webkit-mask: center / contain no-repeat;
+          mask: center / contain no-repeat;
+}
+.corpo    { background-color: var(--cor-primaria);
+            -webkit-mask-image: url("img/girafa/corpo.png");
+                    mask-image: url("img/girafa/corpo.png"); }
+.bolinhas { background-color: var(--cor-secundaria);
+            -webkit-mask-image: url("img/girafa/bolinhas.png");
+                    mask-image: url("img/girafa/bolinhas.png"); } */
+
+
+
+.giraffe-view-section {
+  height: 580px;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  border-radius: var(--border-radius-secondary)
+}
+
+.girafa-fundo{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  image-rendering: pixelated;
+}
+
+.girafa-cor{
+  width: 40%;
+  position: absolute;
+  height: 360px;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  image-rendering: pixelated;
+}
+
+.girafa-acessorio{
+  width: 40%;
+  position: absolute;
+  height: 360px;
+  bottom: 0;
+  left: 0;
+  z-index: 3;
+  image-rendering: pixelated;
+}
+
+@media (max-width: 1024px){
+  .girafa-fundo{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  image-rendering: pixelated;
+}
+
+.girafa-cor{
+  width: 40%;
+  position: absolute;
+  height: 360px;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  image-rendering: pixelated;
+}
+
+.girafa-acessorio{
+  width: 40%;
+  position: absolute;
+  height: 360px;
+  bottom: 0;
+  left: 0;
+  z-index: 3;
+  image-rendering: pixelated;
+}
+}
+
+@media (max-width: 767px){
+  .giraffe-view-section {
+  height: 450px;
+  width: 100%;
+}
+
+.girafa-cor{
+  width: 40%;
+  height: 320px;
+}
+
+.girafa-acessorio{
+  width: 40%;
+  height: 320px;
+}
+}
+
+@media (max-width: 450px){
+  .giraffe-view-section {
+  height: 380px;
+  width: 100%;
+}
+
+.girafa-cor{
+  width: 40%;
+  height: 260px;
+}
+
+.girafa-acessorio{
+  width: 40%;
+  height: 260px;
+}
+}
+
+@media (max-width: 300px){
+  .giraffe-view-section {
+  height: 350px;
+  width: 100%;
+}
+
+.girafa-cor{
+  width: 60%;
+  height: 230px;
+}
+
+.girafa-acessorio{
+  width: 60%;
+  height: 230px;
+}
+}
+

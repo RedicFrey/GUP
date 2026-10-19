@@ -58,8 +58,8 @@ class TaskAssignmentRepository(BaseRepository):
 
         return row
 
-    def list_by_account_with_status(self, data):
-        query = self._SELECT_BASE + " WHERE t.family_account_id = %s"
+    def _build_filters(self, data):
+        where = " WHERE t.family_account_id = %s"
         parameters = [data["family_account_id"]]
 
         status = data.get("status")
@@ -67,24 +67,44 @@ class TaskAssignmentRepository(BaseRepository):
 
         if status == "late":
             # pendente e com o prazo já vencido
-            query += " AND ta.status = 'pending' AND t.deadline < NOW()"
+            where += " AND ta.status = 'pending' AND t.deadline < NOW()"
         elif status:
-            query += " AND ta.status = %s"
+            where += " AND ta.status = %s"
             parameters.append(status)
 
         if period:
-            query += " AND t.deadline > %s"
+            where += " AND t.deadline > %s"
             parameters.append(period)
         elif status != "awaiting_approval":
             # Tudo e Atrasadas: só as de hoje. Em espera: qualquer dia.
-            query += " AND DATE(t.deadline) = CURDATE()"
+            where += " AND DATE(t.deadline) = CURDATE()"
 
         if data.get("child_profile_id"):
-            query += " AND ta.child_profile_id = %s"
+            where += " AND ta.child_profile_id = %s"
             parameters.append(data["child_profile_id"])
 
-        query += " ORDER BY t.deadline ASC"
+        return where, parameters
+
+    def list_by_account_with_status(self, data):
+        where, parameters = self._build_filters(data)
+        # ta.id desempata prazos iguais; sem isso o LIMIT/OFFSET pode repetir ou pular cards
+        query = self._SELECT_BASE + where + " ORDER BY t.deadline ASC, ta.id ASC"
+
+        size = data.get("size")
+        if size:
+            query += " LIMIT %s OFFSET %s"
+            parameters += [size, (data.get("page", 1) - 1) * size]
+
         return self._execute(query, parameters)
+
+    def count_by_account_with_status(self, data):
+        where, parameters = self._build_filters(data)
+        rows = self._execute(
+            "SELECT COUNT(*) AS total FROM tasks AS t "
+            "JOIN task_assignments AS ta ON ta.task_id = t.id" + where,
+            parameters,
+        )
+        return rows[0]["total"]
     
 
     def list_task(self, family_account_id, task_id=None, status=None,
@@ -237,4 +257,71 @@ class TaskAssignmentRepository(BaseRepository):
     def find_detail(self, assignment_id):
         rows = self._execute(self._SELECT_BASE + " WHERE ta.id = %s", [assignment_id])
         return rows[0] if rows else None
+
+    def list_task_page(self, family_account_id, deadline_on=None, deadline_from=None,
+                       page=1, size=6):
+        where = " WHERE t.family_account_id = %s"
+        parameters = [family_account_id]
+
+        if deadline_on:
+            where += " AND DATE(t.deadline) = %s"
+            parameters.append(deadline_on)
+
+        if deadline_from:
+            where += " AND DATE(t.deadline) >= %s"
+            parameters.append(deadline_from)
+
+        base = """
+            FROM tasks AS t
+            JOIN task_assignments AS ta ON ta.task_id = t.id
+            JOIN profiles AS p ON p.id = ta.child_profile_id
+        """ + where
+
+        # 1) quantas tarefas existem (não linhas)
+        total = self._execute("SELECT COUNT(DISTINCT t.id) AS total " + base, parameters)[0]["total"]
+        if total == 0:
+            return {"tasks": [], "total": 0}
+
+        # 2) só os ids das tarefas desta página
+        id_rows = self._execute(
+            "SELECT DISTINCT t.id, t.deadline " + base +
+            " ORDER BY t.deadline ASC, t.id ASC LIMIT %s OFFSET %s",
+            parameters + [size, (page - 1) * size],
+        )
+        task_ids = [r["id"] for r in id_rows]
+        if not task_ids:
+            return {"tasks": [], "total": total}
+
+        # 3) as linhas (tarefa + crianças) só dessas tarefas
+        placeholders = ", ".join(["%s"] * len(task_ids))
+        rows = self._execute(f"""
+            SELECT
+                t.id AS task_id,
+                ta.id AS child_task_id,
+                t.name,
+                t.description,
+                t.deadline,
+                t.coins_reward,
+                t.xp_reward,
+                t.required_proof,
+                ta.id AS assignment_id,
+                ta.status,
+                ta.proof_photo,
+                p.id AS child_profile_id,
+                p.name AS child_name
+            FROM tasks AS t
+            JOIN task_assignments AS ta ON ta.task_id = t.id
+            JOIN profiles AS p ON p.id = ta.child_profile_id
+            WHERE t.family_account_id = %s AND t.id IN ({placeholders})
+            ORDER BY t.deadline ASC, t.id ASC, ta.id ASC
+        """, [family_account_id, *task_ids])
+
+        rows_by_task = {}
+        for r in rows:
+            rows_by_task.setdefault(r["task_id"], []).append(r)
+
+        return {
+            "tasks": [self._build_task(task_rows) for task_rows in rows_by_task.values()],
+            "total": total,
+        }
     

@@ -2,6 +2,8 @@
 import { sideBar } from './generic/side_bar.js';
 import { dashboardTask } from './modules/task/dashboard/dashboard_task.js';
 import { renderEvents } from './modules/events.js';
+import { checkLevelUp } from './components/level.js'
+import { viewGiraffe } from './components/giraffe.js'
 
 const mensagem = document.querySelector("#mensagem");
 const sectionEvents = document.querySelector("#section-events");
@@ -32,4 +34,6 @@ async function carregarDashboard() {
 
 document.addEventListener("DOMContentLoaded", () => {
     carregarDashboard();
+    viewGiraffe()
+    checkLevelUp()
 });

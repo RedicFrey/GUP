@@ -1,5 +1,5 @@
 from controllers.family_account_controller import family_account_bp
-# from controllers.usuario_controller import usuario_bp
+from controllers.giraffe_controller import giraffe_bp
 from controllers.dashboard_controller import dashboard_bp
 from controllers.profile_controller import profile_bp
 from controllers.reward_controller import reward_bp
@@ -11,9 +11,10 @@ from controllers.report_controller import report_bp
 from controllers.redemption_controller import redemption_bp
 from controllers.notification_controller import notification_bp
 from controllers.auth_controller import auth_bp
+from controllers.level_controller import level_bp
 
 all_blueprints = [
-                #   usuario_bp,
+                  giraffe_bp,
                   dashboard_bp,
                   profile_bp,
                   family_account_bp,
@@ -26,5 +27,6 @@ all_blueprints = [
                   redemption_bp,
                   notification_bp,
                   auth_bp,
+                  level_bp,
                   ]
 

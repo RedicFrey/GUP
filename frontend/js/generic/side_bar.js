@@ -55,6 +55,7 @@ export async function sideBar() {
         event.preventDefault();
 
         await apiFetch("/logout", { method: "POST" });
+        localStorage.clear();
         window.location.href = "auth.html";
     });
     const divExit = document.createElement("div")

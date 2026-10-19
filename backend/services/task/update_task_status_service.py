@@ -69,12 +69,20 @@ class UpdateTaskStatusService:
         return self.assignment_repo.find_detail(assignment_id)
 
     def _pay_reward(self, assignment):
-        self.child_repo.add_coins_xp(assignment["child_profile_id"], assignment["coins_reward"], assignment["xp_reward"])
+        child_id = assignment["child_profile_id"]
+
+        # só moedas aqui: o XP (e o nível) ficam com o level_service
+        self.child_repo.add_coins(child_id, assignment["coins_reward"], 0)
+
         self.history_service.execute(
-            child_profile_id=assignment["child_profile_id"],
+            child_profile_id=child_id,
             source="task",
             amount=assignment["coins_reward"],
             amount_type="credit",
             name=f"Tarefa concluída: {assignment['name']}",
         )
+
+        xp = assignment["xp_reward"]
+        if xp and xp > 0:
+            self.level_service.add_xp(child_id, xp)
         

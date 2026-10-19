@@ -12,18 +12,21 @@ export async function selectAllTaskNext(container, dialog, profile_type) {
 }
 
 export async function selectAllTaskRepeated(container) {
-    renderTasksList([], container)   // limpa a lista e o "Mostrar mais" da aba anterior
+    // sem tarefas repetidas ainda: limpa a lista e o "Mostrar mais" da aba anterior
+    await renderTasksList(async () => ({ items: [], total: 0 }), container)
 }
 
 async function baseSelectTask(container, dialog, profile_type, period) {
     try {
-        const resultado = await getTaskApi({ type: period })
-        if (!resultado) return
-
-        const tasks = Array.isArray(resultado) ? resultado : (resultado.tasks ?? [])
         const recarregar = () => baseSelectTask(container, dialog, profile_type, period)
 
-        renderTasksList(tasks, container, {
+        const loadPage = async (page, size) => {
+            const resultado = await getTaskApi({ type: period, page, size })
+            if (!resultado) return null
+            return { items: resultado.tasks ?? [], total: resultado.total ?? 0 }
+        }
+
+        await renderTasksList(loadPage, container, {
             profile_type,
             onInfoClick: ({ task_id }) => showTaskInfo(dialog, task_id, profile_type, recarregar),
         })

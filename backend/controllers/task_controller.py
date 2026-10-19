@@ -20,16 +20,19 @@ def list_tasks():
     status = request.args.get("status")
     period = request.args.get("period")
     child_profile_id = request.args.get("child_profile_id", type=int)
+    page = request.args.get("page", default=1, type=int)
+    size = request.args.get("size", default=6, type=int)
 
     task_service = ListTaskService(connection)
-    tasks = task_service.execute(
+    result = task_service.execute(
         family_account_id=session["family_account_id"],
         profile_id=session["profile_id"],
         profile_type=session["profile_type"],
         status=status, period=period, child_profile_id=child_profile_id,
+        page=page, size=size,
     )
 
-    return jsonify({"tasks": tasks}), 200
+    return jsonify(result), 200   # {"tasks": [...], "total": N}
 
 @task_bp.get('/', defaults={'task_id': None}, strict_slashes=False)
 @task_bp.get('/<int:task_id>')
@@ -42,7 +45,9 @@ def get_task(task_id):
         family_account_id=session["family_account_id"],
         profile_id=session["profile_id"],
         task_id=task_id,
-        type_=request.args.get("type"),   
+        type_=request.args.get("type"),
+        page=request.args.get("page", default=1, type=int),
+        size=request.args.get("size", default=6, type=int),
     )
 
     return jsonify(tasks), 200

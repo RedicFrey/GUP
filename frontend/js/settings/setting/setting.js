@@ -3,6 +3,7 @@ import { sideBar } from '../../generic/side_bar.js'
 import { profile } from './profile.js'
 import { notificationSetting } from './notification.js';
 import { loadMyProfile } from '../../generic/utils.js'
+import { sectionCustomPage } from '../custom/setting_custom.js'
 
 const mainSetting = document.querySelector("#setting-container")
 
@@ -13,6 +14,9 @@ async function doConfig(){
     mainSetting.innerHTML = `
         <h2 class="title-page">Configurações</h2>
         <section id="setting-containt">
+            <section>
+                <section id="edit-giraffe-section"></section>
+            </section>
             <section id="profile-info-section"></section>
             <article id="go-to-family-account">
                 <p>Conta família</p>
@@ -24,6 +28,8 @@ async function doConfig(){
     `
     const profileSection = mainSetting.querySelector("#profile-info-section")
     const notificationContaint =  mainSetting.querySelector("#notification-containt")
+    const editGiraffeSection = mainSetting.querySelector("#edit-giraffe-section")
+    sectionCustomPage(editGiraffeSection, currentUser.profile_type)
     profile(currentUser, profileSection)
     notificationSetting(currentUser.profile_type, notificationContaint)
 }

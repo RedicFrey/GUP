@@ -7,7 +7,7 @@ class ProfileModel:
         "notification_email", "pin_hash",
         "created_at", "updated_at", "created_by"
     }
-    CHILD_FIELDS = {"coins", "xp", "level_id", "goal_id", "strikes"}
+    CHILD_FIELDS = {"coins", "xp", "level_id", "seen_level", "goal_id", "strikes"}
 
     def __init__(self, family_account_id, name, profile_type, role=None, id=None,
                  notification_email=None, pin_hash=None,

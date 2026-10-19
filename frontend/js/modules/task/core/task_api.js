@@ -32,17 +32,16 @@ async function call(path, errorMessage, options) {
 // ---------- Leituras ----------
 
 // GET /tarefas/listar
-export function selectTasksApi({ status, period, childProfileId } = {}) {
+export function selectTasksApi({ status, period, childProfileId, page, size } = {}) {
     return call(
-        `/tarefas/listar${buildQuery({ status, period, child_profile_id: childProfileId })}`,
+        `/tarefas/listar${buildQuery({ status, period, child_profile_id: childProfileId, page, size })}`,
         "Erro ao carregar tarefas."
     )
 }
 
-// GET /tarefas/<task_id>  (ou /tarefas?type=today|after)
-export function getTaskApi({ taskId = null, type = null } = {}) {
+export function getTaskApi({ taskId = null, type = null, page, size } = {}) {
     const path = taskId ? `/tarefas/${taskId}` : `/tarefas`
-    return call(`${path}${buildQuery({ type })}`, "Erro ao carregar tarefa.")
+    return call(`${path}${buildQuery({ type, page, size })}`, "Erro ao carregar tarefa.")
 }
 
 // GET /tarefas/crianca
