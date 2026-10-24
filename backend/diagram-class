@@ -1,0 +1,281 @@
+# GUP: diagrama de classes
+
+Baseado em `backend/models/` (atributos e métodos) e em `backend/database/schema.sql` (tipos, FKs e cardinalidades). As chaves estrangeiras aparecem como associações, com o nome da coluna no rótulo, e não como atributos. Os ENUMs do schema estão como `<<enumeration>>`.
+
+```mermaid
+classDiagram
+    direction LR
+
+    class FamilyAccountModel {
+        +int id
+        +str name
+        +str email
+        +date birth_date
+        +str password_hash
+        +datetime created_at
+        +datetime updated_at
+        +to_dict() dict
+        +to_insertion() dict
+    }
+
+    class ProfileModel {
+        +str ADMIN$
+        +int id
+        +str name
+        +ProfileType profile_type
+        +str role
+        +str notification_email
+        +str pin_hash
+        +datetime created_at
+        +datetime updated_at
+        +has_pin() bool
+        +is_admin() bool
+        +to_dict() dict
+        +to_insertion() dict
+        +from_row(row) ProfileModel$
+    }
+
+    class ChildProfile {
+        +int coins
+        +int xp
+        +int seen_level
+        +int strikes
+        +to_dict() dict
+        +to_insertion() dict
+    }
+
+    class ResponsibleProfile {
+        +to_dict() dict
+        +to_insertion() dict
+        +create_task(data)
+    }
+
+    class TaskModel {
+        +int id
+        +str name
+        +str description
+        +datetime deadline
+        +int coins_reward
+        +int xp_reward
+        +bool required_proof
+        +datetime created_at
+        +datetime updated_at
+        +to_dict() dict
+        +to_insertion() dict
+    }
+
+    class TaskAssignmentModel {
+        +int id
+        +TaskStatus status
+        +datetime completion_date
+        +str proof_photo
+        +int coins_earned
+        +int xp_earned
+        +datetime created_at
+        +datetime updated_at
+        +to_dict() dict
+        +to_insertion() dict
+        +verify_status(status)$
+    }
+
+    class CoinHistoryModel {
+        +int id
+        +str name
+        +CoinSource source
+        +AmountType amount_type
+        +int amount
+        +datetime created_at
+        +datetime updated_at
+        +to_dict() dict
+        +to_insertion() dict
+    }
+
+    class RewardModel {
+        +int id
+        +str name
+        +int amount
+        +datetime created_at
+        +datetime updated_at
+        +to_dict() dict
+        +to_insertion() dict
+    }
+
+    class RedemptionModel {
+        +int id
+        +str name
+        +RedemptionStatus status
+        +int amount
+        +datetime created_at
+        +datetime updated_at
+        +to_dict() dict
+        +to_insertion() dict
+    }
+
+    class EventModel {
+        +int id
+        +str name
+        +date event_date
+        +datetime created_at
+        +datetime updated_at
+        +to_dict() dict
+        +to_insertion() dict
+    }
+
+    class LevelModel {
+        +int id
+        +int required_xp
+        +datetime created_at
+        +datetime updated_at
+        +to_dict() dict
+        +to_insertion() dict
+    }
+
+    class NotificationPreferenceModel {
+        +int id
+        +NotificationType type
+        +bool enabled
+        +to_dict() dict
+        +to_insertion() dict
+    }
+
+    class GiraffeModel {
+        +int id
+        +datetime created_at
+        +datetime updated_at
+        +to_dict() dict
+        +to_insertion() dict
+    }
+
+    class GiraffeDetailModel {
+        +int id
+        +int child_profile_id
+        +int color_id
+        +int background_id
+        +int accessory_id
+        +str color_name
+        +str color_image_url
+        +str background_name
+        +str background_image_url
+        +str accessory_name
+        +str accessory_image_url
+        +to_dict() dict
+    }
+
+    class GiraffeColorModel {
+        +int id
+        +str primary_color
+        +str secondary_color
+        +int required_level
+        +datetime created_at
+        +datetime updated_at
+        +to_dict() dict
+        +to_insertion() dict
+    }
+
+    class CatalogItemModel {
+        +int id
+        +str name
+        +str image_url
+        +int required_level
+        +datetime created_at
+        +datetime updated_at
+        +to_dict() dict
+        +to_insertion() dict
+    }
+
+    class GiraffeBackground
+    class GiraffeAccessory
+
+    class GiraffeImageItemModel {
+        +int id
+        +str name
+        +str image_url
+        +int required_level
+        +to_dict() dict
+    }
+
+    class ProfileType {
+        <<enumeration>>
+        child
+        responsible
+    }
+    class TaskStatus {
+        <<enumeration>>
+        pending
+        awaiting_approval
+        done
+        not_done
+    }
+    class RedemptionStatus {
+        <<enumeration>>
+        pending
+        done
+    }
+    class CoinSource {
+        <<enumeration>>
+        task
+        redemption
+        manual_adjustment
+    }
+    class AmountType {
+        <<enumeration>>
+        credit
+        debit
+    }
+    class NotificationType {
+        <<enumeration>>
+        task_submitted
+        reward_redeemed
+        event_created
+    }
+
+    %% Herança
+    ProfileModel <|-- ChildProfile
+    ProfileModel <|-- ResponsibleProfile
+    CatalogItemModel <|-- GiraffeBackground
+    CatalogItemModel <|-- GiraffeAccessory
+
+    %% Conta família (ON DELETE CASCADE)
+    FamilyAccountModel "1" --> "1..*" ProfileModel : family_account_id
+    FamilyAccountModel "1" --> "0..*" TaskModel : family_account_id
+    FamilyAccountModel "1" --> "0..*" RewardModel : family_account_id
+    FamilyAccountModel "1" --> "0..*" EventModel : family_account_id
+
+    %% Autoria (ON DELETE SET NULL)
+    ProfileModel "0..1" --> "0..*" ProfileModel : created_by
+    ProfileModel "0..1" --> "0..*" TaskModel : created_by
+    ProfileModel "0..1" --> "0..*" EventModel : created_by
+
+    %% Tarefas atribuídas (UNIQUE task_id + child_profile_id)
+    TaskModel "1" --> "0..*" TaskAssignmentModel : task_id
+    ChildProfile "1" --> "0..*" TaskAssignmentModel : child_profile_id
+
+    %% Moedas, recompensas e resgates
+    ChildProfile "1" --> "0..*" CoinHistoryModel : child_profile_id
+    ChildProfile "1" --> "0..*" RedemptionModel : child_profile_id
+    RewardModel "0..1" --> "0..*" RedemptionModel : reward_id
+    ChildProfile "0..*" --> "0..1" RewardModel : goal_id
+
+    %% Níveis
+    ChildProfile "0..*" --> "0..1" LevelModel : level_id
+
+    %% Notificações (UNIQUE profile_id + type, até 3 por perfil)
+    ProfileModel "1" --> "0..3" NotificationPreferenceModel : profile_id
+
+    %% Girafa (child_profile_id UNIQUE)
+    ChildProfile "1" --> "0..1" GiraffeModel : child_profile_id
+    GiraffeModel "0..*" --> "1" GiraffeColorModel : color_id
+    GiraffeModel "0..*" --> "1" GiraffeBackground : background_id
+    GiraffeModel "0..*" --> "0..1" GiraffeAccessory : accessory_id
+
+    %% Projeções de leitura (sem tabela própria)
+    GiraffeDetailModel ..> GiraffeModel : leitura com JOIN
+    GiraffeImageItemModel ..> CatalogItemModel : item genérico do catálogo
+```
+
+Observações sobre a leitura do diagrama:
+
+- `ProfileModel` corresponde à tabela única `profiles`. `ChildProfile` e `ResponsibleProfile` são distinguidos por `profile_type`, e as colunas de `ChildProfile` só fazem sentido para crianças.
+- As associações que saem de `ChildProfile` usam colunas que apontam para `profiles.id`. O banco aceita qualquer perfil nelas; a restrição a crianças é feita no código.
+- Dois nomes nas models diferem do schema: em `LevelModel`, `required_xp` corresponde a `levels.xp_required` (e a coluna `level` não existe na model); em `GiraffeModel`, `profile_id` corresponde a `giraffes.child_profile_id`. O diagrama usa os nomes do schema nos rótulos.
+- `GiraffeColorModel` aparece aqui na versão de `models/giraffe/giraffe_color_model.py`. A tabela `giraffe_colors` também tem `name` e `image_url`, que o repository lê através de `GiraffeImageItemModel`.
