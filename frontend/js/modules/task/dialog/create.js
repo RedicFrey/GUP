@@ -1,7 +1,7 @@
 
 import { prepararModal, REWARDS } from './task_modal.js'
 import { createTaskApi } from '../core/task_api.js'
-import { escapeHtml, isResponsible } from '../core/task_utils.js'
+import { escapeHtml, isResponsible, minDeadlineValue } from '../core/task_utils.js'
 
 // ---------- Criar (só responsável) ----------
 
@@ -36,7 +36,7 @@ export function createTask({ dialog, familyChildrens, profile_type, onSaved }) {
             </div>
             <div>
                 <label for="task-date">Horário limite</label>
-                <input type="datetime-local" id="task-date" required>
+                <input type="datetime-local" id="task-date" required min="${minDeadlineValue()}">
             </div>
             <div>
                 <label for="task-proof">Necessita de foto</label>

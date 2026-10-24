@@ -1,27 +1,27 @@
-
 import { ICONS } from '../../generic/icons.js'
+import { warning } from '../../generic/warning.js'
 
 export async function profile(currentUser, section) {
 
-
     const profileId = currentUser.id
+    let hasPin = Boolean(currentUser.has_pin)
+
     // visualização do perfil
     const profileView = document.createElement("div")
     profileView.className = "profile-view"
 
+    // o pin começa como "text" para mostrar "****" de verdade; vira "password" só ao editar
     const profileInputFields = [
         { id: "profile-input-name", fieldType: "text", fieldName: "Nome", dataKey: "name" },
-        { id: "profile-input-pin", fieldType: "password", fieldName: "Pin", dataKey: "pin" }
+        { id: "profile-input-pin", fieldType: "text", fieldName: "Pin", dataKey: "pin" }
     ];
 
     // valores originais, para saber se o campo mudou
     const originalValues = {}
     profileInputFields.forEach(f => {
-        if (f.dataKey === "pin") {
-            originalValues[f.dataKey] = currentUser.has_pin ? '****' : ''
-        } else {
-            originalValues[f.dataKey] = currentUser[f.dataKey] ?? ''
-        }
+        originalValues[f.dataKey] = f.dataKey === "pin"
+            ? (hasPin ? '****' : '')
+            : (currentUser[f.dataKey] ?? '')
     })
 
     const profileForm = document.createElement("form")
@@ -34,20 +34,40 @@ export async function profile(currentUser, section) {
                     type="${field.fieldType}"
                     id="${field.id}"
                     data-key="${field.dataKey}"
-                    value="${originalValues[field.dataKey] ?? ''}"
+                    placeholder="${field.dataKey === "pin" ? "Sem senha" : ""}"
                     class="input-blocked"
                     readonly
                 >
                 <button type="button" class="btn-change-field">${ICONS.generic.edit}</button>
+                ${field.dataKey === "pin"
+                    ? `<button type="button" class="btn-remove-pin">Remover senha</button>`
+                    : ""}
             </div>
-            
         </div>
     `).join("");
+
+    // o valor entra pelo .value, assim um nome com aspas ou < > não quebra o HTML
+    profileInputFields.forEach(f => {
+        profileForm.querySelector(`#${f.id}`).value = originalValues[f.dataKey]
+    })
+
+    const pinInput = profileForm.querySelector("#profile-input-pin")
+    const removePinBtn = profileForm.querySelector(".btn-remove-pin")
+
+    // desenha o pin conforme existe ou não senha: "****" ou vazio (com placeholder "Sem senha")
+    function syncPin() {
+        originalValues.pin = hasPin ? '****' : ''
+        pinInput.value = originalValues.pin
+        removePinBtn.hidden = !hasPin       // "Remover senha" só existe se há senha
+    }
+
+    syncPin()
 
     function lockInput(input, btn) {
         input.setAttribute('readonly', 'true')
         input.classList.add('input-blocked')
-        btn.textContent = "Mudar"
+        if (input.dataset.key === "pin") input.type = "text"
+        btn.innerHTML = ICONS.generic.edit
     }
 
     const btnsChange = profileForm.querySelectorAll(".btn-change-field")
@@ -63,7 +83,10 @@ export async function profile(currentUser, section) {
             if (input.hasAttribute('readonly')) {
                 input.removeAttribute('readonly')
                 input.classList.remove('input-blocked')
-                if (key === "pin") input.value = ""   // não editar em cima de "****"
+                if (key === "pin") {
+                    input.value = ""            // não editar em cima de "****"
+                    input.type = "password"     // digitando, esconde os caracteres
+                }
                 input.focus()
                 btn.textContent = "Salvar"
                 return
@@ -79,14 +102,18 @@ export async function profile(currentUser, section) {
                 return
             }
 
-            // id na URL (dentro do updateProfile) e id dentro do data
             const saved = await updateProfile(profileId, {
                 id: profileId,
                 [key]: newValue     // só o campo alterado
             })
 
             if (saved) {
-                originalValues[key] = key === "pin" ? "****" : newValue
+                if (key === "pin") {
+                    hasPin = true
+                    syncPin()
+                } else {
+                    originalValues[key] = newValue
+                }
             }
 
             input.value = originalValues[key]
@@ -94,14 +121,31 @@ export async function profile(currentUser, section) {
         })
     })
 
+    // Remover senha: manda pin: null, que o back grava como NULL
+    removePinBtn.addEventListener("click", async () => {
+        const confirmed = await warning("Deseja realmente remover a sua senha?")
+        if (!confirmed) return
+
+        removePinBtn.disabled = true
+        const removed = await updateProfile(profileId, { id: profileId, pin: null })
+        removePinBtn.disabled = false
+        if (!removed) return
+
+        hasPin = false
+        syncPin()
+        lockInput(pinInput, pinInput.parentElement.querySelector(".btn-change-field"))
+    })
+
     profileView.append(profileForm)
     section.append(profileView)
 
     // clicar fora cancela a edição
     document.addEventListener('click', (event) => {
+        const path = event.composedPath()
+
         profileForm.querySelectorAll('input:not([readonly])').forEach((input) => {
             const divPai = input.parentElement
-            if (!divPai.contains(event.target)) {
+            if (!path.includes(divPai)) {
                 input.value = originalValues[input.dataset.key]
                 lockInput(input, divPai.querySelector('.btn-change-field'))
             }
@@ -127,29 +171,3 @@ async function updateProfile(profileId, data) {
 
     return true
 }
-
-
-
-// foto de perfil e da girafa(se for criança)
-    // const avatarView = document.createElement("div")
-
-    // const avatarPreview = document.createElement("div")
-    // const avatarSelected = document.createElement("div")
-    // const modifyAvatar = document.createElement("button")
-    
-    // const characterToggle = document.createElement("button")
-
-    // avatarView.className = "avatar-view"
-    // avatarSelected.className = "avatar-selected"
-    // modifyAvatar.className = "modify-avatar"
-    // avatarPreview.className = "avatar-preview"
-    // characterToggle.className = "character-toggle"
-
-    // characterToggle.textContent = ">"
-    // modifyAvatar.textContent = "mudar"
-    // avatarPreview.append(avatarSelected, modifyAvatar)
-
-    // avatarView.append(avatarPreview, characterToggle)
-
-
-    // // visualização do perfil

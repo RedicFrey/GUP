@@ -1,0 +1,130 @@
+/* ==========================================================================
+   Recompensas (a "lojinha" da família)
+   ========================================================================== */
+
+#mensagem {
+  margin-bottom: 20px;
+}
+
+.wallet-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px 8px 12px;
+  border-radius: var(--r-pill);
+  background: var(--sun-soft);
+  border: 1px solid rgba(255, 194, 61, 0.4);
+  color: var(--sun);
+  font-family: var(--font-display);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.rewards-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(208px, 1fr));
+  gap: 16px;
+}
+
+.reward-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 20px;
+  border-radius: var(--r-lg);
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+
+.reward-card.is-goal {
+  border-color: var(--sun);
+}
+
+/* o "presente" em pixel, numa moldura de pixel */
+.reward-gift {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  margin-bottom: 10px;
+  background: color-mix(in srgb, var(--gift) 16%, var(--night));
+  color: var(--gift);
+  clip-path: var(--pixel-corners);
+}
+
+.reward-name {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text);
+}
+
+.reward-price {
+  font-family: var(--font-display);
+  font-size: var(--ds-sm);
+  font-weight: 400;
+}
+
+.acoes {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 14px;
+}
+
+.acoes .btn-buy {
+  width: 100%;
+}
+
+.acoes .btn-sm {
+  align-self: flex-start;
+}
+
+.reward-missing {
+  color: var(--text-3);
+  font-size: var(--fs-xs);
+}
+
+.reward-goal-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--sun);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.btn-delete:hover {
+  color: var(--berry);
+}
+
+/* celular: duas recompensas por linha */
+@media (max-width: 520px) {
+  .rewards-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .reward-card {
+    padding: 14px;
+  }
+
+  .reward-gift {
+    width: 56px;
+    height: 56px;
+  }
+
+  .reward-name {
+    font-size: var(--fs-md);
+  }
+
+  .acoes .btn-primary {
+    min-height: 38px;
+    padding: 6px 10px;
+    font-size: var(--fs-sm);
+  }
+}

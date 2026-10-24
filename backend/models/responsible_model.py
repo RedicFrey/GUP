@@ -1,3 +1,4 @@
+
 from models.profile_model import ProfileModel
 
 class ResponsibleProfile(ProfileModel):

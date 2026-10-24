@@ -1,0 +1,447 @@
+/* ==========================================================================
+   Página de perfil (início)
+   Capa = cenário da girafa. A girafa (ou o avatar do responsável) "pisa"
+   para fora da capa, como a foto de perfil de uma rede social.
+   ========================================================================== */
+
+.profile-page {
+  max-width: 1120px;
+}
+
+/* ---------- capa ---------- */
+
+.profile-hero {
+  --cover-h: 216px;
+  --fig-left: 32px;
+  --fig-w: 128px;          /* largura da girafa ou do avatar com moldura */
+  --fig-h: 190px;
+  --fig-overlap: 40px;     /* quanto o desenho sai para baixo da capa */
+  position: relative;
+  margin-bottom: 36px;
+}
+
+.profile-hero.has-avatar {
+  --fig-w: 124px;
+  --fig-h: 124px;
+  --fig-overlap: 56px;
+}
+
+.hero-cover {
+  position: relative;
+  height: var(--cover-h);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 120%, rgba(255, 194, 61, 0.18), transparent 60%),
+    var(--panel-2);
+  clip-path: var(--pixel-corners);
+}
+
+.hero-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 62%;
+  image-rendering: pixelated;
+}
+
+.profile-hero.is-loading .hero-cover {
+  animation: cover-wait 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes cover-wait {
+  from { opacity: 0.55; }
+  to { opacity: 1; }
+}
+
+/* ---------- a girafa / o avatar ---------- */
+
+.hero-figure {
+  position: absolute;
+  left: var(--fig-left);
+  top: calc(var(--cover-h) + var(--fig-overlap) - var(--fig-h));
+  z-index: 2;
+}
+
+.hero-giraffe {
+  --gs-w: var(--fig-w);
+  /* respirando: sobe 1 pixel da arte (2px na tela) e volta, sem suavizar */
+  animation: giraffe-idle 1.4s steps(1) infinite;
+}
+
+@keyframes giraffe-idle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+/* sombra em pixel debaixo das patas */
+.hero-figure-giraffe::after {
+  content: "";
+  position: absolute;
+  left: 22%;
+  bottom: -2px;
+  width: 50%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.45);
+  clip-path: var(--pixel-corners-sm);
+  z-index: -1;
+}
+
+.hero-figure-avatar {
+  padding: 6px;
+  background: var(--night);
+  clip-path: var(--pixel-corners);
+}
+
+.hero-figure-avatar .avatar {
+  width: calc(var(--fig-w) - 12px);
+  height: calc(var(--fig-h) - 12px);
+}
+
+/* ---------- nome, nível e números ---------- */
+
+.hero-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "id actions"
+    "stats stats";
+  gap: 18px 24px;
+  padding: 18px 0 0 calc(var(--fig-left) + var(--fig-w) + 28px);
+}
+
+.hero-id {
+  grid-area: id;
+  min-width: 0;
+}
+
+.hero-name {
+  font-family: var(--font-display);
+  font-size: var(--ds-xl);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.hero-sub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+
+.hero-actions {
+  grid-area: actions;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.hero-stats {
+  grid-area: stats;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 36px;
+}
+
+.hero-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hero-stat-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: var(--ds-md);
+  line-height: 1.1;
+  color: var(--text);
+}
+
+.hero-stat-coin { color: var(--sun); }
+.hero-stat-xp { color: var(--sky); }
+
+.hero-stat-label {
+  color: var(--text-3);
+  font-size: var(--fs-sm);
+}
+
+.hero-stat-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.hero-stat-button .hero-stat-label {
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-underline-offset: 4px;
+}
+
+.hero-stat-button:hover .hero-stat-value {
+  color: var(--sun);
+}
+
+.hero-stat-button:hover .hero-stat-label {
+  color: var(--text-2);
+  text-decoration-color: currentColor;
+}
+
+/* ---------- família (responsável) ---------- */
+
+.family-section {
+  margin-bottom: 32px;
+}
+
+.family-section .section-title {
+  margin-bottom: 12px;
+}
+
+.family-strip {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 2px 2px 6px;
+  scrollbar-width: thin;
+}
+
+.family-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 168px;
+  padding: 10px 16px 10px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--panel);
+  color: var(--text);
+  font-family: var(--font-body);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.family-card:hover {
+  border-color: var(--text-3);
+}
+
+.family-card.active {
+  border-color: var(--sun);
+  background: var(--sun-soft);
+}
+
+.family-card-all-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  background: var(--panel-2);
+  color: var(--text-2);
+  clip-path: var(--pixel-corners-sm);
+}
+
+.family-card-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.family-card-text strong {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.family-card-text small {
+  display: flex;
+  gap: 10px;
+  color: var(--text-3);
+  font-size: var(--fs-xs);
+}
+
+.family-card-text .coin-amount {
+  gap: 4px;
+}
+
+/* ---------- grade: tarefas + coluna lateral ---------- */
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 312px;
+  gap: 28px;
+  align-items: start;
+}
+
+.profile-side {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.side-card {
+  padding: 20px;
+  border-radius: var(--r-lg);
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+
+.side-card .section-head {
+  margin-bottom: 12px;
+}
+
+.side-card .section-title {
+  font-size: var(--fs-lg);
+}
+
+/* ---------- eventos ---------- */
+
+.events-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.event-card {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  padding: 6px;
+  border-radius: var(--r-md);
+}
+
+.event-card:hover {
+  background: var(--panel-2);
+}
+
+.event-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  background: var(--night);
+  border-top: 6px solid var(--berry);
+  clip-path: var(--pixel-corners-sm);
+}
+
+.event-day {
+  font-family: var(--font-display);
+  font-size: 20px;
+  line-height: 1;
+  color: var(--text);
+}
+
+.event-month {
+  margin-top: 2px;
+  color: var(--text-3);
+  font-size: var(--fs-xs);
+  line-height: 1;
+}
+
+.event-name {
+  font-size: var(--fs-md);
+  font-weight: 500;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.event-when {
+  color: var(--text-3);
+  font-size: var(--fs-xs);
+}
+
+.events-list .empty {
+  padding: 24px 16px !important;
+}
+
+.dialog-event .events-list {
+  margin-top: 4px;
+}
+
+/* ---------- telas menores ---------- */
+
+@media (max-width: 1180px) {
+  .profile-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  /* a coluna lateral se desfaz: a meta sobe para antes das tarefas */
+  .profile-side {
+    display: contents;
+  }
+
+  #child-goal {
+    order: -1;
+    width: 100%;
+  }
+
+  #section-events {
+    width: 100%;
+  }
+
+  .profile-main {
+    width: 100%;
+  }
+}
+
+@media (max-width: 720px) {
+  .profile-hero {
+    --cover-h: 148px;
+    --fig-left: 12px;
+    --fig-w: 88px;
+    --fig-h: 131px;
+    --fig-overlap: 28px;
+    margin-bottom: 28px;
+  }
+
+  .profile-hero.has-avatar {
+    --fig-w: 92px;
+    --fig-h: 92px;
+    --fig-overlap: 40px;
+  }
+
+  .hero-body {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "id"
+      "stats"
+      "actions";
+    padding: 0;
+  }
+
+  .hero-id {
+    min-height: calc(var(--fig-overlap) + 8px);
+    padding: 12px 0 0 calc(var(--fig-left) + var(--fig-w) + 14px);
+  }
+
+  .hero-name {
+    font-size: var(--ds-md);
+  }
+
+  .hero-stats {
+    gap: 12px 28px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+
+  .hero-stat-value {
+    font-size: 20px;
+  }
+
+  .hero-actions {
+    justify-content: flex-start;
+  }
+}

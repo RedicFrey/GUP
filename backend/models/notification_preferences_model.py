@@ -1,6 +1,5 @@
 
 NOTIFICATION_TYPES = ("task_submitted", "reward_redeemed", "event_created")
-
 NOTIFICATION_TYPE_KEYS = {
     "task_submitted": "tasks",
     "reward_redeemed": "redemptions",

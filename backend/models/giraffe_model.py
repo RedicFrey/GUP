@@ -1,4 +1,6 @@
 
+GIRAFFE_ITEM_TYPES = ("color", "background", "accessory")
+
 class GiraffeModel:
     def __init__(self, profile_id, color_id, background_id, id=None,
                  accessory_id=None, created_at=None, updated_at=None):
@@ -27,11 +29,7 @@ class GiraffeModel:
             "background_id": self.background_id,
         }
 
-GIRAFFE_ITEM_TYPES = ("color", "background", "accessory")
-
-
 class GiraffeDetailModel:
-    """Girafa de um perfil, já com os dados de cor, fundo e acessório."""
     def __init__(self, id, child_profile_id, color_id, background_id, accessory_id=None,
                  color_name=None, color_image_url=None,
                  background_name=None, background_image_url=None,

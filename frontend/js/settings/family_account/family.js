@@ -63,7 +63,7 @@ async function renderFamilyAccount() {
     `
 
     familyContainer.querySelector("#btn-add-member")
-        ?.addEventListener("click", () => createProfile(isResponsible, isAdmin))
+        ?.addEventListener("click", () => createProfile(isResponsible, isAdmin, renderFamilyAccount))
 
     familyContainer.querySelector("#btn-delete-family-account")
         ?.addEventListener("click", () => deleteFamilyAccount(isAdmin))
@@ -112,7 +112,7 @@ function renderProfilesFamily(profilesData, section, isAdmin) {
         const profile = profiles.find((p) => String(p.id) === profileId)
 
         if (btn.dataset.action === "edit") {
-            updateProfile(profileId)
+            updateProfile(profileId, { onUpdated: renderFamilyAccount })
             return
         }
 

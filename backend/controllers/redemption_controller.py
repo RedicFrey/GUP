@@ -1,8 +1,9 @@
 import math
+
 from flask import g, session, request, Blueprint, jsonify
 from utils.auth import profile_required, responsible_required
-from services.redemption.list_redemption_by_child import ChildRedemptionsService
-from services.redemption.update_redemption_service import RedemptionUpdateService
+from services.redemption.list_redemptions_by_child_service import ListRedemptionsByChildService
+from services.redemption.update_redemption_status_service import UpdateRedemptionStatusService
 from services.child.list_children_service import FamilySChildren
 from exceptions import NotFound, InvalidData
 
@@ -18,7 +19,7 @@ def view_redemptions():
     profile_id = session.get("profile_id")
 
     service_criancas = FamilySChildren(connection)
-    children = service_criancas.execute(family_account_id)
+    children = service_criancas.execute(profile_id, family_account_id)
     if not children:
         raise NotFound("Nenhuma criança cadastrada nesta família.")
 
@@ -40,7 +41,7 @@ def view_redemptions():
 
     offset = (pagina - 1) * elementos_por_pagina
 
-    service_resgates = ChildRedemptionsService(connection)
+    service_resgates = ListRedemptionsByChildService(connection)
     resultado = service_resgates.execute(offset, elementos_por_pagina, crianca_id, profile_id, profile_type)
 
     total_paginas = math.ceil(resultado["elements"] / elementos_por_pagina) or 1
@@ -52,7 +53,6 @@ def view_redemptions():
         "total": resultado["elements"],      # COUNT(*): o paginate calcula as páginas com ele
         "pagina_atual": pagina,
         "total_paginas": total_paginas,
-        "children": children if is_responsible else [],
         "is_responsible": is_responsible,
     }), 200
 
@@ -63,7 +63,7 @@ def update_redemption():
     connection = g.connection
     data = request.get_json() or {}
 
-    redemption_service = RedemptionUpdateService(connection)
+    redemption_service = UpdateRedemptionStatusService(connection)
     redemption_service.execute(
         redemption_id=data.get("id"),
         status=data.get("status"),

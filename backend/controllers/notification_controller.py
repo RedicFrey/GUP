@@ -1,7 +1,8 @@
+
 from flask import Blueprint, jsonify, request, session, g
 from utils.auth import responsible_required
-from services.notification.list_notification_preferences_service import NotificationPreferencesListService
-from services.notification.update_notification_preferences_service import NotificationPreferenceUpdateService
+from services.notification.list_notification_preferences_service import ListNotificationPreferencesService
+from services.notification.update_notification_preferences_service import UpdateNotificationPreferencesService
 
 notification_bp = Blueprint('notificacoes', __name__, url_prefix='/notificacoes')
 
@@ -11,7 +12,7 @@ def list_notifications():
     connection = g.connection
     profile_id = session.get("profile_id")
 
-    notification_service = NotificationPreferencesListService(connection)
+    notification_service = ListNotificationPreferencesService(connection)
     result = notification_service.execute(profile_id=profile_id)
 
     return jsonify(result), 200
@@ -24,7 +25,7 @@ def update_notifications():
     data = request.get_json() or {}
     profile_id = session.get("profile_id")
 
-    notification_service = NotificationPreferenceUpdateService(connection)
+    notification_service = UpdateNotificationPreferencesService(connection)
     notification = notification_service.execute(profile_id=profile_id, data=data)
 
     return jsonify({"notification": notification}), 200

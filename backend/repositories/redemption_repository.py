@@ -1,5 +1,7 @@
+
 from repositories.base_repository import BaseRepository
 from models.redemption_model import RedemptionModel
+
 
 class RedemptionRepository(BaseRepository):
     def __init__(self, connection):
@@ -32,4 +34,3 @@ class RedemptionRepository(BaseRepository):
             return result[0]
         finally:
             cursor.close()
-            

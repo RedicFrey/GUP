@@ -1,16 +1,15 @@
+
 from flask import Blueprint, jsonify, request, session, g
-from services.event.create_event_service import EventsCreationService
-from services.event.list_family_event_service import EventsFamilyService
+from services.event.create_event_service import CreateEventService
+from services.event.list_family_events_service import ListFamilyEventsService
 from utils.auth import responsible_required, profile_required
 from exceptions import InvalidData
 
 event_bp = Blueprint("eventos", __name__, url_prefix="/eventos")
 
 DEFAULT_PER_PAGE = 7
-MAX_PER_PAGE = 50   # teto, para ninguém pedir 10000 de uma vez
+MAX_PER_PAGE = 50   
 
-
-# GET /eventos/?page=2&per_page=15
 @event_bp.get('/', strict_slashes=False)
 @profile_required
 def list_events():
@@ -19,14 +18,13 @@ def list_events():
 
     family_account_id = session.get("family_account_id")
 
-    # valores inválidos ou ausentes caem no padrão; page nunca fica abaixo de 1
     page = max(request.args.get("page", 1, type=int), 1)
     per_page = min(max(request.args.get("per_page", DEFAULT_PER_PAGE, type=int), 1), MAX_PER_PAGE)
 
     limit = per_page
     offset = (page - 1) * per_page
 
-    service_events = EventsFamilyService(connection)
+    service_events = ListFamilyEventsService(connection)
     result = service_events.execute(family_account_id, limit, offset)
 
     return jsonify({
@@ -50,7 +48,7 @@ def create():
     family_account_id = session.get("family_account_id")
     connection = g.connection
 
-    service_events = EventsCreationService(connection)
+    service_events = CreateEventService(connection)
     events = service_events.execute(family_account_id ,profile_id, data)
 
     return jsonify(events), 201

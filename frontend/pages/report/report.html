@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+    <title>Relatório - GUP</title>
+    <script src="../../js/api.js"></script>
+    <script src="./report/report.js" type="module"></script>
+    <link rel="stylesheet" href="../../styles/global.css">
+    <link rel="stylesheet" href="../../styles/style.css">
+    <link rel="stylesheet" href="../../components/sidebar/sidebar.css">
+    <link rel="stylesheet" href="./report.css">
+</head>
+<body>
+    <div class="app-layout">
+        <main id="report-container" class="page">
+            <header class="page-head">
+                <div>
+                    <h1 class="page-title">Relatório</h1>
+                    <p class="page-sub">Como foram as tarefas no mês.</p>
+                </div>
+            </header>
+            <section id="report-containt">
+                <section class="chart-filters"></section>
+                <p id="report-message" class="mensagem"></p>
+                <section class="chart-container card">
+                    <section class="chart-display" aria-live="polite"></section>
+                    <section class="chart-info"></section>
+                </section>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

@@ -2,7 +2,7 @@
 from repositories.notification_preferences_repository import NotificationPreferenceRepository
 from models.notification_preferences_model import NOTIFICATION_TYPES
 
-class NotificationPreferencesCreateService():
+class CreateNotificationPreferencesService:
     def __init__(self, connection):
         self.connection = connection
         self.preference_repo = NotificationPreferenceRepository(connection)

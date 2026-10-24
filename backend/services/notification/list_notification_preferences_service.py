@@ -1,9 +1,10 @@
+
 from repositories.notification_preferences_repository import NotificationPreferenceRepository
 from repositories.profile_repository import ProfileRepository
 from models.notification_preferences_model import NOTIFICATION_TYPE_KEYS
 from exceptions import NotFound
 
-class NotificationPreferencesListService():
+class ListNotificationPreferencesService:
     def __init__(self, connection):
         self.connection = connection
         self.preference_repo = NotificationPreferenceRepository(connection)

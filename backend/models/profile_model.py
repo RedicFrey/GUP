@@ -1,7 +1,6 @@
 
 class ProfileModel:
     ADMIN = "admin"
-
     BASE_FIELDS = {
         "id", "family_account_id", "name", "role",
         "notification_email", "pin_hash",

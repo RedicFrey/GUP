@@ -1,4 +1,6 @@
+
 import re
+
 from repositories.notification_preferences_repository import NotificationPreferenceRepository
 from repositories.profile_repository import ProfileRepository
 from models.notification_preferences_model import NOTIFICATION_TYPE_KEYS
@@ -7,7 +9,8 @@ from exceptions import InvalidData
 KEY_TO_TYPE = {key: type for type, key in NOTIFICATION_TYPE_KEYS.items()}
 EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
-class NotificationPreferenceUpdateService():
+
+class UpdateNotificationPreferencesService:
     def __init__(self, connection):
         self.connection = connection
         self.preference_repo = NotificationPreferenceRepository(connection)

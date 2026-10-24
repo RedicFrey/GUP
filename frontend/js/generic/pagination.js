@@ -38,6 +38,7 @@ export async function paginate({
     controlsByContainer.get(container)?.remove()
     controlsByContainer.delete(container)
 
+    console.log(container)
     if (count === 0) {
         container.innerHTML = empty
         return null
@@ -79,6 +80,7 @@ export async function paginate({
 // ---------- modo "pages" ----------
 
 async function pagesMode({ total, container, controls, errorMessage, fetchPage, renderItems, size, text }) {
+    console.log(container)
     const totalPages = Math.ceil(total / size)
     let page = 1
     let loading = false

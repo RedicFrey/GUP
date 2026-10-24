@@ -1,6 +1,8 @@
+
 from repositories.base_repository import BaseRepository
 from models.child_model import ChildProfile
 from exceptions import NotFound
+
 
 class ChildRepository(BaseRepository):
     def __init__(self, connection):

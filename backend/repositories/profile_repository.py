@@ -1,3 +1,4 @@
+
 from repositories.base_repository import BaseRepository
 from models.profile_model import ProfileModel
 
@@ -5,15 +6,8 @@ class ProfileRepository(BaseRepository):
     def __init__(self, connection):
         super().__init__(connection, table="profiles", model=ProfileModel)
 
-    def find_by_id(self, target_id, column_name_id="id"):
-        cursor = self.connection.cursor(dictionary=True)
-        try:
-            query = f"SELECT * FROM {self.table} WHERE {column_name_id} = %s"
-            cursor.execute(query, (target_id,))
-            result = cursor.fetchone()
-            return ProfileModel.from_row(result) if result else None
-        finally:
-            cursor.close()
+    def _to_model(self, row):
+        return ProfileModel.from_row(row)
 
     def list_by_account(self, family_account_id):
         cursor = self.connection.cursor(dictionary=True)
@@ -27,12 +21,10 @@ class ProfileRepository(BaseRepository):
         finally:
             cursor.close()
 
-
-    # talvez eu nem vá fazer isso
-    def find_by_email(self, name):
+    def find_by_email(self, email):
         cursor = self.connection.cursor(dictionary=True)
         try:
-            cursor.execute("SELECT * FROM name WHERE name = %s", (name,))
+            cursor.execute("SELECT * FROM profiles WHERE notification_email = %s", (email,))
             result = cursor.fetchone()
             return ProfileModel(**result) if result else None
         finally:
@@ -58,5 +50,15 @@ class ProfileRepository(BaseRepository):
                 SET notification_email = %s
                 WHERE id = %s
             """, (email, profile_id))
+        finally:
+            cursor.close()
+
+    def clear_pin(self, profile_id):
+        cursor = self.connection.cursor()
+        try:
+            cursor.execute(
+                "UPDATE profiles SET pin_hash = NULL WHERE id = %s",
+                (profile_id,),
+            )
         finally:
             cursor.close()

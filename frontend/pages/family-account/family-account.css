@@ -1,0 +1,162 @@
+/* ==========================================================================
+   Conta da família
+   ========================================================================== */
+
+.family-page {
+  max-width: 960px;
+}
+
+#mensagem {
+  margin-bottom: 16px;
+}
+
+.member-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.member-card {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  grid-template-areas:
+    "avatar text"
+    "actions actions";
+  align-items: center;
+  gap: 14px 16px;
+  padding: 18px;
+  border-radius: var(--r-lg);
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+
+.member-card.is-me {
+  border-color: var(--sky);
+}
+
+.member-avatar {
+  grid-area: avatar;
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+
+.member-lock {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  background: var(--night);
+  color: var(--text-2);
+  clip-path: var(--pixel-corners-sm);
+}
+
+.member-text {
+  grid-area: text;
+  min-width: 0;
+}
+
+.member-name {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.member-you {
+  margin-left: 4px;
+  padding: 1px 8px;
+  border-radius: var(--r-pill);
+  background: var(--sky-soft);
+  color: var(--sky);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+.member-role {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+
+.member-meta {
+  display: flex;
+  gap: 12px;
+  margin-top: 2px;
+  color: var(--text-3);
+  font-size: var(--fs-xs);
+}
+
+.member-meta .coin-amount {
+  gap: 4px;
+}
+
+.member-actions {
+  grid-area: actions;
+  display: flex;
+  gap: 6px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.member-delete:hover {
+  color: var(--berry);
+}
+
+/* ---------- zona de perigo ---------- */
+
+.danger-zone {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 48px;
+  padding: 20px;
+  border-radius: var(--r-lg);
+  border: 1px solid rgba(255, 107, 122, 0.35);
+  background: rgba(255, 107, 122, 0.05);
+}
+
+.danger-title {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.danger-text {
+  margin-top: 4px;
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  max-width: 52ch;
+}
+
+/* ---------- diálogos ---------- */
+
+.dialog-text {
+  margin-bottom: 16px;
+  color: var(--text-2);
+}
+
+.new-profile-preview {
+  display: flex;
+  justify-content: center;
+  flex-direction: row !important;
+}
+
+.pin-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.input-quiet {
+  border-color: transparent !important;
+  background: var(--night) !important;
+  color: var(--text-2) !important;
+}

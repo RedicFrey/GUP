@@ -1,0 +1,201 @@
+/* ==========================================================================
+   Configurações
+   ========================================================================== */
+
+.settings-page {
+  max-width: 760px;
+}
+
+/* cabeçalho com quem está logado */
+.settings-id {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 32px;
+}
+
+.settings-id-name {
+  font-family: var(--font-display);
+  font-size: var(--ds-md);
+  line-height: 1.1;
+  color: var(--text);
+}
+
+.settings-id-role {
+  margin-top: 4px;
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+
+#setting-containt {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.settings-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.settings-group-title {
+  margin-bottom: 4px;
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.profile-view {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* uma linha: texto à esquerda, ação à direita */
+.settings-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  padding: 16px 18px;
+  border-radius: var(--r-md);
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+
+.settings-row.is-editing {
+  border-color: var(--sky);
+}
+
+.settings-row-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1 1 260px;
+  min-width: 0;
+}
+
+.settings-row-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+  font-size: var(--fs-md);
+  font-weight: 500;
+}
+
+.settings-row-label .px-icon {
+  color: var(--text-3);
+}
+
+.settings-row-value {
+  color: var(--text-2);
+}
+
+.settings-row-hint {
+  color: var(--text-3);
+  font-size: var(--fs-sm);
+}
+
+.settings-row-text input:not([type="checkbox"]) {
+  max-width: 360px;
+  margin-top: 4px;
+}
+
+.settings-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.settings-row-message {
+  width: 100%;
+}
+
+.btn-remove-pin:hover,
+#btn-remove-email:hover {
+  color: var(--berry);
+}
+
+/* campo de e-mail "trancado" parece texto comum */
+.input-blocked {
+  padding-left: 0 !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--text-2) !important;
+  min-height: 0 !important;
+  cursor: default;
+}
+
+#notification-permissions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* interruptor liga/desliga */
+.switch {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  flex: none;
+  width: 48px !important;
+  height: 28px !important;
+  border-radius: var(--r-pill);
+  background: var(--panel-3);
+  border: 1px solid var(--line);
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  background: var(--text-2);
+  clip-path: var(--pixel-corners-sm);
+  transition: transform 0.15s, background-color 0.15s;
+}
+
+.switch:checked {
+  background: var(--sky-deep);
+  border-color: var(--sky-deep);
+}
+
+.switch:checked::after {
+  transform: translateX(20px);
+  background: #fff;
+}
+
+.switch:disabled {
+  opacity: 0.5;
+}
+
+/* ---------- prévia da girafa (criança) ---------- */
+
+.giraffe-row {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 20px;
+}
+
+.giraffe-row .giraffe-scene {
+  width: 180px;
+}
+
+@media (max-width: 560px) {
+  .giraffe-row {
+    grid-template-columns: 1fr;
+  }
+
+  .giraffe-row .giraffe-scene {
+    width: 100%;
+  }
+}

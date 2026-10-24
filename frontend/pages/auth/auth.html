@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+    <title>Entrar - GUP</title>
+    <script src="../../js/api.js" defer></script>
+    <script src="./auth-js/init_cadastro.js" defer type="module"></script>
+    <script src="./auth-js/sign_in.js" defer type="module"></script>
+    <script src="./auth-js/sign_up.js" defer type="module"></script>
+    <link rel="stylesheet" href="../../styles/global.css">
+    <link rel="stylesheet" href="../../styles/style.css">
+    <link rel="stylesheet" href="../../components/giraffe-view/giraffe-view.css">
+    <link rel="stylesheet" href="./auth.css">
+</head>
+<body class="auth-body">
+    <div class="auth-shell">
+
+        <!-- Cena da girafa: a imagem vem do backend (/static) -->
+        <aside class="auth-art" aria-hidden="true">
+            <img class="auth-art-bg" data-asset="/static/giraffes/backgrounds/background_1.png" alt="">
+            <span class="giraffe-sprite auth-art-giraffe">
+                <img class="giraffe-layer" data-asset="/static/giraffes/colors/color_primary.png" alt="">
+            </span>
+            <div class="auth-art-text">
+                <p class="auth-wordmark">GUP</p>
+                <p class="auth-tagline">As tarefas da casa viram moedas, e as moedas viram conquistas.</p>
+            </div>
+        </aside>
+
+        <main class="auth-main">
+
+            <!-- ====================================================== -->
+            <!-- Escolher o que fazer (entrar / criar conta) -->
+            <!-- ====================================================== -->
+            <section id="gateway">
+                <h1 class="auth-title">Boas-vindas ao GUP</h1>
+                <p class="auth-lead">Um perfil para cada pessoa da família, com tarefas, moedas e uma girafa para cuidar.</p>
+                <div class="auth-choices">
+                    <button type="button" data-ir-para="campo-login" id="sign-in" class="btn-primary">Entrar na conta da família</button>
+                    <button type="button" data-ir-para="campo-cadastro-usuario" id="sign-up" class="btn">Criar uma conta nova</button>
+                </div>
+            </section>
+
+            <!-- ====================================================== -->
+            <!-- Cadastro do dono da conta família -->
+            <!-- ====================================================== -->
+            <section id="campo-cadastro-usuario" class="nao-visivel auth-type">
+                <button type="button" class="back-link auth-back" data-ir-para="gateway">Voltar</button>
+                <h1 class="auth-title type-gateway">Criar conta</h1>
+                <p class="auth-lead">Quem cria a conta vira o administrador da família.</p>
+
+                <form id="form-cadastro" class="forms form-stack">
+                    <div class="field">
+                        <label for="nome-cadastro">Seu nome</label>
+                        <input type="text" id="nome-cadastro" placeholder="Daniel" maxlength="20" autocomplete="given-name" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="email-cadastro">E-mail</label>
+                        <input type="email" id="email-cadastro" placeholder="voce@email.com" maxlength="100" autocomplete="email" required>
+                    </div>
+
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="senha-cadastro">Senha</label>
+                            <input type="password" id="senha-cadastro" placeholder="Mínimo de 8 caracteres" minlength="8" maxlength="64" autocomplete="new-password" required>
+                        </div>
+                        <div class="field">
+                            <label for="confirmacao-senha-cadastro">Repita a senha</label>
+                            <input type="password" id="confirmacao-senha-cadastro" placeholder="Digite de novo" autocomplete="new-password" required>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="data-nasc-cadastro">Data de nascimento</label>
+                        <input type="date" id="data-nasc-cadastro" required>
+                    </div>
+
+                    <p id="mensagem-erro-cadastro" class="mensagem"></p>
+
+                    <button type="submit" class="btn-primary btn-block">Criar conta</button>
+                </form>
+
+                <p class="auth-switch">Já tem conta? <button type="button" data-ir-para="campo-login">Entrar</button></p>
+            </section>
+
+            <!-- ====================================================== -->
+            <!-- Login -->
+            <!-- ====================================================== -->
+            <section id="campo-login" class="nao-visivel auth-type">
+                <button type="button" class="back-link auth-back" data-ir-para="gateway">Voltar</button>
+                <h1 class="auth-title type-gateway">Entrar</h1>
+                <p class="auth-lead">Use o e-mail e a senha de quem criou a conta da família.</p>
+
+                <form id="form-login" class="forms form-stack">
+                    <div class="field">
+                        <label for="email-dono">E-mail da conta</label>
+                        <input type="email" id="email-dono" placeholder="voce@email.com" autocomplete="email" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="senha-dono">Senha</label>
+                        <input type="password" id="senha-dono" placeholder="Sua senha" minlength="8" maxlength="64" autocomplete="current-password" required>
+                    </div>
+
+                    <p id="mensagem-erro-login" class="mensagem"></p>
+
+                    <button type="submit" class="btn-primary btn-block">Entrar</button>
+                </form>
+
+                <p class="auth-switch">Ainda não tem conta? <button type="button" data-ir-para="campo-cadastro-usuario">Criar conta</button></p>
+            </section>
+
+        </main>
+    </div>
+</body>
+</html>

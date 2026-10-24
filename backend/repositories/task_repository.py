@@ -1,37 +1,11 @@
+
 from repositories.base_repository import BaseRepository
 from models.task_model import TaskModel
+
 
 class TaskRepository(BaseRepository):
     def __init__(self, connection):
         super().__init__(connection, table="tasks", model=TaskModel)
-
-    # def list_by_child(self, child_profile_id, status=None):
-    #     cursor = self.connection.cursor(dictionary=True)
-    #     try:
-    #         query = """
-    #             SELECT
-    #             t.id AS task_id,
-    #             ta.id AS assignment_id,
-    #             t.name,
-    #             t.coin_reward,
-    #             t.xp_reward,
-    #             ta.status,
-    #             ta.completion_date,
-    #             ta.proof_photo
-    #             FROM tasks AS t
-    #             JOIN task_assignments AS ta ON ta.task_id = t.id
-    #             WHERE ta.child_profile_id = %s
-    #         """
-    #         parametros = [child_profile_id]
-    #         if status:
-    #             query += " AND ta.status = %s"
-    #             parametros.append(status)
-    #         query += " ORDER BY t.deadline ASC"
-            
-    #         cursor.execute(query, tuple(parametros))
-    #         return cursor.fetchall()   # já vem como lista de dict, pronto pro jsonify
-    #     finally:
-    #         cursor.close()
 
     def list_by_account(self, family_account_id, status=None):
         cursor = self.connection.cursor(dictionary=True)
@@ -152,4 +126,17 @@ class TaskRepository(BaseRepository):
             "proof_photo": row["proof_photo"],
             "child_name": row["child_name"],
         }      
+
+    def find_for_update(self, task_id, family_account_id):
+        cursor = self.connection.cursor(dictionary=True)
+        try:
+            cursor.execute("""
+                SELECT id, deadline
+                FROM tasks
+                WHERE id = %s AND family_account_id = %s
+                FOR UPDATE
+            """, (task_id, family_account_id))
+            return cursor.fetchone()
+        finally:
+            cursor.close()
    

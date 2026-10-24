@@ -1,0 +1,149 @@
+/* ==========================================================================
+   Moedas (saldo + extrato)
+   ========================================================================== */
+
+.coin-page {
+  max-width: 820px;
+}
+
+.coin-history-filters {
+  margin-bottom: 20px;
+}
+
+.coin-history-filters:empty,
+.filter-children:empty {
+  display: none;
+}
+
+/* ---------- saldo ---------- */
+
+.coin-balance-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding: 24px;
+  border-radius: var(--r-lg);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(255, 194, 61, 0.16), transparent 55%),
+    var(--panel);
+  border: 1px solid var(--line);
+}
+
+.coin-balance-card:empty {
+  display: none;
+}
+
+.balance-who {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.balance-label {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+
+.balance-value {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+  font-family: var(--font-display);
+  font-size: var(--ds-xl);
+  line-height: 1;
+  color: var(--sun);
+}
+
+.balance-value small {
+  font-family: var(--font-body);
+  font-size: var(--fs-md);
+  color: var(--text-2);
+}
+
+/* ---------- extrato ---------- */
+
+.coin-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.coin-day {
+  margin: 14px 0 4px;
+  color: var(--text-3);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.coin-day:first-child {
+  margin-top: 0;
+}
+
+.coin-row {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px 12px 12px;
+  border-radius: var(--r-md);
+  background: var(--panel);
+}
+
+.coin-badge {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  font-family: var(--font-display);
+  font-size: 20px;
+  clip-path: var(--pixel-corners-sm);
+}
+
+.coin-row-name {
+  color: var(--text);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.coin-row-time {
+  color: var(--text-3);
+  font-size: var(--fs-xs);
+}
+
+.coin-row-amount {
+  font-family: var(--font-display);
+  font-size: var(--ds-sm);
+}
+
+.coin-credit .coin-badge { background: var(--leaf-soft); color: var(--leaf); }
+.coin-credit .coin-row-amount { color: var(--leaf); }
+.coin-debit .coin-badge { background: var(--berry-soft); color: var(--berry); }
+.coin-debit .coin-row-amount { color: var(--berry); }
+.coin-zero .coin-badge { background: var(--panel-2); color: var(--text-3); }
+.coin-zero .coin-row-amount { color: var(--text-3); }
+
+.coin-minus {
+  color: var(--berry);
+  font-weight: 700;
+}
+
+@media (max-width: 520px) {
+  .coin-balance-card {
+    padding: 18px;
+  }
+
+  .balance-value {
+    font-size: var(--ds-lg);
+  }
+
+  .coin-statement .section-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

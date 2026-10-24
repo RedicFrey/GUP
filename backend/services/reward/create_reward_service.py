@@ -2,7 +2,7 @@ from models.reward_model import RewardModel
 from repositories.reward_repository import RewardRepository
 from exceptions import InvalidData
 
-class RewardCreationService:
+class CreateRewardService:
     def __init__(self, connection):
         self.connection = connection
         self.recompensa_repo = RewardRepository(connection)

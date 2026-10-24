@@ -1,0 +1,225 @@
+/* ==========================================================================
+   Detalhe de tarefa (visão do responsável e da criança)
+   ========================================================================== */
+
+.task-page {
+  max-width: 820px;
+}
+
+.task-detail {
+  padding: 28px;
+}
+
+.task-detail-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.task-detail-head > div:first-child {
+  min-width: 0;
+  flex: 1 1 320px;
+}
+
+.task-detail-who {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  color: var(--text-2);
+  font-weight: 500;
+}
+
+.task-detail-title {
+  font-family: var(--font-display);
+  font-size: var(--ds-lg);
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.task-detail-desc {
+  margin-top: 10px;
+  color: var(--text-2);
+  max-width: 60ch;
+}
+
+.task-detail-desc.is-empty {
+  color: var(--text-3);
+  font-style: italic;
+}
+
+#responsible-options {
+  display: flex;
+  gap: 8px;
+}
+
+/* fatos da tarefa em três colunas */
+.task-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.task-facts > div {
+  padding: 14px 16px;
+  border-radius: var(--r-md);
+  background: var(--night);
+}
+
+.task-facts dt {
+  color: var(--text-3);
+  font-size: var(--fs-xs);
+  margin-bottom: 4px;
+}
+
+.task-facts dd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* ---------- quem vai fazer (responsável) ---------- */
+
+.assignees {
+  margin-top: 32px;
+}
+
+.assignee-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.assignee {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+
+.assignee-name {
+  font-weight: 600;
+  margin-right: auto;
+}
+
+.assignee-actions {
+  display: flex;
+  gap: 6px;
+}
+
+/* ---------- área de envio / aprovação ---------- */
+
+.proof-panel {
+  margin-top: 24px;
+  padding: 20px;
+  border-radius: var(--r-md);
+  border: 1px dashed var(--line);
+  background: var(--night);
+}
+
+.proof-panel-title {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.proof-panel-text {
+  margin-top: 4px;
+  color: var(--text-2);
+}
+
+.proof-panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+#proof-selected {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+#proof-selected[hidden] {
+  display: none;
+}
+
+.proof-thumb {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: var(--r-sm);
+  background: var(--panel-2);
+}
+
+#proof-file-name {
+  flex: 1 1 160px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+
+.proof-selected-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+}
+
+.proof-state {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.proof-state .px-icon {
+  flex: none;
+}
+
+.proof-state-done { border-color: rgba(76, 211, 138, 0.4); }
+.proof-state-done .px-icon { color: var(--leaf); }
+.proof-state-wait { border-color: rgba(135, 148, 255, 0.4); }
+.proof-state-wait .px-icon { color: var(--sky); }
+
+.proof-photo-preview {
+  display: block;
+  margin-top: 16px;
+  width: 100%;
+  max-height: 320px;
+  object-fit: cover;
+  border-radius: var(--r-md);
+  cursor: zoom-in;
+}
+
+@media (max-width: 640px) {
+  .task-detail {
+    padding: 20px;
+  }
+
+  .task-facts {
+    grid-template-columns: 1fr;
+  }
+
+  .task-detail-title {
+    font-size: var(--ds-md);
+  }
+}

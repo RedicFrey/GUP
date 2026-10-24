@@ -1,9 +1,12 @@
+
 from datetime import datetime, timedelta
+
 from repositories.task_assignment_repository import TaskAssignmentRepository
 from models.task_assignment_model import TaskAssignmentModel
 from exceptions import InvalidData
 
 MAX_PAGE_SIZE = 50
+
 
 class ListTaskService:
     def __init__(self, conexao):

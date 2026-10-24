@@ -1,3 +1,4 @@
+
 from repositories.giraffe_repository import GiraffeRepository
 from repositories.giraffe_repository import GiraffeItemRepository
 from exceptions import InvalidData, NotFound
@@ -9,7 +10,8 @@ FIELD_TO_ITEM_TYPE = {
     "accessory_id": "accessory",
 }
 
-class GiraffeUpdateService():
+
+class UpdateGiraffeService:
     def __init__(self, connection):
         self.connection = connection
         self.giraffe_repo = GiraffeRepository(connection)

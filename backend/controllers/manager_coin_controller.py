@@ -1,5 +1,6 @@
+
 from flask import Blueprint, jsonify, request, session, g
-from services.coin_history.manager_coin_history_service import CoinManagerService
+from services.coin_history.adjust_child_coins_service import AdjustChildCoinsService
 from utils.auth import responsible_required
 from exceptions import InvalidData
 
@@ -27,7 +28,7 @@ def manager(child_id):
 
     connection = g.connection
 
-    service_ajuste = CoinManagerService(connection)
+    service_ajuste = AdjustChildCoinsService(connection)
     child = service_ajuste.execute(
         family_account_id=session.get('family_account_id'),
         child_profile_id=child_id,

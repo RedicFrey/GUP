@@ -1,6 +1,8 @@
+
 from models.family_account_model import FamilyAccountModel
 from models.profile_model import ProfileModel
 from repositories.base_repository import BaseRepository
+
 
 class FamilyAccountRepository(BaseRepository):
     def __init__(self, connection):
@@ -27,22 +29,6 @@ class FamilyAccountRepository(BaseRepository):
         finally:
             cursor.close()
 
-    # a conta em si virou a pessoa, virou conta que tem perfils, então talvez eu n va usar
-    def find_by_account_family_admin(self, family_account_id):
-        cursor = self.connection.cursor(dictionary=True)
-        try:
-            cursor.execute("""
-                SELECT u.id, u.nome, u.identificador, u.tipo_identificador, u.conta_id, u.tipo_usuario
-                FROM usuarios u
-                JOIN contas_familia cf ON u.conta_id = cf.id
-                WHERE cf.id = %s AND u.identificador = cf.email_dono
-            """, (family_account_id,))
-            result = cursor.fetchone()
-            return ProfileModel(**result) if result else None
-        finally:
-            cursor.close()
-
-    # nem sei se vou usar, deixar por enquanto
     def find_by_email(self, owner_email):
         cursor = self.connection.cursor(dictionary=True)
         try:

@@ -1,3 +1,4 @@
+
 from repositories.base_repository import BaseRepository
 from models.task_assignment_model import TaskAssignmentModel
 
@@ -66,7 +67,6 @@ class TaskAssignmentRepository(BaseRepository):
         period = data.get("period")
 
         if status == "late":
-            # pendente e com o prazo já vencido
             where += " AND ta.status = 'pending' AND t.deadline < NOW()"
         elif status:
             where += " AND ta.status = %s"
@@ -76,7 +76,6 @@ class TaskAssignmentRepository(BaseRepository):
             where += " AND t.deadline > %s"
             parameters.append(period)
         elif status != "awaiting_approval":
-            # Tudo e Atrasadas: só as de hoje. Em espera: qualquer dia.
             where += " AND DATE(t.deadline) = CURDATE()"
 
         if data.get("child_profile_id"):
@@ -87,7 +86,6 @@ class TaskAssignmentRepository(BaseRepository):
 
     def list_by_account_with_status(self, data):
         where, parameters = self._build_filters(data)
-        # ta.id desempata prazos iguais; sem isso o LIMIT/OFFSET pode repetir ou pular cards
         query = self._SELECT_BASE + where + " ORDER BY t.deadline ASC, ta.id ASC"
 
         size = data.get("size")
@@ -207,7 +205,6 @@ class TaskAssignmentRepository(BaseRepository):
         return self._execute(query, parameters)
 
     def find_for_update(self, assignment_id):
-        """Busca a atribuição já com os dados da tarefa e trava a linha até o commit/rollback."""
         cursor = self.connection.cursor(dictionary=True)
         try:
             cursor.execute("""
@@ -324,4 +321,31 @@ class TaskAssignmentRepository(BaseRepository):
             "tasks": [self._build_task(task_rows) for task_rows in rows_by_task.values()],
             "total": total,
         }
+
+    def list_by_task(self, task_id):
+        return self._execute("""
+            SELECT
+                ta.id AS assignment_id,
+                ta.child_profile_id,
+                ta.status,
+                p.name AS child_name
+            FROM task_assignments AS ta
+            JOIN profiles AS p ON p.id = ta.child_profile_id
+            WHERE ta.task_id = %s
+        """, [task_id])
+
+    def find_family_children(self, family_account_id, child_ids):
+        """Devolve, entre os ids pedidos, os que são crianças dessa família."""
+        if not child_ids:
+            return []
+
+        placeholders = ", ".join(["%s"] * len(child_ids))
+        rows = self._execute(f"""
+            SELECT id
+            FROM profiles
+            WHERE family_account_id = %s
+              AND profile_type = 'child'
+              AND id IN ({placeholders})
+        """, [family_account_id, *child_ids])
+        return [r["id"] for r in rows]
     

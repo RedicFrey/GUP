@@ -1,5 +1,5 @@
 // init_cadastro.js
-import { restoreWindow, activeNavByClick } from '../../generic/navegation.js';
+import { restoreWindow, activeNavByClick } from '../../../pages/auth/auth-js/navegation.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   restoreWindow("escolher-acao");

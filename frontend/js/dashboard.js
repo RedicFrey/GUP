@@ -4,10 +4,12 @@ import { dashboardTask } from './modules/task/dashboard/dashboard_task.js';
 import { renderEvents } from './modules/events.js';
 import { checkLevelUp } from './components/level.js'
 import { viewGiraffe } from './components/giraffe.js'
+import { childGoal } from './components/reward.js'
 
 const mensagem = document.querySelector("#mensagem");
 const sectionEvents = document.querySelector("#section-events");
 const sectionTask = document.querySelector("#tasks-section");
+const section = document.querySelector("#child-goal");
 
 sideBar();
 
@@ -34,6 +36,7 @@ async function carregarDashboard() {
 
 document.addEventListener("DOMContentLoaded", () => {
     carregarDashboard();
+    childGoal(section)
     viewGiraffe()
     checkLevelUp()
 });

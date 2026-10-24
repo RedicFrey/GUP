@@ -17,8 +17,10 @@ export async function viewGiraffe(
   giraffe = null
 ) {
   try {
+    section.className = "giraffe-view-section-draw"
     const response = giraffe ?? (await giraffeApi());
     console.log(giraffe)
+    console.log("olá mundo")
 
     // Acessório é opcional (pode ser null)
     const acessorio = response.accessory

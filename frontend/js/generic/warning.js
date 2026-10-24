@@ -1,15 +1,24 @@
+import { pixelIcon } from '../../assets/icons/pixel-icons.js'
+import { pageUrl } from '../../services/api.js'
 
-export function warning(message = "Tem certeza?") {
+// Pergunta de confirmação. Resolve true (confirmou) ou false (cancelou / Esc).
+// tone: "danger" (vermelho, para excluir/remover) ou "primary" (amarelo, para ações positivas)
+export function warning(message = "Tem certeza?", { confirmLabel = "Confirmar", cancelLabel = "Cancelar", tone = "danger" } = {}) {
     return new Promise(resolve => {
         const warningModal = document.createElement("dialog")
+        warningModal.id = 'warning-modal'
+        warningModal.dataset.tone = tone
         warningModal.innerHTML = `
-            <div><span>${message}<span></div>
+            <div><span class="warning-text"></span></div>
             <div>
-                <button type="button" id="warning-cancel" class="warning-btn">Cancelar</button>
-                <button type="button" id="warning-confirm" class="warning-btn">Confirmar</button>
+                <button type="button" id="warning-cancel" class="warning-btn"></button>
+                <button type="button" id="warning-confirm" class="warning-btn"></button>
             </div>
         `
-        warningModal.id = 'warning-modal'
+        // o texto entra por textContent: nome de tarefa com < > não vira HTML
+        warningModal.querySelector(".warning-text").textContent = message
+        warningModal.querySelector("#warning-cancel").textContent = cancelLabel
+        warningModal.querySelector("#warning-confirm").textContent = confirmLabel
         document.body.append(warningModal)
 
         let result = false
@@ -25,8 +34,8 @@ export function warning(message = "Tem certeza?") {
         })
 
         warningModal.addEventListener("close", () => {
-            warningModal.remove()   
-            resolve(result)         
+            warningModal.remove()
+            resolve(result)
         })
 
         warningModal.showModal()
@@ -35,15 +44,12 @@ export function warning(message = "Tem certeza?") {
 
 export function withoutChildren(section){
     section.innerHTML = `
-        <div></div>
         <div id="text-about-without-children">
-            <p>Sua conta família não possui nenhuma criança</p>
-            <a href="family_account.html">Cadastre um perfil para seu filho!</a>
+            ${pixelIcon("users", { size: 36 })}
+            <p>Ainda não há nenhuma criança na sua conta família.</p>
+            <a href="${pageUrl("pages/family-account/family-account.html")}">Adicionar uma criança</a>
         </div>
-        
     `
     section.id = ""
-    section.className = ""
-
     section.className = "without-children"
 }

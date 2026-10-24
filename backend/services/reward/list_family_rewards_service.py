@@ -2,7 +2,7 @@ from repositories.reward_repository import RewardRepository
 from repositories.family_account_repository import FamilyAccountRepository
 from exceptions import NotFound
 
-class RewardsByFamilyFamiliaService:
+class ListFamilyRewardsService:
     def __init__(self, connection):
         self.reward_repo = RewardRepository(connection)
         self.family_repo = FamilyAccountRepository(connection)

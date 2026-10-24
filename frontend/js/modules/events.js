@@ -8,6 +8,14 @@ const escapeHtml = (v = '') => String(v)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;')
   .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
+const pad = (n) => String(n).padStart(2, "0")
+
+// "2026-10-19" no fuso do navegador (toISOString usaria UTC e viraria o dia seguinte à noite)
+const todayInputValue = () => {
+  const now = new Date()
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`
+}
+
 const eventCardHtml = (event) => `
   <div class="tarefa-card">
     <h3>📅 ${escapeHtml(event.name)}</h3>
@@ -152,7 +160,7 @@ async function createEvents(onSaved) {
       </div>
       <div>
         <label for="event-date-dialog">Data do evento</label>
-        <input id="event-date-dialog" type="date">
+        <input id="event-date-dialog" type="date" min="${todayInputValue()}">
       </div>
       <button type="submit">Enviar</button>
     </form>
@@ -184,6 +192,10 @@ async function createEvents(onSaved) {
 async function createEventApi(eventName, eventDate, message) {
   if (!eventName || !eventDate) {
     mostrarMensagem(message, "Preencha nome e data do evento.", "erro")
+    return false
+  }
+  if (eventDate < todayInputValue()) {
+    mostrarMensagem(message, "A data do evento não pode estar no passado.", "erro")
     return false
   }
 

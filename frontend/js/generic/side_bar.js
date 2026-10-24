@@ -1,4 +1,5 @@
 import { ICONS } from './icons.js'
+import { pageUrl } from '../../services/api.js'
 
 export async function sideBar() {
     const menuNav = document.createElement("nav");
@@ -22,12 +23,12 @@ export async function sideBar() {
     menuNav.appendChild(divProfile)
     
     const links = [
-        { href: "dashboard.html", texto: "Início", icon: ICONS.sideBar.home},
-        { href: "report.html", texto: "Relatório", icon: ICONS.sideBar.report },
-        { href: "coin_history.html", texto: "Histórico", icon: ICONS.sideBar.history },
-        { href: "redemption.html", texto: "Resgates", icon: ICONS.sideBar.redemption },
-        { href: "reward.html", texto: "Recompensas", icon: ICONS.sideBar.reward },
-        { href: "setting.html", texto: "Configuração", icon: ICONS.sideBar.settings },
+        { href: pageUrl("pages/home/dashboard.html"), texto: "Início", icon: ICONS.sideBar.home},
+        { href: pageUrl("pages/report/report.html"), texto: "Relatório", icon: ICONS.sideBar.report },
+        { href: pageUrl("pages/history/coin-history.html"), texto: "Histórico", icon: ICONS.sideBar.history },
+        { href: pageUrl("pages/redemption/redemption.html"), texto: "Resgates", icon: ICONS.sideBar.redemption },
+        { href: pageUrl("pages/reward/reward.html"), texto: "Recompensas", icon: ICONS.sideBar.reward },
+        { href: pageUrl("pages/setting/setting.html"), texto: "Configuração", icon: ICONS.sideBar.settings },
     ];
 
     const ul = document.createElement("ul")

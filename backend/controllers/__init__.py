@@ -1,6 +1,5 @@
 from controllers.family_account_controller import family_account_bp
 from controllers.giraffe_controller import giraffe_bp
-from controllers.dashboard_controller import dashboard_bp
 from controllers.profile_controller import profile_bp
 from controllers.reward_controller import reward_bp
 from controllers.task_controller import task_bp
@@ -15,7 +14,6 @@ from controllers.level_controller import level_bp
 
 all_blueprints = [
                   giraffe_bp,
-                  dashboard_bp,
                   profile_bp,
                   family_account_bp,
                   coin_history_bp,

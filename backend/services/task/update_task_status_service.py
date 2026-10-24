@@ -1,9 +1,12 @@
+
 import logging
 from datetime import datetime
+
 from repositories.task_assignment_repository import TaskAssignmentRepository
 from repositories.child_repository import ChildRepository
-from services.coin_history.create_coin_history_service import CoinHistoryCreationService
+from services.coin_history.create_coin_history_service import CreateCoinHistoryService
 from exceptions import InvalidData, NotFound
+from services.level.profile_level_service import ProfileLevelService
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +18,8 @@ class UpdateTaskStatusService:
         self.connection = connection
         self.assignment_repo = TaskAssignmentRepository(connection)
         self.child_repo = ChildRepository(connection)
-        self.history_service = CoinHistoryCreationService(connection)
+        self.history_service = CreateCoinHistoryService(connection)
+        self.level_service = ProfileLevelService(connection)
 
     def execute(self, assignment_id, new_status, profile_id, profile_type,
                 family_account_id, proof_photo=None):
@@ -71,8 +75,7 @@ class UpdateTaskStatusService:
     def _pay_reward(self, assignment):
         child_id = assignment["child_profile_id"]
 
-        # só moedas aqui: o XP (e o nível) ficam com o level_service
-        self.child_repo.add_coins(child_id, assignment["coins_reward"], 0)
+        self.child_repo.add_coins(child_id, assignment["coins_reward"])
 
         self.history_service.execute(
             child_profile_id=child_id,

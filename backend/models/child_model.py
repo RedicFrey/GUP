@@ -2,10 +2,8 @@ from models.profile_model import ProfileModel
 
 class ChildProfile(ProfileModel):
     def __init__(self, coins=0, xp=0, level_id=None, seen_level=None, goal_id=None, strikes=0, **kwargs):
-        # 1. Garante que 'profile_type' seja 'child', sobrescrevendo se o banco já mandou algo
         kwargs["profile_type"] = "child"
         
-        # 2. Chama o pai apenas com o kwargs modificado
         super().__init__(**kwargs)
         
         self.coins = coins
@@ -36,7 +34,3 @@ class ChildProfile(ProfileModel):
             "strikes": self.strikes,
             "seen_level": self.seen_level,
         }
-
-    # método que só faz sentido pra criança
-    def complete_task(self, task_assignment):
-        ...  # regra de negócio específica de "fazer" a tarefa

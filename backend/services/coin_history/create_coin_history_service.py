@@ -1,8 +1,10 @@
+
 from models.coin_history_model import CoinHistoryModel
 from repositories.coin_history_repository import CoinHistoryRepository
 from exceptions import InvalidData
 
-class CoinHistoryCreationService:
+
+class CreateCoinHistoryService:
 
     def __init__(self, connection):
         self.connection = connection

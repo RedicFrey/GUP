@@ -1,0 +1,183 @@
+/* ==========================================================================
+   Quem está usando? (escolha de perfil)
+   ========================================================================== */
+
+.profiles-body {
+  background:
+    radial-gradient(ellipse at 50% -10%, rgba(135, 148, 255, 0.18), transparent 60%),
+    var(--night);
+}
+
+.profiles-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 56px 20px 40px;
+  text-align: center;
+}
+
+.profiles-brand {
+  font-family: var(--font-display);
+  font-size: var(--ds-md);
+  letter-spacing: 3px;
+  color: var(--sun);
+  margin-bottom: 32px;
+}
+
+.profiles-title {
+  font-family: var(--font-display);
+  font-size: var(--ds-xl);
+  font-weight: 400;
+  color: var(--text);
+}
+
+.profiles-lead {
+  margin-top: 12px;
+  max-width: 46ch;
+  color: var(--text-2);
+}
+
+#choose-profile {
+  width: 100%;
+  max-width: 880px;
+  margin-top: 44px;
+}
+
+#profiles-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.profile-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 152px;
+  padding: 16px 8px 18px;
+  border: 0;
+  border-radius: var(--r-lg);
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.profile-tile-avatar {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 4px;
+  background: transparent;
+  clip-path: var(--pixel-corners);
+  transition: background-color 0.15s;
+}
+
+.profile-tile-avatar .avatar {
+  width: 112px;
+  height: 112px;
+}
+
+/* ao passar o mouse, a moldura acende em amarelo e o avatar "pula" um pixel */
+.profile-tile:hover .profile-tile-avatar,
+.profile-tile:focus-visible .profile-tile-avatar {
+  background: var(--sun);
+}
+
+.profile-tile:hover .profile-tile-avatar .avatar {
+  transform: translateY(-2px);
+}
+
+.profile-tile:focus-visible {
+  outline: none;
+}
+
+.profile-lock {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  background: var(--night);
+  color: var(--text-2);
+  clip-path: var(--pixel-corners-sm);
+}
+
+.profile-tile-name {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-tile-role {
+  color: var(--text-3);
+  font-size: var(--fs-sm);
+}
+
+#message-erro-profile {
+  margin-top: 24px;
+}
+
+.profiles-logout {
+  margin-top: auto;
+  padding-top: 40px;
+}
+
+/* ---------- PIN ---------- */
+
+#modal-pin {
+  width: min(380px, calc(100vw - 32px));
+  text-align: left;
+}
+
+.pin-who {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.pin-title {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  color: var(--text);
+}
+
+#profile-pin {
+  font-size: 22px;
+  letter-spacing: 8px;
+  text-align: center;
+}
+
+@media (max-width: 520px) {
+  .profiles-main {
+    padding-top: 36px;
+  }
+
+  .profiles-title {
+    font-size: var(--ds-lg);
+  }
+
+  #profiles-options {
+    gap: 8px;
+  }
+
+  .profile-tile {
+    width: 136px;
+  }
+
+  .profile-tile-avatar .avatar {
+    width: 88px;
+    height: 88px;
+  }
+}

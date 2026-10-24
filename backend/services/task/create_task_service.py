@@ -1,11 +1,16 @@
-from datetime import datetime
+
+from datetime import datetime, timedelta
+
 from models.task_model import TaskModel
 from exceptions import InvalidData
 from repositories.task_repository import TaskRepository
 from repositories.child_repository import ChildRepository
 from repositories.task_assignment_repository import TaskAssignmentRepository
+from utils.dates import parse_datetime, now_local
+from utils.validators import validate_positive_int
 
-class TaskCreationService:
+
+class CreateTaskService:
     def __init__(self, connection):
         self.connection = connection
         self.child_repo = ChildRepository(connection)
@@ -13,7 +18,7 @@ class TaskCreationService:
         self.assignment_repo = TaskAssignmentRepository(connection)
 
     def execute(self, data: dict, family_account_id: int, profile_id: int):
-        campos_obrigatorios = ["name", "deadline", "childrenIds"]
+        campos_obrigatorios = ["name", "deadline", "childrenIds", "coinsReward", "xpReward"]
         for campo in campos_obrigatorios:
             if not data.get(campo):
                 raise InvalidData(f"O campo '{campo}' é obrigatório.")
@@ -24,6 +29,10 @@ class TaskCreationService:
 
         self._validar_criancas_da_familia(children_ids, family_account_id)
 
+        due = parse_datetime(data.get("deadline"), "Prazo")
+        if due < now_local() + timedelta(minutes=30):
+            raise InvalidData("O prazo precisa ser pelo menos 30 minutos a partir de agora.")
+
         deadline = data["deadline"]
         if isinstance(deadline, str):
             try:
@@ -31,12 +40,15 @@ class TaskCreationService:
             except ValueError:
                 raise InvalidData("Formato de horário limite inválido.")
 
+        coins = validate_positive_int(data.get("coinsReward"), "As moedas")
+        xp = validate_positive_int(data.get("xpReward"), "O XP")
+
         task = TaskModel(
             name=str(data["name"]),
             description=data.get("description"),
             deadline=deadline,
-            coins_reward=int(data.get("coinsReward") or 0),
-            xp_reward=int(data.get("xpReward") or 0),
+            coins_reward=coins,
+            xp_reward=xp,
             required_proof=bool(data.get("requiredProof")),
             created_by=profile_id,
             family_account_id=family_account_id,

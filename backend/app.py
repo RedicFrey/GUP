@@ -1,15 +1,27 @@
 import os
+
+from datetime import date, datetime
 from flask import Flask, jsonify, g, request
 from flask_cors import CORS
+from dotenv import load_dotenv
+from flask.json.provider import DefaultJSONProvider
+
 from database import get_connection
 from controllers import all_blueprints
 from erros import register_error_handlers
-from dotenv import load_dotenv
 
 load_dotenv()
 
+class AppJSONProvider(DefaultJSONProvider):
+    @staticmethod
+    def default(o):
+        if isinstance(o, (datetime, date)):
+            return o.isoformat()    
+        return DefaultJSONProvider.default(o)
+
 def criar_app():
     app = Flask(__name__, static_folder="static", static_url_path="/static")
+    app.json = AppJSONProvider(app) 
     register_error_handlers(app)
 
     app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024
@@ -80,6 +92,7 @@ def criar_app():
                 "relatorio": "GET /relatorio",
             }
         })
+    
 
     # print(app.url_map)
     return app

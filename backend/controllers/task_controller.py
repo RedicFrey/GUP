@@ -1,13 +1,15 @@
+
 from flask import Blueprint, jsonify, request, session, g
-from services.task.create_task_service import TaskCreationService
+from services.task.create_task_service import CreateTaskService
 from services.task.update_task_status_service import UpdateTaskStatusService
-from services.task.list_by_child_service import ListTasksByChildService
+from services.task.list_tasks_by_child_service import ListTasksByChildService
 from services.task.get_task_service import FindTaskService
 from utils.proof import is_valid_extension, save_proof, remove_proof
 from utils.auth import responsible_required, child_required, profile_required
 from services.task.list_task_service import GetTaskService
 from services.task.list_family_tasks_service import ListTaskService
 from services.task.delete_task_service import DeleteTaskService
+from services.task.update_task_service import UpdateTaskService, TaskNotFoundError
 from exceptions import InvalidData
 
 task_bp = Blueprint('tarefas', __name__, url_prefix='/tarefas')
@@ -91,7 +93,7 @@ def create():
 
     connection = g.connection
 
-    service_task = TaskCreationService(connection)
+    service_task = CreateTaskService(connection)
     task = service_task.execute(
       data=data,
       family_account_id=session.get("family_account_id"),
@@ -100,15 +102,37 @@ def create():
 
     return jsonify(task), 201
 
+@task_bp.patch('/<int:task_id>/editar')
+@responsible_required
+def update(task_id):
+    data = request.get_json(silent=True) or {}
+    if not data:
+        raise InvalidData("Envie os dados que deseja alterar.")
+
+    service = UpdateTaskService(g.connection)
+    try:
+        task = service.execute(
+            task_id=task_id,
+            data=data,
+            family_account_id=session["family_account_id"],
+        )
+    except TaskNotFoundError as e:
+        return jsonify({"erro": str(e)}), 404
+
+    return jsonify({"tasks": task}), 200
+
 @task_bp.delete('/<int:task_id>/deletar')
 @responsible_required
 def delete(task_id):
 
     connection = g.connection
     task_service = DeleteTaskService(connection)
-    task_service.execute(task_id)
+    try:
+        task_service.execute(task_id)
+    except ValueError as e:
+        return jsonify({"erro": str(e)}), 404
 
-    return jsonify({"mensagem": "tarefa deletada com sucesso"})
+    return "", 204
 
 
 @task_bp.post('/<int:id>/comprovacao')

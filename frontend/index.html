@@ -4,16 +4,81 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GUP</title>
-    <script src="js/api.js" defer></script>
-    <script src="js/index.js" defer></script>
-    <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-
+    <link rel="icon" href="./assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="./styles/global.css">
+    <link rel="stylesheet" href="./styles/style.css">
+    <style>
+        /* estilo mínimo aqui dentro: a tela aparece mesmo se o CSS não carregar */
+        body { margin: 0; min-height: 100vh; display: grid; place-items: center;
+               background: #10152b; color: #eef1ff; font-family: system-ui, sans-serif; }
+        .boot { max-width: 520px; padding: 32px 24px; text-align: center; }
+        .boot-brand { font-family: "Silkscreen", monospace; font-size: 40px; letter-spacing: 4px; color: #ffc23d; margin: 0 0 16px; }
+        .boot-msg { color: #aeb6dd; margin: 0; }
+        .boot-help { margin-top: 24px; padding: 16px 18px; border-radius: 14px; text-align: left;
+                     background: rgba(255, 107, 122, 0.12); color: #ffd0d5; line-height: 1.5; }
+        .boot-help code { background: rgba(0, 0, 0, 0.3); padding: 1px 6px; border-radius: 6px; }
+        .boot-help a { color: #ffc23d; }
+    </style>
 </head>
 <body>
-    <main class="container">
-        <p>Carregando...</p>
+    <main class="boot">
+        <p class="boot-brand">GUP</p>
+        <p class="boot-msg" id="boot-msg">Abrindo o GUP…</p>
+        <div class="boot-help" id="boot-help" hidden></div>
     </main>
 
+    <script>
+        // Avisos que não dependem de nada carregar (script comum, roda sempre)
+        // "localhost" e "127.0.0.1" não dividem o cookie de login: usa sempre 127.0.0.1
+        if (location.hostname === "localhost") {
+            location.replace(location.href.replace("//localhost", "//127.0.0.1"));
+        }
+
+        const help = document.getElementById("boot-help");
+        const msg = document.getElementById("boot-msg");
+
+        function showHelp(title, html) {
+            msg.textContent = title;
+            help.innerHTML = html;
+            help.hidden = false;
+        }
+
+        if (location.protocol === "file:") {
+            // aberto com duplo clique: módulos e cookies não funcionam assim
+            showHelp("O GUP precisa ser aberto por um servidor.",
+                "Em vez de abrir o arquivo direto, rode na pasta do projeto <code>python -m http.server 5500</code> " +
+                "(ou use o Live Server do VS Code) e acesse <code>http://127.0.0.1:5500/frontend/</code>.");
+        } else {
+            // se em 6 segundos nada aconteceu, algum arquivo não carregou
+            setTimeout(() => {
+                if (!help.hidden) return;
+                showHelp("Está demorando mais que o normal.",
+                    'Confira se o backend está rodando (<code>python app.py</code> na pasta backend) e tente ' +
+                    '<a href="./pages/auth/auth.html">abrir a tela de entrada</a>.');
+            }, 6000);
+        }
+    </script>
+
+    <script type="module">
+        // Entrada do app: com perfil escolhido vai para o perfil,
+        // logado só na conta vai escolher perfil, sem login vai para a entrada.
+        import { apiFetch, PAGES, API_URL } from './services/api.js'
+
+        if (location.protocol !== "file:") {
+            const { ok, status, dados } = await apiFetch("/perfil/me")
+
+            if (ok) window.location.replace(PAGES.home)
+            else if (status === 0) {
+                document.querySelector("#gup-offline")?.remove()   // o quadro abaixo já explica
+                document.getElementById("boot-msg").textContent = "Não foi possível falar com o servidor."
+                const help = document.getElementById("boot-help")
+                help.innerHTML = `O front abriu, mas a API em <code>${API_URL}</code> não respondeu. ` +
+                    `Rode <code>python app.py</code> na pasta <code>backend</code> e atualize esta página.`
+                help.hidden = false
+            }
+            else if (/perfil/i.test(dados?.erro ?? "")) window.location.replace(PAGES.profiles)
+            else window.location.replace(PAGES.auth)
+        }
+    </script>
 </body>
 </html>

@@ -1,5 +1,6 @@
+
 from models.giraffe_model import GiraffeDetailModel
-from models.giraffe_model import GiraffeColorModel, GiraffeImageItemModel
+from models.giraffe_model import GiraffeImageItemModel
 from repositories.base_repository import BaseRepository
 
 UPDATABLE_FIELDS = ("color_id", "background_id", "accessory_id")
@@ -21,10 +22,10 @@ ITEM_SOURCES = {
     },
 }
 
+
 class GiraffeRepository(BaseRepository):
     def __init__(self, connection):
-        self.connection = connection
-        super().__init__(connection, table="giraffes", model="GiraffeDetailModel")
+        super().__init__(connection, table="giraffes", model=GiraffeDetailModel)
 
     def find_by_child_profile(self, child_profile_id):
         cursor = self.connection.cursor(dictionary=True)
@@ -50,7 +51,6 @@ class GiraffeRepository(BaseRepository):
         if not fields:
             return
 
-        # os nomes das colunas vêm da lista fixa acima; os valores vão como parâmetro
         set_clause = ", ".join(f"{field} = %s" for field in fields)
         params = [changes[field] for field in fields] + [child_profile_id]
 
@@ -67,7 +67,7 @@ class GiraffeRepository(BaseRepository):
         cursor = self.connection.cursor(dictionary=True)
         try:
             cursor.execute("""
-                SELECT l.id AS level
+                SELECT l.level
                 FROM profiles AS p
                 JOIN levels AS l ON l.id = p.level_id
                 WHERE p.id = %s
@@ -96,7 +96,7 @@ class GiraffeItemRepository:
             cursor.close()
 
     def find_all(self, item_type):
-        source = ITEM_SOURCES[item_type]   # KeyError se alguém chamar com tipo fora do mapa
+        source = ITEM_SOURCES[item_type]   
 
         cursor = self.connection.cursor(dictionary=True)
         try:

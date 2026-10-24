@@ -17,18 +17,6 @@ export async function deleteProfileApi(profileId){
     return true;
 }
 
-// export async function updateProfile(profileId){
-
-// }
-
-// async function listProfileForUpdateApi(){
-
-// }
-
-// async function updateProfileApi(){
-
-// }
-
 export function createProfile(isResponsible, isAdmin, onSaved) {
  
     if (!isResponsible && !isAdmin) return
@@ -189,99 +177,198 @@ const PROFILES_PATH = "/perfis-conta-familia"
 // onUpdated (opcional): chamado depois de salvar, para a tela recarregar.
 export async function updateProfile(profileId, { onUpdated } = {}) {
     const profile = await listProfileForUpdateApi(profileId)
-    console.log(profile)
     if (!profile) return
- 
+
     const dialog = document.createElement("dialog")
     document.body.append(dialog)
-    dialog.addEventListener("close", () => dialog.remove())   // limpa o DOM ao fechar
- 
-    const fields = profileFields(profile)
-    const inputs = {}
- 
-    // monta com createElement: o valor entra pelo .value, sem risco de HTML
+    dialog.addEventListener("close", () => dialog.remove())
+
     const closeBtn = document.createElement("button")
     closeBtn.type = "button"
     closeBtn.textContent = "X"
     closeBtn.addEventListener("click", () => dialog.close())
- 
+
     const form = document.createElement("form")
- 
-    fields.forEach(({ key, label, type }) => {
-        const row = document.createElement("div")
- 
-        const labelEl = document.createElement("label")
-        labelEl.htmlFor = `profile-${key}`
-        labelEl.textContent = label
- 
-        const input = document.createElement("input")
-        input.type = type
-        input.id = `profile-${key}`
-        input.required = true
-        input.value = profile[key] ?? ""
- 
-        inputs[key] = input
-        row.append(labelEl, input)
-        form.append(row)
-    })
- 
+
     const saveBtn = document.createElement("button")
     saveBtn.type = "submit"
     saveBtn.textContent = "Alterar"
     saveBtn.disabled = true     // só habilita quando algo mudou
-    form.append(saveBtn)
- 
-    // só o que mudou em relação ao que veio do back
+
+    // ---------- Nome e e-mail ----------
+    const fields = profileFields(profile)
+    const inputs = {}
+
+    fields.forEach(({ key, label, type, required }) => {
+        const row = document.createElement("div")
+
+        const labelEl = document.createElement("label")
+        labelEl.htmlFor = `profile-${key}`
+        labelEl.textContent = label
+
+        const input = document.createElement("input")
+        input.type = type
+        input.id = `profile-${key}`
+        input.required = required
+        input.value = profile[key] ?? ""
+
+        inputs[key] = input
+        row.append(labelEl, input)
+        form.append(row)
+    })
+
+    // ---------- Pin ----------
+    let hasPin = Boolean(profile.has_pin)
+    let editingPin = false
+
+    const pinRow = document.createElement("div")
+
+    const pinLabel = document.createElement("label")
+    pinLabel.htmlFor = "profile-pin"
+    pinLabel.textContent = "Pin"
+
+    const pinInput = document.createElement("input")
+    pinInput.id = "profile-pin"
+    pinInput.autocomplete = "new-password"
+
+    const pinEditBtn = document.createElement("button")
+    pinEditBtn.type = "button"
+
+    const pinRemoveBtn = document.createElement("button")
+    pinRemoveBtn.type = "button"
+    pinRemoveBtn.textContent = "Remover senha"
+
+    pinRow.append(pinLabel, pinInput, pinEditBtn, pinRemoveBtn)
+    form.append(pinRow)
+
+    // estado parado: "****" se tem pin, campo vazio com "Sem senha" se não tem
+    function showPin() {
+        editingPin = false
+        pinInput.readOnly = true
+        pinInput.type = "text"          // com "password" apareceriam bolinhas, não ****
+        pinInput.value = hasPin ? "****" : ""
+        pinInput.placeholder = "Sem senha"
+        pinEditBtn.textContent = hasPin ? "Alterar" : "Definir"
+        pinRemoveBtn.hidden = !hasPin   // só existe se há senha para remover
+        refreshSave()
+    }
+
+    function editPin() {
+        editingPin = true
+        pinInput.readOnly = false
+        pinInput.type = "password"
+        pinInput.value = ""
+        pinInput.placeholder = "Novo pin"
+        pinEditBtn.textContent = "Cancelar"
+        pinInput.focus()
+    }
+
+    pinEditBtn.addEventListener("click", () => (editingPin ? showPin() : editPin()))
+
+    // remover não espera o botão "Alterar": é aplicado na hora
+    pinRemoveBtn.addEventListener("click", async () => {
+        const confirmed = await warning("Deseja realmente remover a senha deste perfil?")
+        if (!confirmed) return
+
+        pinRemoveBtn.disabled = true
+        const removed = await updateProfileApi(profileId, { pin: null })
+        pinRemoveBtn.disabled = false
+        if (!removed) return
+
+        hasPin = false
+        showPin()
+        onUpdated?.()      // atualiza a página atrás do dialog
+    })
+
+    // ---------- Mudanças e envio ----------
     function getChanges() {
         const changes = {}
+
         for (const { key } of fields) {
             const value = inputs[key].value.trim()
             if (value !== String(profile[key] ?? "")) changes[key] = value
         }
+
+        if (editingPin) {
+            const pin = pinInput.value.trim()
+            if (pin) changes.pin = pin
+        }
+
         return changes
     }
- 
-    form.addEventListener("input", () => {
+
+    function refreshSave() {
         saveBtn.disabled = Object.keys(getChanges()).length === 0
-    })
- 
+    }
+
+    form.addEventListener("input", refreshSave)
+
     form.addEventListener("submit", async (e) => {
         e.preventDefault()
- 
+
         const changes = getChanges()
         if (Object.keys(changes).length === 0) return
- 
+
         const confirmed = await warning("Deseja realmente alterar os dados deste perfil?")
         if (!confirmed) {
             dialog.close()
             return
         }
- 
+
         saveBtn.disabled = true
         const updated = await updateProfileApi(profileId, changes)
         if (!updated) {
             saveBtn.disabled = false    // deu erro: mantém o dialog aberto
             return
         }
- 
+
         dialog.close()
         onUpdated?.()
     })
- 
+
+    form.append(saveBtn)
+    showPin()
+
     dialog.append(closeBtn, form)
     dialog.showModal()
 }
- 
-// Campos editáveis. Os nomes (key) são os que o back usa: ajuste aqui se forem outros.
+
 function profileFields(profile) {
     const isChild = profile.profile_type === "child"
- 
+
+    // o pin saiu daqui: tem tratamento próprio no dialog
     return [
-        { key: "name", label: "Nome", type: "text" },
-        { key: "email", label: isChild ? "Identificador" : "E-mail", type: isChild ? "text" : "email" },
-        { key: "pin", label: "Pin:", type: "text"},
+        { key: "name", label: "Nome", type: "text", required: true },
+        { key: "notification_email", label: isChild ? "Identificador" : "E-mail", type: isChild ? "text" : "email", required: false },
     ]
 }
+
+async function updateProfileApi(profileId, changes) {
+    const r = await call(`${PROFILES_PATH}/atualizar-perfil/${profileId}`, "Erro ao atualizar o perfil.", {
+        method: "PUT",
+        body: changes,
+    })
+    return r !== null
+}
+
+// O pin novo só entra no envio se a pessoa clicou em “Alterar” ou “Definir” e digitou algo. O texto “****” nunca é enviado como se fosse o pin.
+
+// family.js: atualizar na hora
+
+// O renderFamilyAccount já refaz a página inteira, então é só passá-lo como callback. Hoje o updateProfile e o createProfile são chamados sem nenhum:
+
+// Com isso, criar, editar, remover senha e excluir (que já fazia) atualizam a lista sem recarregar. Excluir a conta família continua redirecionando para o login.
+
+// Bugs que vi no caminho
+// PATCH e URL com barra dupla: o updateProfileApi antigo chamava //atualizar-perfil/... com PATCH, mas o controller é @profile_bp.put. Isso daria 405 e a edição nunca funcionaria. Já corrigi acima.
+// Chave do e-mail: o front usava email, mas o service só aceita notification_email, então mudar o e-mail respondia “Nenhum dado válido para atualizar”. Troquei a chave. Confira se o GET /perfil/<id> devolve o campo com esse nome, senão o input abre vazio.
+// required em tudo: o dialog antigo marcava todos os campos como obrigatórios. Com um perfil sem e-mail (criança, por exemplo), o formulário nunca poderia ser enviado. Agora só o nome é obrigatório.
+// Falta de permissão na rota de atualizar: update_profile usa só @profile_required e o service não confere de qual família é o profile_id. Qualquer perfil logado, inclusive uma criança, consegue alterar ou remover o pin de qualquer perfil mandando o id na URL. Como agora existe “remover senha”, vale fechar isso:
+// python
+// # controller
+// is_self = profile_id == session.get("profile_id")
+// if not is_self and not session.get("is_admin"):
+//     raise InvalidData("Você não tem permissão para alterar este perfil.")
 
 // ---------- API ----------
  
@@ -311,12 +398,4 @@ async function listProfileForUpdateApi(profileId) {
     return dados?.profile ?? dados
 }
  
-// Envia as mudanças. Devolve true/false.
-async function updateProfileApi(profileId, changes) {
-    const r = await call(`${PROFILES_PATH}//atualizar-perfil/${profileId}`, "Erro ao atualizar o perfil.", {
-        method: "PATCH",
-        body: changes,
-    })
-    return r !== null
-}
  
