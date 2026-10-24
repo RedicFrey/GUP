@@ -141,19 +141,58 @@ Acesse **`http://127.0.0.1:5500`**.
 - Pedro Henrique Teixeira
 - Rafael Almeida Schmitberger
 
-## Funcionalidades
+## Funcionalidades Implementadas
 
-| # | Descrição |
-|---|---|
-| 20 | O sistema deve permitir ao responsável colocar uma trava de PIN. |
-| 19 | O sistema deve permitir ao usuário a criação de um relatório sobre o desempenho do filho, com a quantidade de tarefas concluídas. |
-| 17 | O sistema deve permitir ao responsável criar uma agenda com eventos especiais e tarefas específicas. |
-| 12 | O sistema deve permitir ao responsável inserir ou retirar moedas do filho, caso aconteça alguma eventualidade positiva ou negativa. |
-| 10 | O sistema deve permitir ao responsável visualizar a tarefa e selecionar se ela está concluída ou não. |
-| 9 | O sistema deve permitir ao filho enviar a tarefa através de um arquivo de imagem. |
-| 6 | O sistema deve permitir ao usuário responsável criar atividades, contendo nome da tarefa e uma descrição. |
-| 5 | O sistema deve permitir ao filho escolher qual meta quer conquistar ou qual ele pode receber. |
-| 4 | O sistema deve permitir ao responsável cadastrar recompensas e metas. |
-| 2 | O sistema deve permitir ao usuário visualizar o histórico de entrada e saída de moedas. |
+Cada item abaixo funciona de ponta a ponta: tela → API Flask → controller → service → repository/model → MySQL. O nome do service responsável está entre parênteses.
+
+### Conta família e perfis
+1. Cadastrar conta família, criando junto o perfil responsável administrador (CreateFamilyAccountService)
+2. Fazer login na conta família com e-mail e senha (LoginFamilyAccountService)
+3. Listar os perfis da família na tela de escolha de perfil (ListFamilyProfilesService)
+4. Entrar em um perfil, com PIN quando o perfil tiver um (LoginProfileService)
+5. Consultar os dados da conta família e seus perfis (GetFamilyAccountService)
+6. Atualizar perfil: nome, PIN e e-mail (UpdateProfileService)
+7. Excluir perfil, função exclusiva do administrador (DeleteProfileService)
+8. Listar as crianças da família (FamilySChildren)
+
+### Tarefas
+9. Cadastrar tarefa para uma ou mais crianças, com prazo, moedas, XP e foto obrigatória opcional (CreateTaskService)
+10. Listar tarefas com filtros de status, período e criança, com paginação (ListTaskService)
+11. Listar as tarefas do dia e as próximas e abrir o detalhe de uma tarefa (GetTaskService)
+12. Consultar a tarefa atribuída a uma criança (ListTasksByChildService)
+13. Editar tarefa (UpdateTaskService)
+14. Excluir tarefa (DeleteTaskService)
+15. Enviar a comprovação de uma tarefa com foto, feito pela criança (UpdateTaskStatusService)
+16. Aprovar tarefa, creditando moedas e XP e subindo o nível da criança (UpdateTaskStatusService)
+17. Reprovar tarefa, que volta para pendente (UpdateTaskStatusService)
+
+### Moedas
+18. Consultar o histórico de moedas com filtro de crédito/débito e paginação (ListCoinHistoryByChildService)
+19. Ajustar moedas manualmente, adicionando ou removendo, com motivo obrigatório (AdjustChildCoinsService)
+
+### Recompensas, metas e resgates
+20. Cadastrar recompensa (CreateRewardService)
+21. Listar as recompensas da família (ListFamilyRewardsService)
+22. Excluir recompensa (DeleteRewardService)
+23. Comprar (resgatar) uma recompensa com moedas (BuyRewardService)
+24. Definir uma recompensa como meta (SetChildGoalService)
+25. Acompanhar o progresso da meta (GetChildGoalService)
+26. Remover a meta (RemoveChildGoalService)
+27. Listar os resgates de uma criança, com paginação (ListRedemptionsByChildService)
+28. Confirmar a entrega de um resgate (UpdateRedemptionStatusService)
+
+### Girafa e níveis
+29. Visualizar a girafa da criança (GetChildGiraffeService)
+30. Listar os itens de personalização (cores, fundos e acessórios) com o nível exigido (ListGiraffeItemsService)
+31. Personalizar a girafa com os itens desbloqueados pelo nível (UpdateGiraffeService)
+32. Exibir o aviso de nível novo com os itens desbloqueados e marcá-lo como visto (ProfileLevelService)
+
+### Agenda, relatório e notificações
+33. Cadastrar evento na agenda da família (CreateEventService)
+34. Listar os eventos da família, com paginação (ListFamilyEventsService)
+35. Gerar o relatório mensal da criança: tarefas feitas no prazo, com atraso, não feitas e em aberto (GetChildMonthlyReportService)
+36. Consultar as preferências de notificação (ListNotificationPreferencesService)
+37. Atualizar as preferências e o e-mail de notificação (UpdateNotificationPreferencesService)
+
 
 O diagram-class esta no arquivo back-end.
