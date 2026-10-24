@@ -155,3 +155,5 @@ Acesse **`http://127.0.0.1:5500`**.
 | 5 | O sistema deve permitir ao filho escolher qual meta quer conquistar ou qual ele pode receber. |
 | 4 | O sistema deve permitir ao responsável cadastrar recompensas e metas. |
 | 2 | O sistema deve permitir ao usuário visualizar o histórico de entrada e saída de moedas. |
+
+O diagram-class esta no arquivo back-end.
