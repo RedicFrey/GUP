@@ -1,0 +1,236 @@
+/* ---------- menu lateral ---------- */
+
+#menu-nav {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 1000;
+  width: var(--sidebar-w);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px 16px 20px;
+  overflow-y: auto;
+  background: var(--panel);
+  border-right: 1px solid var(--line);
+}
+
+.nav-brand {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 0 8px;
+  color: var(--text);
+  text-decoration: none;
+  font-family: var(--font-display);
+  font-size: var(--ds-md);
+  line-height: 1;
+  letter-spacing: 2px;
+}
+
+.nav-brand img {
+  width: 22px;
+  height: 32px;
+  image-rendering: pixelated;
+}
+
+/* cartão de quem está usando */
+.nav-player {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: var(--r-md);
+  background: var(--night);
+  border: 1px solid var(--line);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color 0.15s;
+}
+
+.nav-player:hover {
+  border-color: var(--text-3);
+}
+
+.nav-player-avatar {
+  width: 44px;
+  height: 44px;
+  flex: none;
+}
+
+.nav-player-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nav-player-name {
+  font-weight: 600;
+  font-size: var(--fs-md);
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav-player-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+}
+
+.nav-player-meta .coin-amount {
+  gap: 4px;
+}
+
+/* links */
+.sidebar-pages {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sidebar-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text-2);
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 500;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.sidebar-link:hover {
+  background: var(--panel-2);
+  color: var(--text);
+}
+
+.sidebar-link[aria-current="page"] {
+  background: var(--panel-2);
+  color: var(--text);
+}
+
+/* marcador da página atual: um "pixel" amarelo na borda */
+.sidebar-link[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  left: -16px;
+  top: 50%;
+  width: 6px;
+  height: 18px;
+  transform: translateY(-50%);
+  background: var(--sun);
+}
+
+.sidebar-icon {
+  display: inline-flex;
+  color: var(--text-3);
+}
+
+.sidebar-link:hover .sidebar-icon,
+.sidebar-link[aria-current="page"] .sidebar-icon {
+  color: var(--sun);
+}
+
+.nav-foot {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.btn-logout:hover,
+.btn-logout:hover .sidebar-icon {
+  color: var(--berry);
+  background: var(--berry-soft);
+}
+
+/* ---------- barra do topo (até 1024px) ---------- */
+
+.topbar,
+.overlay {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  #menu-nav {
+    width: min(300px, 86vw);
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: none;
+  }
+
+  #menu-nav.open {
+    transform: translateX(0);
+    box-shadow: 24px 0 60px rgba(4, 6, 20, 0.5);
+  }
+
+  #menu-nav .nav-brand {
+    display: none;
+  }
+
+  .topbar {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 900;
+    height: var(--topbar-h);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0 16px;
+    background: rgba(16, 21, 43, 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .topbar .nav-brand {
+    font-size: 20px;
+    padding: 0;
+  }
+
+  .topbar .nav-brand img {
+    width: 17px;
+    height: 25px;
+  }
+
+  .btn-menu {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-sm);
+    background: var(--panel);
+    color: var(--text);
+  }
+
+  .topbar-avatar {
+    display: inline-flex;
+    width: 34px;
+    height: 34px;
+  }
+
+  .overlay.open {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: rgba(6, 9, 24, 0.6);
+  }
+}

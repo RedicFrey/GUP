@@ -1,0 +1,208 @@
+/* ==========================================================================
+   Entrada: cena da girafa à esquerda, formulários à direita
+   ========================================================================== */
+
+.nao-visivel {
+  display: none !important;
+}
+
+.auth-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+/* ---------- cena ---------- */
+
+.auth-art {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, #ff9a3d 0%, #e8692a 55%, #9b3d1d 100%);
+}
+
+.auth-art-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 70%;
+  image-rendering: pixelated;
+}
+
+/* escurece embaixo para o texto ficar legível */
+.auth-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(16, 21, 43, 0) 45%, rgba(16, 21, 43, 0.85) 100%);
+}
+
+.auth-art-giraffe {
+  position: absolute;
+  left: 12%;
+  bottom: 22%;
+  z-index: 1;
+  --gs-w: clamp(120px, 14vw, 192px);
+  animation: auth-idle 1.4s steps(1) infinite;
+}
+
+@keyframes auth-idle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.auth-art-text {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  padding: 40px 48px;
+}
+
+.auth-wordmark {
+  font-family: var(--font-display);
+  font-size: 64px;
+  line-height: 1;
+  color: #fff;
+  letter-spacing: 4px;
+  text-shadow: 0 4px 0 rgba(0, 0, 0, 0.35);
+}
+
+.auth-tagline {
+  margin-top: 12px;
+  max-width: 30ch;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: var(--fs-lg);
+}
+
+/* ---------- formulários ---------- */
+
+.auth-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 32px;
+}
+
+.auth-main > section {
+  width: 100%;
+  max-width: 420px;
+}
+
+.auth-title {
+  font-family: var(--font-display);
+  font-size: var(--ds-lg);
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--text);
+}
+
+.auth-lead {
+  margin-top: 10px;
+  margin-bottom: 28px;
+  color: var(--text-2);
+}
+
+.auth-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.auth-choices > * {
+  width: 100%;
+  min-height: 48px;
+}
+
+.auth-back {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+}
+
+.auth-back::before {
+  content: "‹";
+  font-size: 20px;
+  line-height: 1;
+}
+
+.form-stack > .field-row,
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.forms .btn-primary {
+  margin-top: 6px;
+  min-height: 48px;
+}
+
+.auth-switch {
+  margin-top: 24px;
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+
+.auth-switch button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--sun);
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---------- celular ---------- */
+
+@media (max-width: 860px) {
+  .auth-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .auth-art {
+    height: 220px;
+  }
+
+  .auth-art-giraffe {
+    left: auto;
+    right: 10%;
+    bottom: 12%;
+    --gs-w: 96px;
+  }
+
+  .auth-art-text {
+    padding: 20px 24px;
+  }
+
+  .auth-wordmark {
+    font-size: 40px;
+  }
+
+  .auth-tagline {
+    font-size: var(--fs-sm);
+    max-width: 24ch;
+  }
+
+  .auth-main {
+    align-items: flex-start;
+    padding: 32px 20px 48px;
+  }
+}
+
+@media (max-width: 420px) {
+  .form-stack > .field-row {
+    grid-template-columns: 1fr;
+  }
+}

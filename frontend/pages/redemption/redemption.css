@@ -1,0 +1,96 @@
+/* ==========================================================================
+   Resgates
+   ========================================================================== */
+
+#main-resgates {
+  max-width: 880px;
+}
+
+.redemption-history {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.filtro-criancas:empty {
+  display: none;
+}
+
+.redemption-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.resgates-realizados {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px 14px 14px;
+  border-radius: var(--r-md);
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+
+.redemption-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  background: var(--sun-soft);
+  color: var(--sun);
+  clip-path: var(--pixel-corners-sm);
+}
+
+.is-done .redemption-icon {
+  background: var(--leaf-soft);
+  color: var(--leaf);
+}
+
+.nome-resgate {
+  font-size: var(--fs-lg);
+  font-weight: 500;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.horario-resgate {
+  color: var(--text-3);
+  font-size: var(--fs-xs);
+}
+
+.valor-resgate {
+  font-family: var(--font-display);
+  font-size: var(--ds-sm);
+  font-weight: 400;
+}
+
+.redemption-status {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  min-width: 132px;
+}
+
+@media (max-width: 640px) {
+  .resgates-realizados {
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    grid-template-areas:
+      "icon text value"
+      "status status status";
+    row-gap: 12px;
+  }
+
+  .redemption-icon { grid-area: icon; width: 44px; height: 44px; }
+  .redemption-text { grid-area: text; }
+  .valor-resgate { grid-area: value; }
+
+  .redemption-status {
+    grid-area: status;
+    justify-content: space-between;
+  }
+}

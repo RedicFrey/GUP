@@ -1,0 +1,59 @@
+/* ---------- girafa (sprite em camadas) ---------- */
+
+.giraffe-sprite {
+  --gs-w: 128px;                    /* o desenho original tem 64x95 */
+  position: relative;
+  display: inline-block;
+  width: var(--gs-w);
+  aspect-ratio: 64 / 95;
+}
+
+.giraffe-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+
+.giraffe-accessory {
+  z-index: 1;
+}
+
+/* ---------- cena completa (fundo + girafa) ---------- */
+
+.giraffe-scene {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 3 / 2;
+  width: 100%;
+  background: var(--panel-2);
+  clip-path: var(--pixel-corners);
+}
+
+.giraffe-scene-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+}
+
+.giraffe-scene-sprite {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  --gs-w: 30%;
+  transform: translateX(-50%);
+}
+
+.giraffe-scene-error {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--text-2);
+  padding: 24px;
+  text-align: center;
+}

@@ -1,0 +1,221 @@
+/* ==========================================================================
+   GUP - base global
+   Tokens (cores, tipografia, espaçamento), reset e o esqueleto das páginas.
+   Os componentes reutilizáveis ficam em style.css.
+   ========================================================================== */
+
+@font-face {
+  font-family: "Fredoka";
+  src: url("../assets/fonts/Fredoka/fredoka_variable.woff2") format("woff2");
+  font-weight: 300 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Silkscreen";
+  src: url("../assets/fonts/Silkscreen/silkscreen_regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Silkscreen";
+  src: url("../assets/fonts/Silkscreen/silkscreen_bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
+:root {
+  /* -- Cores: a noite da savana, com a girafa como destaque -- */
+  --night: #10152b;          /* fundo da página */
+  --panel: #182042;          /* superfícies */
+  --panel-2: #212a55;        /* superfícies elevadas, inputs, hover */
+  --panel-3: #2a3466;
+  --line: #2c3767;           /* bordas e divisórias */
+
+  --text: #eef1ff;
+  --text-2: #aeb6dd;
+  --text-3: #7a84b3;
+
+  --sun: #ffc23d;            /* amarelo-girafa: moedas e ação principal */
+  --sun-deep: #b9800e;       /* "sombra de pixel" debaixo do botão amarelo */
+  --sun-ink: #2b1c00;        /* texto sobre o amarelo */
+  --sun-soft: rgba(255, 194, 61, 0.14);
+
+  --sky: #8794ff;            /* XP, seleção e links */
+  --sky-deep: #4f5bd6;
+  --sky-soft: rgba(135, 148, 255, 0.16);
+
+  --leaf: #4cd38a;           /* concluído */
+  --leaf-soft: rgba(76, 211, 138, 0.14);
+  --berry: #ff6b7a;          /* atrasado, excluir, erro */
+  --berry-soft: rgba(255, 107, 122, 0.14);
+  --spot: #8b5a2b;           /* marrom das manchas da girafa */
+
+  /* -- Tipografia -- */
+  --font-display: "Silkscreen", "Fredoka", system-ui, sans-serif;
+  --font-body: "Fredoka", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --fs-xs: 13px;
+  --fs-sm: 14px;
+  --fs-md: 16px;
+  --fs-lg: 18px;
+  --fs-xl: 22px;
+  --ds-sm: 16px;             /* Silkscreen fica nítida em múltiplos de 8 */
+  --ds-md: 24px;
+  --ds-lg: 32px;
+  --ds-xl: 40px;
+
+  /* -- Forma -- */
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-pill: 999px;
+
+  /* cantos em degrau de pixel, só para elementos de identidade (capa, avatar, selo de nível) */
+  --pixel-corners: polygon(
+    0 8px, 4px 8px, 4px 4px, 8px 4px, 8px 0,
+    calc(100% - 8px) 0, calc(100% - 8px) 4px, calc(100% - 4px) 4px, calc(100% - 4px) 8px, 100% 8px,
+    100% calc(100% - 8px), calc(100% - 4px) calc(100% - 8px), calc(100% - 4px) calc(100% - 4px),
+    calc(100% - 8px) calc(100% - 4px), calc(100% - 8px) 100%,
+    8px 100%, 8px calc(100% - 4px), 4px calc(100% - 4px), 4px calc(100% - 8px), 0 calc(100% - 8px)
+  );
+  --pixel-corners-sm: polygon(
+    0 4px, 2px 4px, 2px 2px, 4px 2px, 4px 0,
+    calc(100% - 4px) 0, calc(100% - 4px) 2px, calc(100% - 2px) 2px, calc(100% - 2px) 4px, 100% 4px,
+    100% calc(100% - 4px), calc(100% - 2px) calc(100% - 4px), calc(100% - 2px) calc(100% - 2px),
+    calc(100% - 4px) calc(100% - 2px), calc(100% - 4px) 100%,
+    4px 100%, 4px calc(100% - 2px), 2px calc(100% - 2px), 2px calc(100% - 4px), 0 calc(100% - 4px)
+  );
+
+  --sidebar-w: 248px;
+  --topbar-h: 60px;
+
+  /* -- Nomes antigos: continuam valendo para o CSS que ainda usa -- */
+  --bg-primary: var(--night);
+  --bg-secondary: var(--panel);
+  --bg-tertiary: var(--panel-2);
+  --color-primary: var(--sky-deep);
+  --color-secondary: var(--sky);
+  --text-primary: var(--text);
+  --text-secondary: var(--text-2);
+  --text-tertiary: var(--text-3);
+  --warning-color: var(--berry);
+  --border-radius-primary: var(--r-sm);
+  --border-radius-secondary: var(--r-md);
+  --font-title: var(--font-display);
+  --font-family: var(--font-body);
+
+  color-scheme: dark;
+}
+
+/* ---------- reset ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--night);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--fs-md);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: var(--sky);
+  text-underline-offset: 3px;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+h1, h2, h3, h4 {
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+:focus-visible {
+  outline: 3px solid var(--sky);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--sun);
+  color: var(--sun-ink);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- esqueleto das páginas com menu lateral ---------- */
+
+.app-layout {
+  margin-left: var(--sidebar-w);
+  min-height: 100vh;
+}
+
+.page,
+.page-with-sidebar {
+  width: 100%;
+  max-width: 1080px;
+  padding: 40px 48px 72px;
+}
+
+@media (max-width: 1024px) {
+  .app-layout {
+    margin-left: 0;
+    padding-top: var(--topbar-h);
+  }
+
+  .page,
+  .page-with-sidebar {
+    padding: 28px 24px 64px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page,
+  .page-with-sidebar {
+    padding: 22px 16px 56px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
