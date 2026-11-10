@@ -1,93 +1,70 @@
-import { API_URL } from '../config/config.js'
+// ============================================================
+// api.js -> tudo que conversa com o backend passa por aqui
+// ============================================================
+// As páginas nunca chamam o fetch direto, elas chamam api().
+// Assim o tratamento de erro fica escrito uma vez só.
 
-// Pasta "frontend" calculada a partir deste arquivo (services/api.js).
-// Assim os links funcionam de qualquer jeito que o servidor for aberto:
-// na raiz do projeto, dentro de frontend/ ou numa pasta acima.
-export const FRONT_ROOT = new URL("../", import.meta.url);
+import { API_URL } from "../config/config.js"
 
-// pageUrl("pages/home/dashboard.html") -> endereço completo da página
-export const pageUrl = (path) => new URL(path, FRONT_ROOT).href;
-
-// Páginas usadas em redirecionamentos
-export const PAGES = {
-  auth: pageUrl("pages/auth/auth.html"),
-  profiles: pageUrl("pages/choose-profile/profiles.html"),
-  home: pageUrl("pages/home/dashboard.html"),
-};
-
-const OFFLINE_MESSAGE =
-  `Não foi possível falar com o servidor em ${API_URL}. Confira se o backend (python app.py) está rodando.`;
-
-export async function apiFetch(caminho, opcoes = {}) {
-  const configuracao = {
-    method: opcoes.method || "GET",
-    credentials: "include",
-    headers: {},
-  };
-
-  if (opcoes.body instanceof FormData) {
-    configuracao.body = opcoes.body;
-
-  } else if (opcoes.body !== undefined) {
-    configuracao.headers["Content-Type"] = "application/json";
-    configuracao.body = JSON.stringify(opcoes.body);
-  }
-
-  let resposta;
-  try {
-    resposta = await fetch(`${API_URL}${caminho}`, configuracao);
-  } catch {
-    // backend desligado, porta errada ou CORS: avisa na tela em vez de deixar a página vazia
-    showOfflineBanner();
-    return { ok: false, status: 0, dados: { erro: OFFLINE_MESSAGE } };
-  }
-
-  const dados = await resposta.json().catch(() => null);
-  return { ok: resposta.ok, status: resposta.status, dados };
+// O cookie de login só funciona se o front e a API usarem o MESMO
+// endereço (127.0.0.1). Se abriram como "localhost", a gente troca sozinho.
+if (location.hostname === "localhost") {
+    location.replace(location.href.replace("//localhost", "//127.0.0.1"))
 }
 
-// Faixa fixa no topo da página. Usa estilo próprio para aparecer mesmo se o CSS não carregar.
-export function showOfflineBanner() {
-  if (document.querySelector("#gup-offline")) return;
-  const banner = document.createElement("div");
-  banner.id = "gup-offline";
-  banner.setAttribute("role", "alert");
-  banner.textContent = OFFLINE_MESSAGE;
-  banner.style.cssText = [
-    "position:fixed", "left:0", "right:0", "bottom:0", "z-index:5000",
-    "padding:12px 16px", "background:#ff6b7a", "color:#2a0007",
-    "font:600 14px/1.4 system-ui,sans-serif", "text-align:center",
-  ].join(";");
-  document.body.append(banner);
+
+// api("/rota", { method, body, mensagem })
+// - deu certo: devolve os dados que o backend mandou (ou {} se veio vazio)
+// - sessão acabou (401): manda para o login
+// - outro erro: escreve no <p> "mensagem" (ou no #mensagem da página) e devolve null
+export async function api(caminho, { method = "GET", body, mensagem } = {}) {
+    const opcoes = { method, credentials: "include", headers: {} }   // credentials = manda o cookie junto
+
+    // foto (FormData) vai do jeito que está; o resto vira JSON
+    if (body instanceof FormData) {
+        opcoes.body = body
+    } else if (body !== undefined) {
+        opcoes.headers["Content-Type"] = "application/json"
+        opcoes.body = JSON.stringify(body)
+    }
+
+    let resposta
+    try {
+        resposta = await fetch(API_URL + caminho, opcoes)
+    } catch {
+        // cai aqui quando o backend está desligado: mostra a faixa vermelha
+        document.querySelector("#aviso-offline")?.removeAttribute("hidden")
+        return null
+    }
+
+    // algumas rotas (tipo excluir) não mandam nada de volta, por isso o catch
+    const dados = await resposta.json().catch(() => ({}))
+
+    if (resposta.status === 401) {
+        // se o erro fala de "perfil", a conta está logada mas falta escolher o perfil
+        location.href = /perfil/i.test(dados.erro) ? "../choose-profile/profiles.html" : "../auth/auth.html"
+        return null
+    }
+
+    if (!resposta.ok) {
+        mostrarMensagem(mensagem ?? document.querySelector("#mensagem"), dados.erro || "Algo deu errado. Tente de novo.")
+        return null
+    }
+
+    return dados
 }
 
-export function showMessage(elemento, texto, tipo) {
-  if (!elemento) return;
-  elemento.textContent = texto;
-  elemento.className = `mensagem ${tipo}`;
+
+// Escreve um texto num <p class="mensagem">. tipo: "erro" ou "sucesso"
+export function mostrarMensagem(elemento, texto, tipo = "erro") {
+    if (!elemento) return
+    elemento.textContent = texto
+    elemento.className = `mensagem ${tipo}`
 }
 
-// Sessão expirada: logado na conta mas sem perfil vai para a escolha de perfil,
-// sem login nenhum vai para a tela de entrada.
-export function goToLogin(erro = "") {
-  const semPerfil = /perfil/i.test(erro);
-  window.location.href = semPerfil ? PAGES.profiles : PAGES.auth;
-}
 
-// Imagens que o backend serve em /static (girafa, comprovações)
-export function assetUrl(path = "") {
-  if (!path) return "";
-  if (/^https?:\/\//.test(path)) return path;
-  return `${API_URL}/${String(path).replace(/\\/g, "/").replace(/^\/+/, "")}`;
-}
-
-export function erroMensagem(response, elementoMensagem, mensagemPadrao) {
-  if (response.ok) {
-    elementoMensagem.textContent = "";
-    return false;
-  }
-
-  // mostra o motivo que o back mandou (ex.: "Senha incorreta."), se houver
-  elementoMensagem.textContent = response.dados?.erro || mensagemPadrao;
-  return true;
+// As imagens da girafa e as fotos das tarefas ficam no backend, em /static
+export function imagemDoBackend(caminho) {
+    if (!caminho) return ""
+    return API_URL + "/" + caminho.replace(/\\/g, "/").replace(/^\/+/, "")
 }

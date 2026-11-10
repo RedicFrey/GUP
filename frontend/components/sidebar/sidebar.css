@@ -1,8 +1,18 @@
-/* ---------- menu lateral ---------- */
+/* ==========================================================================
+   sidebar.css -> menu lateral
+   No computador o menu fica fixo na esquerda.
+   Até 1024px ele some e vira uma barra no topo com o botão de menu (☰).
+   O menu é um "popover": o botão ☰ tem popovertarget="menu-nav", então
+   o próprio navegador abre e fecha o menu, sem precisar de JavaScript.
+   ========================================================================== */
 
 #menu-nav {
   position: fixed;
   inset: 0 auto 0 0;
+  margin: 0;
+  height: 100%;
+  border: 0;
+  color: var(--text);
   z-index: 1000;
   width: var(--sidebar-w);
   display: flex;
@@ -51,10 +61,9 @@
   border-color: var(--text-3);
 }
 
-.nav-player-avatar {
+.nav-player .avatar {
   width: 44px;
   height: 44px;
-  flex: none;
 }
 
 .nav-player-text {
@@ -134,13 +143,12 @@
   background: var(--sun);
 }
 
-.sidebar-icon {
-  display: inline-flex;
+.sidebar-link .icone {
   color: var(--text-3);
 }
 
-.sidebar-link:hover .sidebar-icon,
-.sidebar-link[aria-current="page"] .sidebar-icon {
+.sidebar-link:hover .icone,
+.sidebar-link[aria-current="page"] .icone {
   color: var(--sun);
 }
 
@@ -154,29 +162,31 @@
 }
 
 .btn-logout:hover,
-.btn-logout:hover .sidebar-icon {
+.btn-logout:hover .icone {
   color: var(--berry);
   background: var(--berry-soft);
 }
 
 /* ---------- barra do topo (até 1024px) ---------- */
 
-.topbar,
-.overlay {
+.topbar {
   display: none;
 }
 
 @media (max-width: 1024px) {
-  #menu-nav {
-    width: min(300px, 86vw);
-    transform: translateX(-100%);
-    transition: transform 0.25s ease;
-    box-shadow: none;
+  /* fechado, o menu some; aberto (:popover-open), aparece por cima de tudo */
+  #menu-nav:not(:popover-open) {
+    display: none;
   }
 
-  #menu-nav.open {
-    transform: translateX(0);
+  #menu-nav {
+    width: min(300px, 86vw);
     box-shadow: 24px 0 60px rgba(4, 6, 20, 0.5);
+  }
+
+  /* fundo escuro atrás do menu aberto (clicar nele fecha o menu) */
+  #menu-nav::backdrop {
+    background: rgba(6, 9, 24, 0.6);
   }
 
   #menu-nav .nav-brand {
@@ -190,8 +200,7 @@
     height: var(--topbar-h);
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 12px;
+    gap: 16px;
     padding: 0 16px;
     background: rgba(16, 21, 43, 0.92);
     backdrop-filter: blur(8px);
@@ -218,19 +227,6 @@
     border-radius: var(--r-sm);
     background: var(--panel);
     color: var(--text);
-  }
-
-  .topbar-avatar {
-    display: inline-flex;
-    width: 34px;
-    height: 34px;
-  }
-
-  .overlay.open {
-    display: block;
-    position: fixed;
-    inset: 0;
-    z-index: 999;
-    background: rgba(6, 9, 24, 0.6);
+    font-size: 20px;
   }
 }

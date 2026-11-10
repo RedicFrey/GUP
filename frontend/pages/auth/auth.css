@@ -1,9 +1,17 @@
 /* ==========================================================================
-   Entrada: cena da girafa à esquerda, formulários à direita
+   auth.css -> tela de entrada (login e cadastro)
+   Cena da girafa à esquerda, formulários à direita.
    ========================================================================== */
 
-.nao-visivel {
-  display: none !important;
+/* ---------- trocar de tela sem JavaScript ----------
+   Só a <section> que está no endereço (ex: auth.html#campo-login) aparece.
+   Se nenhuma estiver no endereço, aparece a primeira (#gateway). */
+.auth-main > section:not(:target) {
+  display: none;
+}
+
+.auth-main:not(:has(section:target)) > #gateway {
+  display: block;
 }
 
 .auth-shell {
@@ -150,7 +158,7 @@
   font-size: var(--fs-sm);
 }
 
-.auth-switch button {
+.auth-switch a {
   padding: 0;
   border: 0;
   background: none;

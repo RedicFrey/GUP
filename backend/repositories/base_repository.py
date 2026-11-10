@@ -17,12 +17,24 @@ class BaseRepository:
         # sem mudança. O acesso ao banco é sempre por db.session.
         pass
 
-    # ---------- montagem ----------
+    # staticmethod é um método que não mexe na instância, em resumo
+    # ele não mexe necessariamente em um dado que pega da classe mesmo
+    # ele simplesmente recebe um valor e executa
     @staticmethod
     def _sql(sql, listas=()):
+        # transforma um texto em instrução Sql bruto para um texto sql do alchemy que consegue manipular
         consulta = db.text(sql)
         if listas:
+            # criando a variavel consulta, que guarda query, não os valores
+            # pega a consulta que veio do db.text. que agora é um sql alchemy
+            # o bindparams, tá juntando a query bruta que existia, e colocando os itens, a variavel e não o valor
+            # ou valores
+            # asterisco para pegar somente o valor, ele desempacota
+            # o outro bindparam, que é como se tivesse dentro de um for
+            # para cada nome que tá em lista, crie um campo no sql para receber esse nome
+            # o expanding serve para avisar que vai vir mais de um elemento
             consulta = consulta.bindparams(*(db.bindparam(nome, expanding=True) for nome in listas))
+        # retorna consulta
         return consulta
 
     def _executar(self, sql, params=None, listas=()):
@@ -52,11 +64,6 @@ class BaseRepository:
 
     # ---------- resultados como Model ----------
     def _buscar_modelos(self, modelo, sql, params=None, listas=()):
-        """Executa o SQL e devolve instâncias da Model, já ligadas à sessão.
-
-        Assim o Service pode chamar atualizar()/deletar() no que o Repository devolveu.
-        O SQL precisa trazer as colunas da tabela da Model (ex.: SELECT p.* ...).
-        """
         consulta = db.select(modelo).from_statement(self._sql(sql, listas))
         return list(db.session.scalars(consulta, params or {}).all())
 

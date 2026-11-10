@@ -1,5 +1,7 @@
 /* ==========================================================================
-   Recompensas (a "lojinha" da família)
+   reward.css -> página "Recompensas" (a "lojinha" da família)
+   Cada recompensa é um cartão com um presente colorido em pixel.
+   A cor do presente muda pela posição do cartão (nth-child), só com CSS.
    ========================================================================== */
 
 #mensagem {
@@ -50,8 +52,17 @@
   margin-bottom: 10px;
   background: color-mix(in srgb, var(--gift) 16%, var(--night));
   color: var(--gift);
+  font-size: 40px;           /* o ícone usa "em", então fica do tamanho da fonte */
   clip-path: var(--pixel-corners);
 }
+
+/* uma cor para cada cartão, repetindo de 6 em 6 */
+.reward-card:nth-child(6n + 1) { --gift: #ffc23d; }
+.reward-card:nth-child(6n + 2) { --gift: #8794ff; }
+.reward-card:nth-child(6n + 3) { --gift: #4cd38a; }
+.reward-card:nth-child(6n + 4) { --gift: #ff8a96; }
+.reward-card:nth-child(6n + 5) { --gift: #ff9f5a; }
+.reward-card:nth-child(6n + 6) { --gift: #5fd8e6; }
 
 .reward-name {
   font-size: var(--fs-lg);
@@ -76,7 +87,7 @@
   padding-top: 14px;
 }
 
-.acoes .btn-buy {
+.acoes .btn-primary {
   width: 100%;
 }
 
@@ -98,10 +109,6 @@
   font-weight: 600;
 }
 
-.btn-delete:hover {
-  color: var(--berry);
-}
-
 /* celular: duas recompensas por linha */
 @media (max-width: 520px) {
   .rewards-list {
@@ -116,6 +123,7 @@
   .reward-gift {
     width: 56px;
     height: 56px;
+    font-size: 30px;
   }
 
   .reward-name {

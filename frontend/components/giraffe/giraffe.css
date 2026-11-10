@@ -1,0 +1,50 @@
+/* ==========================================================================
+   giraffe.css -> a girafa em camadas
+   As imagens ficam uma em cima da outra (position: absolute),
+   e image-rendering: pixelated deixa o pixel art nítido ao aumentar.
+   ========================================================================== */
+
+/* só a girafa (corpo + acessório) */
+.giraffe-sprite {
+  --gs-w: 128px;                    /* o desenho original tem 64x95 */
+  position: relative;
+  display: inline-block;
+  width: var(--gs-w);
+  aspect-ratio: 64 / 95;
+}
+
+.giraffe-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+
+/* cena completa: cenário no fundo + girafa em cima */
+.giraffe-scene {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 3 / 2;
+  width: 100%;
+  background: var(--panel-2);
+  clip-path: var(--pixel-corners);
+}
+
+.giraffe-scene-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+}
+
+/* a girafa fica centralizada embaixo, com 30% da largura da cena */
+.giraffe-scene-sprite {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  --gs-w: 30%;
+  transform: translateX(-50%);
+}

@@ -5,23 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
     <title>Entrar - GUP</title>
-    <script src="../../services/api.js" type="module"></script>
-    <script src="./auth-js/init_cadastro.js" defer type="module"></script>
-    <script src="./auth-js/sign_in.js" defer type="module"></script>
-    <script src="./auth-js/sign_up.js" defer type="module"></script>
     <link rel="stylesheet" href="../../styles/global.css">
     <link rel="stylesheet" href="../../styles/style.css">
-    <link rel="stylesheet" href="../../components/giraffe-view/giraffe-view.css">
+    <link rel="stylesheet" href="../../components/giraffe/giraffe.css">
     <link rel="stylesheet" href="./auth.css">
+    <script type="module" src="./auth.js"></script>
 </head>
 <body class="auth-body">
     <div class="auth-shell">
 
-        <!-- Cena da girafa: a imagem vem do backend (/static) -->
+        <!-- Cena da girafa (imagens copiadas para assets/img) -->
         <aside class="auth-art" aria-hidden="true">
-            <img class="auth-art-bg" data-asset="/static/giraffes/backgrounds/background_1.png" alt="">
+            <img class="auth-art-bg" src="../../assets/img/background_1.png" alt="">
             <span class="giraffe-sprite auth-art-giraffe">
-                <img class="giraffe-layer" data-asset="/static/giraffes/colors/color_primary.png" alt="">
+                <img class="giraffe-layer" src="../../assets/img/color_primary.png" alt="">
             </span>
             <div class="auth-art-text">
                 <p class="auth-wordmark">GUP</p>
@@ -29,6 +26,8 @@
             </div>
         </aside>
 
+        <!-- As 3 "telas" são <section>. Os links apontam para o id da tela (#campo-login),
+             e o CSS mostra só a que está no endereço (:target). Sem JavaScript! -->
         <main class="auth-main">
 
             <!-- ====================================================== -->
@@ -38,23 +37,23 @@
                 <h1 class="auth-title">Boas-vindas ao GUP</h1>
                 <p class="auth-lead">Um perfil para cada pessoa da família, com tarefas, moedas e uma girafa para cuidar.</p>
                 <div class="auth-choices">
-                    <button type="button" data-ir-para="campo-login" id="sign-in" class="btn-primary">Entrar na conta da família</button>
-                    <button type="button" data-ir-para="campo-cadastro-usuario" id="sign-up" class="btn">Criar uma conta nova</button>
+                    <a href="#campo-login" class="btn-primary">Entrar na conta da família</a>
+                    <a href="#campo-cadastro-usuario" class="btn">Criar uma conta nova</a>
                 </div>
             </section>
 
             <!-- ====================================================== -->
             <!-- Cadastro do dono da conta família -->
             <!-- ====================================================== -->
-            <section id="campo-cadastro-usuario" class="nao-visivel auth-type">
-                <button type="button" class="back-link auth-back" data-ir-para="gateway">Voltar</button>
+            <section id="campo-cadastro-usuario" class="auth-type">
+                <a href="#gateway" class="back-link auth-back">Voltar</a>
                 <h1 class="auth-title type-gateway">Criar conta</h1>
                 <p class="auth-lead">Quem cria a conta vira o administrador da família.</p>
 
                 <form id="form-cadastro" class="forms form-stack">
                     <div class="field">
                         <label for="nome-cadastro">Seu nome</label>
-                        <input type="text" id="nome-cadastro" placeholder="Daniel" minlength="2" maxlength="30" autocomplete="given-name" required>
+                        <input type="text" id="nome-cadastro" placeholder="Daniel" maxlength="20" autocomplete="given-name" required>
                     </div>
 
                     <div class="field">
@@ -83,14 +82,14 @@
                     <button type="submit" class="btn-primary btn-block">Criar conta</button>
                 </form>
 
-                <p class="auth-switch">Já tem conta? <button type="button" data-ir-para="campo-login">Entrar</button></p>
+                <p class="auth-switch">Já tem conta? <a href="#campo-login">Entrar</a></p>
             </section>
 
             <!-- ====================================================== -->
             <!-- Login -->
             <!-- ====================================================== -->
-            <section id="campo-login" class="nao-visivel auth-type">
-                <button type="button" class="back-link auth-back" data-ir-para="gateway">Voltar</button>
+            <section id="campo-login" class="auth-type">
+                <a href="#gateway" class="back-link auth-back">Voltar</a>
                 <h1 class="auth-title type-gateway">Entrar</h1>
                 <p class="auth-lead">Use o e-mail e a senha de quem criou a conta da família.</p>
 
@@ -110,10 +109,12 @@
                     <button type="submit" class="btn-primary btn-block">Entrar</button>
                 </form>
 
-                <p class="auth-switch">Ainda não tem conta? <button type="button" data-ir-para="campo-cadastro-usuario">Criar conta</button></p>
+                <p class="auth-switch">Ainda não tem conta? <a href="#campo-cadastro-usuario">Criar conta</a></p>
             </section>
 
         </main>
     </div>
+
+    <div id="aviso-offline" hidden>Não foi possível falar com o servidor. Confira se o backend está rodando.</div>
 </body>
 </html>

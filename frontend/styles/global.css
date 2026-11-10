@@ -1,7 +1,10 @@
 /* ==========================================================================
-   GUP - base global
-   Tokens (cores, tipografia, espaçamento), reset e o esqueleto das páginas.
-   Os componentes reutilizáveis ficam em style.css.
+   global.css -> a base de tudo
+   - fontes
+   - variáveis de cor e tamanho (mudando aqui, muda o site inteiro)
+   - "reset" (tira as margens padrão do navegador)
+   - o espaço da página ao lado do menu
+   Os pedaços reutilizáveis (botões, campos, cartões...) ficam no style.css.
    ========================================================================== */
 
 @font-face {
@@ -91,20 +94,6 @@
   --sidebar-w: 248px;
   --topbar-h: 60px;
 
-  /* -- Nomes antigos: continuam valendo para o CSS que ainda usa -- */
-  --bg-primary: var(--night);
-  --bg-secondary: var(--panel);
-  --bg-tertiary: var(--panel-2);
-  --color-primary: var(--sky-deep);
-  --color-secondary: var(--sky);
-  --text-primary: var(--text);
-  --text-secondary: var(--text-2);
-  --text-tertiary: var(--text-3);
-  --warning-color: var(--berry);
-  --border-radius-primary: var(--r-sm);
-  --border-radius-secondary: var(--r-md);
-  --font-title: var(--font-display);
-  --font-family: var(--font-body);
 
   color-scheme: dark;
 }
@@ -168,15 +157,6 @@ h1, h2, h3, h4 {
   color: var(--sun-ink);
 }
 
-.visually-hidden {
-  position: absolute !important;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-}
-
 /* ---------- esqueleto das páginas com menu lateral ---------- */
 
 .app-layout {
@@ -184,8 +164,7 @@ h1, h2, h3, h4 {
   min-height: 100vh;
 }
 
-.page,
-.page-with-sidebar {
+.page {
   width: 100%;
   max-width: 1080px;
   padding: 40px 48px 72px;
@@ -197,15 +176,13 @@ h1, h2, h3, h4 {
     padding-top: var(--topbar-h);
   }
 
-  .page,
-  .page-with-sidebar {
+  .page {
     padding: 28px 24px 64px;
   }
 }
 
 @media (max-width: 480px) {
-  .page,
-  .page-with-sidebar {
+  .page {
     padding: 22px 16px 56px;
   }
 }

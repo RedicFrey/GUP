@@ -5,59 +5,219 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
     <title>Meu perfil - GUP</title>
-    <script type="module" src="./dashboard.js"></script>
     <link rel="stylesheet" href="../../styles/global.css">
     <link rel="stylesheet" href="../../styles/style.css">
     <link rel="stylesheet" href="../../components/sidebar/sidebar.css">
-    <link rel="stylesheet" href="../../components/giraffe-view/giraffe-view.css">
-    <link rel="stylesheet" href="../../components/goal-card/goal-card.css">
-    <link rel="stylesheet" href="../../components/level-up-modal/level-up-modal.css">
-    <link rel="stylesheet" href="./css-home.css">
-    <link rel="stylesheet" href="./css-task.css">
+    <link rel="stylesheet" href="../../components/giraffe/giraffe.css">
+    <link rel="stylesheet" href="./dashboard.css">
+    <script type="module" src="../../components/sidebar/sidebar.js"></script>
+    <script type="module" src="./dashboard.js"></script>
 </head>
 <body>
+    <!-- ===== menu lateral (igual em todas as páginas) =====
+         No celular ele vira um "popover": o botão ☰ lá embaixo abre e fecha sozinho. -->
+    <nav id="menu-nav" popover>
+        <a class="nav-brand" href="../home/dashboard.html"><img src="../../assets/img/color_primary.png" alt=""> GUP</a>
+        <!-- o sidebar.js coloca aqui o nome e o avatar de quem está logado -->
+        <a class="nav-player" href="../home/dashboard.html"></a>
+        <ul class="sidebar-pages">
+            <li><a class="sidebar-link" href="../home/dashboard.html" aria-current="page"><i class="icone i-user"></i> Meu perfil</a></li>
+            <li><a class="sidebar-link" href="../reward/reward.html"><i class="icone i-gift"></i> Recompensas</a></li>
+            <li><a class="sidebar-link" href="../redemption/redemption.html"><i class="icone i-ticket"></i> Resgates</a></li>
+            <li><a class="sidebar-link" href="../history/coin-history.html"><i class="icone i-coin"></i> Moedas</a></li>
+            <li><a class="sidebar-link" href="../report/report.html"><i class="icone i-chart"></i> Relatório</a></li>
+            <li><a class="sidebar-link" href="../setting/setting.html"><i class="icone i-gear"></i> Configurações</a></li>
+        </ul>
+        <div class="nav-foot">
+            <a class="sidebar-link" href="../choose-profile/profiles.html"><i class="icone i-swap"></i> Trocar perfil</a>
+            <button type="button" class="sidebar-link btn-logout"><i class="icone i-logout"></i> Sair da conta</button>
+        </div>
+    </nav>
+
+    <!-- barra do topo: só aparece no celular -->
+    <header class="topbar">
+        <button type="button" class="btn-menu" popovertarget="menu-nav" aria-label="Abrir menu"><i class="icone i-menu"></i></button>
+        <a class="nav-brand" href="../home/dashboard.html"><img src="../../assets/img/color_primary.png" alt=""> GUP</a>
+    </header>
+
     <div class="app-layout">
         <main class="page profile-page">
-            <!-- capa, avatar/girafa, nome e números: montado em js-profile/profile-hero.js -->
-            <header id="profile-hero" class="profile-hero is-loading" aria-busy="true">
-                <div class="hero-cover"></div>
+            <!-- ===== capa do perfil (o dashboard.js coloca o nome, a girafa e os números) ===== -->
+            <header class="profile-hero" id="capa">
+                <div class="hero-cover"><img class="hero-cover-img" id="capa-fundo" alt=""></div>
+                <div class="hero-figure" id="capa-figura"></div>
+                <div class="hero-body">
+                    <div class="hero-id">
+                        <h1 class="hero-name" id="capa-nome"></h1>
+                        <p class="hero-sub" id="capa-papel"></p>
+                    </div>
+                    <!-- "so-crianca" e "so-responsavel": o CSS esconde o que não é para quem está logado -->
+                    <ul class="hero-stats">
+                        <li class="hero-stat so-crianca">
+                            <span class="hero-stat-value hero-stat-moeda"><img class="moeda" src="../../assets/icons/coin-color.svg" alt=""> <span id="numero-moedas"></span></span>
+                            <span class="hero-stat-label">moedas</span>
+                        </li>
+                        <li class="hero-stat so-crianca">
+                            <span class="hero-stat-value hero-stat-xp"><i class="icone i-star"></i> <span id="numero-xp"></span></span>
+                            <span class="hero-stat-label">XP</span>
+                        </li>
+                        <li class="hero-stat so-responsavel">
+                            <span class="hero-stat-value" id="numero-criancas"></span>
+                            <span class="hero-stat-label">crianças</span>
+                        </li>
+                        <li class="hero-stat">
+                            <span class="hero-stat-value" id="numero-eventos"></span>
+                            <span class="hero-stat-label">eventos</span>
+                        </li>
+                    </ul>
+                    <div class="hero-actions">
+                        <a class="btn so-crianca" href="../setting/custom.html"><i class="icone i-paint"></i> Personalizar girafa</a>
+                        <a class="btn so-responsavel" href="../setting/setting.html"><i class="icone i-edit"></i> Editar perfil</a>
+                    </div>
+                </div>
             </header>
 
             <p id="mensagem" class="mensagem"></p>
 
-            <!-- só responsável: cartões das crianças (também filtram as tarefas) -->
-            <section id="family-section" class="family-section" hidden>
+            <!-- responsável sem nenhuma criança cadastrada -->
+            <div class="empty" id="sem-criancas" hidden>
+                <p>Ainda não há nenhuma criança na sua conta família.</p>
+                <a class="btn-primary" href="../family-account/family-account.html">Adicionar uma criança</a>
+            </div>
+
+            <!-- ===== família (só responsável): clicar numa criança filtra as tarefas ===== -->
+            <section class="family-section so-responsavel">
                 <h2 class="section-title">Família</h2>
-                <div class="family-container"></div>
+                <ul class="family-strip" id="familia"></ul>
             </section>
 
             <div class="profile-grid">
-                <section id="tasks-section" class="profile-main">
+                <!-- ===== tarefas ===== -->
+                <section class="profile-main">
                     <div class="section-head">
-                        <h2 class="section-title">Tarefas de hoje</h2>
-                        <div class="div-create-task"></div>
+                        <h2 class="section-title">Tarefas</h2>
+                        <button type="button" class="btn-primary so-responsavel" id="nova-tarefa"><i class="icone i-plus"></i> Nova tarefa</button>
                     </div>
-                    <section class="task-container">
-                        <div class="task-filters"></div>
-                        <section class="task-list"></section>
-                    </section>
+                    <!-- cada botão diz o que pedir para a API (status ou período) -->
+                    <div class="task-filters segmented" id="filtros">
+                        <button type="button" class="active" data-filtro="">Hoje</button>
+                        <button type="button" data-filtro="status=awaiting_approval">Em espera</button>
+                        <button type="button" data-filtro="status=late">Atrasadas</button>
+                        <button type="button" data-filtro="period=after">Próximas</button>
+                    </div>
+                    <div class="task-list" id="lista-tarefas"></div>
                 </section>
 
                 <aside class="profile-side">
-                    <!-- só criança -->
-                    <article id="child-level" hidden></article>
-                    <article id="child-goal" hidden></article>
+                    <!-- ===== meta (só criança) ===== -->
+                    <article class="goal-card so-crianca">
+                        <div class="goal-head">
+                            <span class="goal-icon"><i class="icone i-flag"></i></span>
+                            <h2 class="goal-label">Minha meta</h2>
+                        </div>
+                        <div id="meta"></div>
+                    </article>
 
-                    <article id="section-events" class="side-card">
+                    <!-- ===== eventos ===== -->
+                    <article class="side-card">
                         <div class="section-head">
                             <h2 class="section-title">Próximos eventos</h2>
-                            <div class="div-create-event"></div>
+                            <button type="button" class="btn btn-sm so-responsavel" id="novo-evento"><i class="icone i-plus"></i> Novo</button>
                         </div>
-                        <div class="events-list"></div>
+                        <div class="events-list" id="lista-eventos"></div>
                     </article>
                 </aside>
             </div>
         </main>
     </div>
+
+    <!-- janelinha de criar/editar tarefa. As crianças são colocadas pelo JS -->
+    <dialog id="dialogo-tarefa">
+        <div class="dialog-head">
+            <h2 class="dialog-title">Nova tarefa</h2>
+            <form method="dialog"><button class="btn btn-ghost btn-icon" aria-label="Fechar"><i class="icone i-close"></i></button></form>
+        </div>
+        <form class="form-stack" id="form-tarefa">
+            <div class="field">
+                <label for="tarefa-nome">O que precisa ser feito</label>
+                <input type="text" id="tarefa-nome" maxlength="100" placeholder="Arrumar a cama" required>
+            </div>
+            <div class="field">
+                <label for="tarefa-descricao">Detalhes (opcional)</label>
+                <textarea id="tarefa-descricao" rows="2"></textarea>
+            </div>
+            <div class="field">
+                <label for="tarefa-prazo">Até quando (pelo menos 30 minutos a partir de agora)</label>
+                <input type="datetime-local" id="tarefa-prazo" required>
+            </div>
+            <fieldset class="field">
+                <legend>Para quem</legend>
+                <div class="pick-group" id="tarefa-criancas"></div>
+            </fieldset>
+            <fieldset class="field">
+                <legend>Recompensa</legend>
+                <div class="pick-group">
+                    <label class="pick"><input type="radio" name="dificuldade" value="10" checked>
+                        <span class="pick-text"><strong>Fácil</strong><small>10 moedas, 10 XP</small></span></label>
+                    <label class="pick"><input type="radio" name="dificuldade" value="15">
+                        <span class="pick-text"><strong>Normal</strong><small>15 moedas, 15 XP</small></span></label>
+                    <label class="pick"><input type="radio" name="dificuldade" value="20">
+                        <span class="pick-text"><strong>Difícil</strong><small>20 moedas, 25 XP</small></span></label>
+                </div>
+            </fieldset>
+            <label class="check-row"><input type="checkbox" id="tarefa-foto"> Pedir uma foto como comprovação</label>
+            <p class="mensagem" id="tarefa-mensagem"></p>
+            <div class="dialog-actions">
+                <button type="submit" class="btn-primary">Criar tarefa</button>
+            </div>
+        </form>
+    </dialog>
+    <dialog id="dialogo-foto" class="dialog-largo">
+        <div class="dialog-head">
+            <h2 class="dialog-title">Foto de comprovação</h2>
+            <form method="dialog"><button class="btn btn-ghost btn-icon" aria-label="Fechar"><i class="icone i-close"></i></button></form>
+        </div>
+        <img class="foto-grande" id="foto-grande" alt="Foto enviada">
+    </dialog>
+
+    <dialog id="dialogo-evento">
+        <div class="dialog-head">
+            <h2 class="dialog-title">Novo evento</h2>
+            <form method="dialog"><button class="btn btn-ghost btn-icon" aria-label="Fechar"><i class="icone i-close"></i></button></form>
+        </div>
+        <form class="form-stack" id="form-evento">
+            <div class="field">
+                <label for="evento-nome">Nome do evento</label>
+                <input id="evento-nome" type="text" maxlength="30" placeholder="Aniversário da vovó" required>
+            </div>
+            <div class="field">
+                <label for="evento-data">Data</label>
+                <input id="evento-data" type="date" required>
+            </div>
+            <p class="mensagem" id="evento-mensagem"></p>
+            <div class="dialog-actions"><button type="submit" class="btn-primary">Criar evento</button></div>
+        </form>
+    </dialog>
+
+    <!-- aparece quando a criança sobe de nível -->
+    <dialog id="dialogo-nivel">
+        <div class="dialog-head">
+            <h2 class="dialog-title">Subiu de nível!</h2>
+            <form method="dialog"><button class="btn btn-ghost btn-icon" aria-label="Fechar"><i class="icone i-close"></i></button></form>
+        </div>
+        <div class="level-up">
+            <div class="level-up-badge" id="nivel-numero"></div>
+            <p>Suas tarefas renderam XP suficiente para subir de nível.</p>
+            <h4>Desbloqueado para a sua girafa</h4>
+            <ul class="level-up-items" id="nivel-itens"></ul>
+            <div class="dialog-actions">
+                <a class="btn" href="../setting/custom.html">Personalizar girafa</a>
+                <form method="dialog"><button class="btn-primary">Continuar</button></form>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- aparece se o backend estiver desligado (o api.js tira o "hidden") -->
+    <div id="aviso-offline" hidden>Não foi possível falar com o servidor. Confira se o backend está rodando.</div>
 </body>
 </html>

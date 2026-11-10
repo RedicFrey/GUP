@@ -1,19 +1,11 @@
 /* ==========================================================================
-   Resgates
+   redemption.css -> página "Resgates"
+   Uma linha por recompensa trocada. Ícone amarelo = falta entregar,
+   ícone verde = já foi entregue.
    ========================================================================== */
 
-#main-resgates {
+.redemption-page {
   max-width: 880px;
-}
-
-.redemption-history {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.filtro-criancas:empty {
-  display: none;
 }
 
 .redemption-list {
@@ -36,6 +28,7 @@
 .redemption-icon {
   display: grid;
   place-items: center;
+  font-size: 22px;
   width: 48px;
   height: 48px;
   background: var(--sun-soft);

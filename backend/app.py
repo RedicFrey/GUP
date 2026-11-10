@@ -10,6 +10,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from models import db
 from controllers import create_blueprints
 from error_handlers import register_error_handlers
+from seeds import popular_girafas
 
 load_dotenv()
 
@@ -66,7 +67,9 @@ def create_app():
     db.init_app(app)
 
     with app.app_context():
-        db.create_all()   # cria só as tabelas que ainda não existem
+        db.create_all()
+        if not os.environ.get("DATABASE_URL"):   # sem MySQL configurado: está no SQLite
+            popular_girafas()   # cria só as tabelas que ainda não existem
 
     @app.errorhandler(SQLAlchemyError)
     def database_error(e):

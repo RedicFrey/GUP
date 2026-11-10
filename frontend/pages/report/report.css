@@ -1,8 +1,10 @@
 /* ==========================================================================
-   Relatório mensal (gráfico em blocos de pixel)
+   report.css -> página "Relatório"
+   O gráfico é uma grade de quadradinhos coloridos (um por tarefa).
+   Do lado, a lista com os números de cada cor.
    ========================================================================== */
 
-#report-container {
+.report-page {
   max-width: 960px;
 }
 
@@ -15,15 +17,15 @@
   margin-bottom: 20px;
 }
 
+.chart-filters .chip-row {
+  margin-bottom: 0;
+}
+
 .filter-month {
   display: flex;
   flex-direction: column;
   gap: 6px;
   width: 200px;
-}
-
-#report-message {
-  margin-bottom: 16px;
 }
 
 .chart-container {
@@ -33,11 +35,12 @@
   padding: 28px;
 }
 
-.chart-info:empty {
+/* mês sem tarefas: a lista de números fica vazia e o gráfico ocupa tudo */
+#numeros:empty {
   display: none;
 }
 
-.chart-container:has(.chart-info:empty) {
+.chart-container:has(#numeros:empty) {
   grid-template-columns: 1fr;
 }
 
@@ -60,10 +63,6 @@
 .report-percent-text {
   max-width: 32ch;
   color: var(--text-2);
-}
-
-.report-percent-text span {
-  color: var(--text-3);
 }
 
 /* ---------- blocos: um por tarefa ---------- */
@@ -108,10 +107,6 @@
   padding: 10px 12px;
   border-radius: var(--r-sm);
   background: var(--night);
-}
-
-.report-label {
-  color: var(--text-2);
 }
 
 .report-values strong {

@@ -1,9 +1,23 @@
 /* ==========================================================================
-   GUP - componentes compartilhados
-   Botões, campos, chips, cartões, diálogos, avatar, mensagens e paginação.
-   Estilos de elementos "soltos" (button, input, dialog) usam :where() para
-   ter especificidade zero: qualquer classe consegue sobrescrever.
+   style.css -> peças que aparecem em várias páginas
+   Títulos, botões, campos, filtros, etiquetas, cartões, janelinhas...
+   As cores e tamanhos (var(--...)) estão definidos no global.css.
    ========================================================================== */
+
+/* ---------- coisas só da criança / só do responsável ----------
+   O sidebar.js coloca a classe "crianca" ou "responsavel" no <body>.
+   Enquanto o perfil não carrega, as duas ficam escondidas. */
+body:not(.crianca) .so-crianca,
+body:not(.responsavel) .so-responsavel,
+body:not(.admin) .so-admin {
+  display: none !important;
+}
+
+/* responsável sem nenhuma criança: o aviso #sem-criancas aparece e
+   tudo que vem depois dele na página some (o "~" pega os irmãos seguintes) */
+#sem-criancas:not([hidden]) ~ * {
+  display: none !important;
+}
 
 /* ---------- títulos de página ---------- */
 
@@ -16,31 +30,17 @@
   margin-bottom: 28px;
 }
 
-.page-title,
-.title-page {
+.page-title {
   font-family: var(--font-display);
   font-weight: 400;
   font-size: var(--ds-lg);
   line-height: 1.1;
-  color: var(--text);
-  letter-spacing: 0.5px;
 }
 
 .page-sub {
   margin-top: 8px;
   color: var(--text-2);
   max-width: 60ch;
-}
-
-.page-title + .main-container,
-.page-title + section {
-  margin-top: 24px;
-}
-
-.main-container {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
 }
 
 .section-head {
@@ -53,16 +53,12 @@
 }
 
 .section-title {
-  font-family: var(--font-body);
-  font-weight: 600;
   font-size: var(--fs-xl);
-  color: var(--text);
+  font-weight: 600;
 }
 
 .back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  display: inline-block;
   margin-bottom: 20px;
   color: var(--text-2);
   text-decoration: none;
@@ -75,13 +71,13 @@
 
 /* ---------- botões ---------- */
 
-:where(button) {
+button {
   font: inherit;
   color: inherit;
   cursor: pointer;
 }
 
-:where(button:not([class])),
+/* botão comum */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -93,25 +89,19 @@
   border-radius: var(--r-pill);
   background: var(--panel-2);
   color: var(--text);
-  font-family: var(--font-body);
   font-size: var(--fs-sm);
   font-weight: 500;
-  line-height: 1.2;
   text-decoration: none;
   white-space: nowrap;
-  transition: background-color 0.15s, border-color 0.15s, transform 0.08s;
 }
 
-:where(button:not([class])):hover,
 .btn:hover {
   background: var(--panel-3);
   border-color: var(--text-3);
 }
 
-/* Botão principal: amarelo-girafa com sombra "de pixel" que afunda ao clicar */
-:where(button[type="submit"]:not([class])),
-.btn-primary,
-.btn-create {
+/* botão principal: amarelo-girafa com uma "sombra de pixel" que afunda ao clicar */
+.btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -122,43 +112,23 @@
   border-radius: var(--r-md);
   background: var(--sun);
   color: var(--sun-ink);
-  font-family: var(--font-body);
   font-size: var(--fs-md);
   font-weight: 600;
-  line-height: 1.2;
-  white-space: nowrap;
   text-decoration: none;
+  white-space: nowrap;
   box-shadow: 0 4px 0 var(--sun-deep);
-  transition: transform 0.08s, box-shadow 0.08s, filter 0.15s;
-  cursor: pointer;
 }
 
-:where(button[type="submit"]:not([class])):hover,
-.btn-primary:hover,
-.btn-create:hover {
+.btn-primary:hover {
   filter: brightness(1.06);
-  background: var(--sun);
-  border: 0;
 }
 
-:where(button[type="submit"]:not([class])):active,
-.btn-primary:active,
-.btn-create:active {
+.btn-primary:active {
   transform: translateY(3px);
   box-shadow: 0 1px 0 var(--sun-deep);
 }
 
-.btn-secondary {
-  background: var(--sky-deep);
-  border-color: var(--sky-deep);
-  color: #fff;
-}
-
-.btn-secondary:hover {
-  background: #5d69e6;
-  border-color: #5d69e6;
-}
-
+/* variações (usadas junto com .btn) */
 .btn-ghost {
   background: transparent;
   border-color: transparent;
@@ -194,10 +164,17 @@
   border-color: #62dd99;
 }
 
+/* tamanhos */
 .btn-sm {
   min-height: 32px;
   padding: 4px 12px;
   font-size: var(--fs-xs);
+}
+
+.btn-primary.btn-sm {
+  min-height: 34px;
+  font-size: var(--fs-sm);
+  box-shadow: 0 3px 0 var(--sun-deep);
 }
 
 .btn-block {
@@ -206,20 +183,19 @@
 
 .btn-icon {
   width: 40px;
-  min-width: 40px;
   padding: 0;
 }
 
-button:disabled,
-.btn[aria-disabled="true"] {
+button:disabled {
   opacity: 0.45;
   cursor: not-allowed;
-  transform: none !important;
 }
 
-/* ---------- campos ---------- */
+/* ---------- campos de formulário ---------- */
 
-:where(input:not([type="checkbox"], [type="radio"], [type="file"], [type="range"]), select, textarea) {
+input:not([type="checkbox"], [type="radio"], [type="file"]),
+select,
+textarea {
   width: 100%;
   min-height: 44px;
   padding: 10px 14px;
@@ -227,43 +203,61 @@ button:disabled,
   border-radius: var(--r-sm);
   background: var(--night);
   color: var(--text);
-  font-family: var(--font-body);
-  font-size: var(--fs-md);
-  transition: border-color 0.15s, box-shadow 0.15s;
+  font: inherit;
 }
 
-:where(input, select, textarea)::placeholder {
+textarea {
+  resize: vertical;
+}
+
+input::placeholder,
+textarea::placeholder {
   color: var(--text-3);
 }
 
-:where(input:not([type="checkbox"], [type="radio"]), select, textarea):focus {
+input:focus,
+textarea:focus {
   outline: none;
   border-color: var(--sky);
   box-shadow: 0 0 0 3px var(--sky-soft);
 }
 
-:where(input[type="checkbox"], input[type="radio"]) {
+input[type="checkbox"],
+input[type="radio"] {
   width: 18px;
   height: 18px;
   accent-color: var(--sun);
-  cursor: pointer;
 }
 
-:where(input[type="date"], input[type="datetime-local"], input[type="month"])::-webkit-calendar-picker-indicator {
+/* deixa o ícone do calendário claro no fundo escuro */
+input::-webkit-calendar-picker-indicator {
   filter: invert(0.8);
-  cursor: pointer;
 }
 
-:where(label) {
+label,
+legend {
   color: var(--text-2);
   font-size: var(--fs-sm);
   font-weight: 500;
 }
 
+/* formulário em coluna: um campo embaixo do outro */
+.form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* um campo = label em cima + input embaixo */
 .field {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  border: 0;
+}
+
+.field > legend {
+  margin-bottom: 8px;
 }
 
 .check-row {
@@ -275,65 +269,57 @@ button:disabled,
   font-weight: 400;
 }
 
-/* formulários soltos dentro de diálogos e páginas: label em cima, campo embaixo */
-.form-stack,
-dialog form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.form-stack > div,
-dialog form > div {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-dialog form > div:has(> input[type="checkbox"]:only-of-type) {
-  flex-direction: row-reverse;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 10px;
-}
-
-dialog form > button[type="submit"] {
-  align-self: flex-start;
-  margin-top: 4px;
-}
-
-/* grupo de opções marcáveis (crianças da tarefa, tipo de ajuste...) */
-.option-group {
+/* opções em forma de cartão (escolher crianças, dificuldade...) */
+.pick-group {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-.option-group > label,
-dialog form > div > label:has(> input[type="checkbox"]),
-dialog form > div > div > label:has(> input[type="radio"]),
-dialog form > div > label:has(> input[type="radio"]) {
+.pick {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
+  gap: 10px;
+  min-height: 44px;
+  padding: 6px 14px;
   border: 1px solid var(--line);
-  border-radius: var(--r-pill);
-  background: var(--panel-2);
+  border-radius: var(--r-md);
+  background: var(--night);
   color: var(--text);
-  font-size: var(--fs-sm);
+  font-size: 15px;
   cursor: pointer;
 }
 
-dialog form > div > label:has(> input:checked) {
+/* o radio/checkbox fica invisível: o cartão inteiro é que acende */
+.pick input {
+  position: absolute;
+  opacity: 0;
+}
+
+.pick:has(input:checked) {
   border-color: var(--sun);
   background: var(--sun-soft);
 }
 
-/* ---------- chips e grupos segmentados ---------- */
+.pick:has(input:focus-visible) {
+  outline: 3px solid var(--sky);
+}
 
-.segmented,
-.task-card-filter {
+.pick-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.pick-text small {
+  color: var(--text-3);
+  font-size: var(--fs-xs);
+}
+
+/* ---------- filtros ---------- */
+
+/* grupo de botões grudados (Tudo / Em espera / Atrasadas) */
+.segmented {
   display: inline-flex;
   flex-wrap: wrap;
   gap: 4px;
@@ -343,37 +329,37 @@ dialog form > div > label:has(> input:checked) {
   border: 1px solid var(--line);
 }
 
-.segmented > button,
-.segmented > a,
-.task-card-filter > button {
+.segmented > button {
   min-height: 34px;
   padding: 6px 14px;
   border: 0;
   border-radius: var(--r-pill);
   background: transparent;
   color: var(--text-2);
-  font-family: var(--font-body);
   font-size: var(--fs-sm);
   font-weight: 500;
-  text-decoration: none;
-  cursor: pointer;
-  transition: background-color 0.15s, color 0.15s;
 }
 
-.segmented > button:hover,
-.segmented > a:hover,
-.task-card-filter > button:hover {
+.segmented > button:hover {
   color: var(--text);
   background: var(--panel-2);
 }
 
-.segmented > .active,
-.segmented > .ativo,
-.segmented > [aria-pressed="true"],
-.segmented > [aria-current="page"],
-.task-card-filter > button.active {
+.segmented > button.active {
   background: var(--sky-deep);
   color: #fff;
+}
+
+/* botão redondinho com avatar (escolher criança) */
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.chip-row:empty {
+  display: none;
 }
 
 .chip {
@@ -386,15 +372,8 @@ dialog form > div > label:has(> input:checked) {
   border-radius: var(--r-pill);
   background: var(--panel);
   color: var(--text-2);
-  font-family: var(--font-body);
   font-size: var(--fs-sm);
   font-weight: 500;
-  text-decoration: none;
-  transition: border-color 0.15s, background-color 0.15s;
-}
-
-.chip:not(:has(.avatar)) {
-  padding-left: 14px;
 }
 
 .chip:hover {
@@ -402,28 +381,13 @@ dialog form > div > label:has(> input:checked) {
   color: var(--text);
 }
 
-.chip.ativo,
-.chip.active,
-.chip[aria-current="true"] {
+.chip.ativo {
   border-color: var(--sun);
   background: var(--sun-soft);
   color: var(--text);
 }
 
-.chip-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-}
-
-.chip-row-label {
-  color: var(--text-3);
-  font-size: var(--fs-sm);
-  margin-right: 4px;
-}
-
-/* ---------- etiquetas de status ---------- */
+/* ---------- etiquetas, moedas e XP ---------- */
 
 .tag {
   display: inline-flex;
@@ -431,13 +395,12 @@ dialog form > div > label:has(> input:checked) {
   gap: 6px;
   padding: 3px 10px;
   border-radius: var(--r-pill);
-  background: var(--panel-2);
-  color: var(--text-2);
   font-size: var(--fs-xs);
   font-weight: 600;
   white-space: nowrap;
 }
 
+/* quadradinho antes do texto */
 .tag::before {
   content: "";
   width: 6px;
@@ -450,20 +413,7 @@ dialog form > div > label:has(> input:checked) {
 .tag-done { background: var(--leaf-soft); color: var(--leaf); }
 .tag-late { background: var(--berry-soft); color: var(--berry); }
 
-/* selo de nível (perfil, girafa) */
-.level-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 10px 3px;
-  background: var(--sky-deep);
-  color: #fff;
-  font-family: var(--font-display);
-  font-size: 13px;
-  line-height: 1.2;
-  clip-path: var(--pixel-corners-sm);
-}
-
-/* moedas e XP sempre com a mesma cor em todo o app */
+/* moedas sempre amarelas e XP sempre lilás, em todo o site */
 .coin-amount,
 .xp-amount {
   display: inline-flex;
@@ -476,12 +426,18 @@ dialog form > div > label:has(> input:checked) {
 .coin-amount { color: var(--sun); }
 .xp-amount { color: var(--sky); }
 
-.px-icon {
-  flex: none;
-  image-rendering: pixelated;
+/* selo de nível */
+.level-badge {
+  display: inline-flex;
+  padding: 4px 10px 3px;
+  background: var(--sky-deep);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 13px;
+  clip-path: var(--pixel-corners-sm);
 }
 
-/* ---------- cartões ---------- */
+/* ---------- cartões e avatar ---------- */
 
 .card {
   background: var(--panel);
@@ -490,43 +446,78 @@ dialog form > div > label:has(> input:checked) {
   padding: 20px;
 }
 
-.card-flat {
-  background: var(--panel);
-  border-radius: var(--r-md);
-  padding: 16px 18px;
+/* avatar: uma das 6 imagens da pasta assets/avatars.
+   O clip-path recorta os cantos em "degrau", como um pixel. */
+.avatar {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  image-rendering: pixelated;
+  clip-path: var(--pixel-corners-sm);
 }
 
-/* ---------- avatar em pixel ---------- */
+/* tamanhos: pp = bem pequeno ... gg = bem grande */
+.avatar-pp { width: 24px; height: 24px; }
+.avatar-p { width: 28px; height: 28px; }
+.avatar-g { width: 64px; height: 64px; clip-path: var(--pixel-corners); }
+.avatar-gg { width: 112px; height: 112px; clip-path: var(--pixel-corners); }
 
-.avatar {
-  --av-size: 40px;
+/* ---------- ícones ----------
+   Cada ícone é um arquivo .svg em assets/icons.
+   O truque: o <i class="icone i-gift"> é um quadrado pintado com a cor do
+   texto (currentColor), e o mask-image "recorta" o formato do ícone.
+   Assim o ícone muda de cor junto com o texto, só com CSS. */
+.icone {
   display: inline-block;
   flex: none;
-  width: var(--av-size);
-  height: var(--av-size);
-  clip-path: var(--pixel-corners-sm);
+  width: 1.15em;
+  height: 1.15em;
+  background: currentColor;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  vertical-align: -0.2em;
+}
+
+.icone-g { width: 32px; height: 32px; }
+
+.i-camera { mask-image: url(../assets/icons/camera.svg); }
+.i-chart { mask-image: url(../assets/icons/chart.svg); }
+.i-check { mask-image: url(../assets/icons/check.svg); }
+.i-clock { mask-image: url(../assets/icons/clock.svg); }
+.i-close { mask-image: url(../assets/icons/close.svg); }
+.i-coin { mask-image: url(../assets/icons/coin.svg); }
+.i-edit { mask-image: url(../assets/icons/edit.svg); }
+.i-flag { mask-image: url(../assets/icons/flag.svg); }
+.i-gear { mask-image: url(../assets/icons/gear.svg); }
+.i-gift { mask-image: url(../assets/icons/gift.svg); }
+.i-lock { mask-image: url(../assets/icons/lock.svg); }
+.i-logout { mask-image: url(../assets/icons/logout.svg); }
+.i-menu { mask-image: url(../assets/icons/menu.svg); }
+.i-paint { mask-image: url(../assets/icons/paint.svg); }
+.i-plus { mask-image: url(../assets/icons/plus.svg); }
+.i-star { mask-image: url(../assets/icons/star.svg); }
+.i-swap { mask-image: url(../assets/icons/swap.svg); }
+.i-ticket { mask-image: url(../assets/icons/ticket.svg); }
+.i-trash { mask-image: url(../assets/icons/trash.svg); }
+.i-user { mask-image: url(../assets/icons/user.svg); }
+.i-users { mask-image: url(../assets/icons/users.svg); }
+
+/* a moeda colorida não muda de cor, então é uma imagem normal */
+.moeda {
+  width: 1.1em;
+  height: 1.1em;
+  vertical-align: -0.2em;
   image-rendering: pixelated;
 }
 
-.avatar svg {
-  width: 100%;
-  height: 100%;
-}
+/* ---------- vazio, mensagens e carregando ---------- */
 
-.avatar-lg {
-  clip-path: var(--pixel-corners);
-}
-
-/* ---------- estados vazios e mensagens ---------- */
-
-.empty,
-.container-empty {
-  display: flex !important;
+.empty {
+  display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   gap: 10px;
-  padding: 40px 24px !important;
+  padding: 40px 24px;
   border: 1px dashed var(--line);
   border-radius: var(--r-lg);
   text-align: center;
@@ -534,376 +525,75 @@ dialog form > div > label:has(> input:checked) {
   grid-column: 1 / -1;
 }
 
-.empty p,
-.p-empty {
-  color: var(--text-2);
-  font-size: var(--fs-md) !important;
-  font-family: var(--font-body) !important;
-  max-width: 44ch;
-}
-
-.empty .px-icon {
+.empty .icone {
   color: var(--text-3);
-}
-
-.mensagem {
-  font-size: var(--fs-sm);
-  color: var(--text-2);
 }
 
 .mensagem:empty {
   display: none;
 }
 
-.mensagem.erro {
-  display: block;
+.mensagem.erro,
+.mensagem.sucesso {
   padding: 10px 14px;
   border-radius: var(--r-sm);
+  font-size: var(--fs-sm);
+}
+
+.mensagem.erro {
   background: var(--berry-soft);
   color: #ffb3bb;
 }
 
 .mensagem.sucesso {
-  display: block;
-  padding: 10px 14px;
-  border-radius: var(--r-sm);
   background: var(--leaf-soft);
   color: var(--leaf);
 }
 
-/* aviso de "sem crianças" usado em várias páginas */
-.without-children {
-  display: flex;
-  justify-content: center;
-}
-
-#text-about-without-children {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  padding: 40px 24px;
-  border: 1px dashed var(--line);
-  border-radius: var(--r-lg);
-  text-align: center;
-}
-
-#text-about-without-children p {
-  color: var(--text-2);
-}
-
-#text-about-without-children a {
-  display: inline-flex;
-  align-items: center;
-  min-height: 42px;
-  padding: 8px 20px;
-  border-radius: var(--r-md);
-  background: var(--sun);
-  color: var(--sun-ink);
-  font-weight: 600;
-  text-decoration: none;
-  box-shadow: 0 4px 0 var(--sun-deep);
-}
-
-/* ---------- diálogos ---------- */
-
-:where(dialog) {
-  margin: auto;
-  width: min(520px, calc(100vw - 32px));
-  max-height: calc(100dvh - 48px);
-  overflow-y: auto;
-  padding: 24px;
-  border: 1px solid var(--line);
-  border-radius: var(--r-lg);
-  background: var(--panel);
-  color: var(--text);
-  font-family: var(--font-body);
-  box-shadow: 0 24px 60px rgba(4, 6, 20, 0.55);
-}
-
-:where(dialog)::backdrop {
-  background: rgba(6, 9, 24, 0.72);
-  backdrop-filter: blur(3px);
-}
-
-:where(dialog[open]) {
-  animation: dialog-in 0.18s ease-out;
-}
-
-@keyframes dialog-in {
-  from { opacity: 0; transform: translateY(8px) scale(0.98); }
-  to { opacity: 1; transform: none; }
-}
-
-:where(dialog) h3,
-:where(dialog) h4,
-.dialog-title {
-  font-family: var(--font-body);
-  font-size: var(--fs-xl);
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: 16px;
-}
-
-/* a primeira linha dos diálogos antigos é só o botão Voltar/Fechar: vira um "x" discreto */
-:where(dialog) > div:first-child:has(> button:only-child) {
-  display: flex;
-  justify-content: flex-end;
-  margin: -8px -8px 4px 0;
-}
-
-:where(dialog) > div:first-child > button:only-child {
-  min-height: 32px;
-  padding: 4px 12px;
-  border-color: transparent;
-  background: transparent;
-  color: var(--text-2);
-  font-size: var(--fs-sm);
-}
-
-:where(dialog) > div:first-child > button:only-child:hover {
-  background: var(--panel-2);
-  color: var(--text);
-}
-
-.dialog-actions {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-/* confirmação (warning) */
-#warning-modal {
-  width: min(400px, calc(100vw - 32px));
-  padding: 24px;
-}
-
-#warning-modal > div:first-child {
-  display: block;
-  margin: 0 0 20px;
-  font-size: var(--fs-lg);
-  color: var(--text);
-  line-height: 1.4;
-}
-
-#warning-modal > div:last-child {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-}
-
-#warning-modal .warning-btn {
-  min-height: 40px;
-  padding: 8px 18px;
-  border-radius: var(--r-pill);
-  border: 1px solid var(--line);
-  background: var(--panel-2);
-  color: var(--text);
-  font-weight: 500;
-}
-
-#warning-modal #warning-confirm {
-  border-color: var(--berry);
+/* faixa vermelha quando o backend está desligado.
+   Ela está em todo HTML com "hidden"; o api.js tira o hidden se o fetch falhar. */
+#aviso-offline {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5000;
+  padding: 12px 16px;
   background: var(--berry);
   color: #2a0007;
   font-weight: 600;
-}
-
-#warning-modal[data-tone="primary"] #warning-confirm {
-  border-color: var(--sun);
-  background: var(--sun);
-  color: var(--sun-ink);
-}
-
-/* foto de comprovação */
-.photo-dialog {
-  width: min(720px, calc(100vw - 32px));
-}
-
-.photo-dialog img {
-  width: 100%;
-  border-radius: var(--r-md);
-  margin-top: 8px;
-}
-
-/* ---------- paginação ---------- */
-
-.paginacao {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  margin-top: 20px;
-}
-
-.paginacao > button {
-  min-width: 40px;
-  min-height: 40px;
-  padding: 6px 12px;
-  border: 1px solid var(--line);
-  border-radius: var(--r-sm);
-  background: var(--panel);
-  color: var(--text-2);
-  font-family: var(--font-body);
-  font-size: var(--fs-sm);
-}
-
-.paginacao > button:hover:not(:disabled) {
-  background: var(--panel-2);
-  color: var(--text);
-}
-
-.paginacao > button.active {
-  border-color: var(--sky-deep);
-  background: var(--sky-deep);
-  color: #fff;
-}
-
-.paginacao > span {
-  color: var(--text-3);
-  padding: 0 4px;
-}
-
-.paginacao-erro {
-  width: 100%;
   text-align: center;
-  color: var(--berry);
-  font-size: var(--fs-sm);
 }
 
-.mostrar-mais,
-.mostrar-menos {
-  min-height: 40px;
-  padding: 8px 18px;
-  border: 1px solid var(--line);
-  border-radius: var(--r-pill);
-  background: transparent;
-  color: var(--text-2);
-  font-family: var(--font-body);
-  font-size: var(--fs-sm);
-  font-weight: 500;
-}
+/* ---------- janelinhas (dialog) ---------- */
 
-.mostrar-mais:hover,
-.mostrar-menos:hover {
-  background: var(--panel-2);
-  color: var(--text);
-}
-
-/* ---------- barra de progresso (meta, nível) ---------- */
-
-.progress {
-  position: relative;
-  height: 14px;
-  background: var(--night);
-  border: 2px solid var(--line);
-  clip-path: var(--pixel-corners-sm);
-  overflow: hidden;
-}
-
-.progress > span {
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: var(--value, 0%);
-  /* "blocos" de pixel dentro da barra */
-  background:
-    repeating-linear-gradient(90deg, transparent 0 10px, rgba(0, 0, 0, 0.18) 10px 12px),
-    var(--bar-color, var(--sun));
-  transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-/* ---------- carregando ---------- */
-
-.loading {
-  color: var(--text-3);
-  font-size: var(--fs-sm);
-  padding: 12px 0;
-}
-
-/* quando o conteúdo vazio já é um .empty, o container não precisa de borda própria */
-.container-empty:has(> .empty) {
-  border: 0;
-  padding: 0 !important;
-}
-
-/* ---------- opções marcáveis em forma de cartão (crianças, recompensa...) ---------- */
-
-.pick-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.pick {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 44px;
-  padding: 6px 14px 6px 8px;
-  border: 1px solid var(--line);
-  border-radius: var(--r-md);
-  background: var(--night);
-  color: var(--text);
-  font-size: 15px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: border-color 0.15s, background-color 0.15s;
-}
-
-.pick:not(:has(.avatar)) {
-  padding-left: 14px;
-}
-
-.pick input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.pick:hover {
-  border-color: var(--text-3);
-}
-
-.pick:has(input:checked) {
-  border-color: var(--sun);
-  background: var(--sun-soft);
-}
-
-.pick:has(input:focus-visible) {
-  outline: 3px solid var(--sky);
-  outline-offset: 2px;
-}
-
-.pick-reward-text {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.25;
-}
-
-.pick-reward-text small {
-  color: var(--text-3);
-  font-size: var(--fs-xs);
-  font-weight: 400;
-}
-
-/* ---------- cabeçalho padrão dos diálogos (título + fechar) ---------- */
-
-.task-dialog {
+dialog {
+  margin: auto;
   width: min(560px, calc(100vw - 32px));
+  max-height: calc(100dvh - 48px);
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--panel);
+  color: var(--text);
 }
 
-.task-dialog-wide {
+/* o fundo escuro atrás da janelinha */
+dialog::backdrop {
+  background: rgba(6, 9, 24, 0.72);
+}
+
+.dialog-largo {
   width: min(720px, calc(100vw - 32px));
 }
 
-.task-dialog-head {
+/* o X de fechar fica num <form method="dialog">: clicar nele fecha
+   a janelinha sozinho, sem JavaScript */
+.dialog-head form {
+  display: contents;
+}
+
+.dialog-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -911,26 +601,42 @@ dialog form > div > label:has(> input:checked) {
   margin-bottom: 18px;
 }
 
-.task-dialog-head .dialog-title {
-  margin: 0;
+.dialog-title {
+  font-size: var(--fs-xl);
+  font-weight: 600;
 }
 
-/* grupos de campos */
-fieldset.field,
-.task-form fieldset {
-  border: 0;
-  min-width: 0;
-}
-
-fieldset.field > legend {
-  margin-bottom: 8px;
+.dialog-text {
   color: var(--text-2);
-  font-size: var(--fs-sm);
-  font-weight: 500;
+  margin-bottom: 8px;
 }
 
-dialog textarea,
-.task-form textarea {
-  resize: vertical;
-  min-height: 64px;
+.dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.foto-grande {
+  width: 100%;
+  border-radius: var(--r-md);
+}
+
+/* ---------- barra de progresso ---------- */
+
+/* barra da meta: o <span> de dentro tem a largura da porcentagem */
+.progress {
+  height: 14px;
+  background: var(--night);
+  border: 2px solid var(--line);
+  clip-path: var(--pixel-corners-sm);
+}
+
+.progress > span {
+  display: block;
+  height: 100%;
+  /* listrinhas escuras para parecer "blocos" de pixel */
+  background: repeating-linear-gradient(90deg, transparent 0 10px, rgba(0, 0, 0, 0.18) 10px 12px), var(--sun);
 }

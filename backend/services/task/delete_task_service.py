@@ -4,7 +4,6 @@ from exceptions import NotFound
 
 
 class DeleteTaskService:
-    """O responsável exclui uma tarefa da família (as atribuições saem em cascata)."""
 
     def __init__(self, connection):
         self.connection = connection

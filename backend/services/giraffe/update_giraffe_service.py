@@ -20,6 +20,7 @@ class UpdateGiraffeService:
         if not changes:
             raise InvalidData("Envie o que deseja alterar: color_id, background_id ou accessory_id.")
 
+        print("teste 1")
         giraffe = self.giraffe_repo.find_by_child(profile_id)
         if giraffe is None:
             raise NotFound("Girafa não encontrada para este perfil.")
@@ -40,7 +41,7 @@ class UpdateGiraffeService:
             if item is None:
                 raise NotFound(f"Item não encontrado em {field}.")
             if not item.is_unlocked_for(level):
-                raise InvalidData(f"Item bloqueado: exige nível {item.required_level}.")
+                raise InvalidData(f"Item desbloqueado: exige nível {item.required_level}.")
 
         giraffe.atualizar(**changes)
         db.session.commit()

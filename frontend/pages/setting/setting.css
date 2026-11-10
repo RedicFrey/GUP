@@ -1,5 +1,7 @@
 /* ==========================================================================
-   Configurações
+   setting.css -> página "Configurações"
+   Grupos (Seu perfil, Sua girafa, Família, Notificações) e, dentro de cada
+   grupo, "linhas" com o texto à esquerda e o botão à direita.
    ========================================================================== */
 
 .settings-page {
@@ -27,16 +29,11 @@
   font-size: var(--fs-sm);
 }
 
-#setting-containt {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-
 .settings-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-bottom: 32px;
 }
 
 .settings-group-title {
@@ -44,12 +41,6 @@
   color: var(--text-2);
   font-size: var(--fs-sm);
   font-weight: 600;
-}
-
-.profile-view {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 
 /* uma linha: texto à esquerda, ação à direita */
@@ -65,38 +56,21 @@
   border: 1px solid var(--line);
 }
 
-.settings-row.is-editing {
-  border-color: var(--sky);
-}
-
 .settings-row-text {
   display: flex;
   flex-direction: column;
   gap: 4px;
   flex: 1 1 260px;
   min-width: 0;
-}
-
-.settings-row-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
   color: var(--text);
   font-size: var(--fs-md);
   font-weight: 500;
 }
 
-.settings-row-label .px-icon {
-  color: var(--text-3);
-}
-
-.settings-row-value {
-  color: var(--text-2);
-}
-
 .settings-row-hint {
   color: var(--text-3);
   font-size: var(--fs-sm);
+  font-weight: 400;
 }
 
 .settings-row-text input:not([type="checkbox"]) {
@@ -104,39 +78,17 @@
   margin-top: 4px;
 }
 
-.settings-row-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
 .settings-row-message {
   width: 100%;
 }
 
-.btn-remove-pin:hover,
-#btn-remove-email:hover {
-  color: var(--berry);
+/* a linha do interruptor inteira é clicável (é um <label>) */
+label.settings-row {
+  cursor: pointer;
 }
 
-/* campo de e-mail "trancado" parece texto comum */
-.input-blocked {
-  padding-left: 0 !important;
-  border-color: transparent !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  color: var(--text-2) !important;
-  min-height: 0 !important;
-  cursor: default;
-}
-
-#notification-permissions {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-/* interruptor liga/desliga */
+/* interruptor liga/desliga: é um checkbox normal com a aparência trocada.
+   appearance: none tira o quadradinho padrão e o ::after vira a "bolinha". */
 .switch {
   appearance: none;
   -webkit-appearance: none;
@@ -173,10 +125,6 @@
   background: #fff;
 }
 
-.switch:disabled {
-  opacity: 0.5;
-}
-
 /* ---------- prévia da girafa (criança) ---------- */
 
 .giraffe-row {
@@ -186,7 +134,7 @@
   gap: 20px;
 }
 
-.giraffe-row .giraffe-scene {
+#mini-girafa {
   width: 180px;
 }
 
@@ -195,7 +143,13 @@
     grid-template-columns: 1fr;
   }
 
-  .giraffe-row .giraffe-scene {
+  #mini-girafa {
     width: 100%;
   }
+}
+
+#interruptores {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }

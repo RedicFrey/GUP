@@ -1,18 +1,11 @@
 /* ==========================================================================
-   Moedas (saldo + extrato)
+   coin-history.css -> página "Moedas"
+   Em cima o saldo (cartão amarelado), embaixo o extrato separado por dia,
+   igual extrato de banco: verde = entrou, vermelho = saiu.
    ========================================================================== */
 
 .coin-page {
   max-width: 820px;
-}
-
-.coin-history-filters {
-  margin-bottom: 20px;
-}
-
-.coin-history-filters:empty,
-.filter-children:empty {
-  display: none;
 }
 
 /* ---------- saldo ---------- */
@@ -30,10 +23,6 @@
     radial-gradient(circle at 100% 0%, rgba(255, 194, 61, 0.16), transparent 55%),
     var(--panel);
   border: 1px solid var(--line);
-}
-
-.coin-balance-card:empty {
-  display: none;
 }
 
 .balance-who {
@@ -70,17 +59,6 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-}
-
-.coin-day {
-  margin: 14px 0 4px;
-  color: var(--text-3);
-  font-size: var(--fs-sm);
-  font-weight: 600;
-}
-
-.coin-day:first-child {
-  margin-top: 0;
 }
 
 .coin-row {
@@ -125,13 +103,6 @@
 .coin-credit .coin-row-amount { color: var(--leaf); }
 .coin-debit .coin-badge { background: var(--berry-soft); color: var(--berry); }
 .coin-debit .coin-row-amount { color: var(--berry); }
-.coin-zero .coin-badge { background: var(--panel-2); color: var(--text-3); }
-.coin-zero .coin-row-amount { color: var(--text-3); }
-
-.coin-minus {
-  color: var(--berry);
-  font-weight: 700;
-}
 
 @media (max-width: 520px) {
   .coin-balance-card {
@@ -142,7 +113,7 @@
     font-size: var(--ds-lg);
   }
 
-  .coin-statement .section-head {
+  .section-head {
     flex-direction: column;
     align-items: flex-start;
   }

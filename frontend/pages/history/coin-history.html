@@ -5,38 +5,103 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
     <title>Moedas - GUP</title>
-    <script type="module" src="./coin-history-js/coin-history.js"></script>
     <link rel="stylesheet" href="../../styles/global.css">
     <link rel="stylesheet" href="../../styles/style.css">
     <link rel="stylesheet" href="../../components/sidebar/sidebar.css">
     <link rel="stylesheet" href="./coin-history.css">
+    <script type="module" src="../../components/sidebar/sidebar.js"></script>
+    <script type="module" src="./coin-history.js"></script>
 </head>
 <body>
+    <!-- ===== menu lateral (igual em todas as páginas) =====
+         No celular ele vira um "popover": o botão ☰ lá embaixo abre e fecha sozinho. -->
+    <nav id="menu-nav" popover>
+        <a class="nav-brand" href="../home/dashboard.html"><img src="../../assets/img/color_primary.png" alt=""> GUP</a>
+        <!-- o sidebar.js coloca aqui o nome e o avatar de quem está logado -->
+        <a class="nav-player" href="../home/dashboard.html"></a>
+        <ul class="sidebar-pages">
+            <li><a class="sidebar-link" href="../home/dashboard.html"><i class="icone i-user"></i> Meu perfil</a></li>
+            <li><a class="sidebar-link" href="../reward/reward.html"><i class="icone i-gift"></i> Recompensas</a></li>
+            <li><a class="sidebar-link" href="../redemption/redemption.html"><i class="icone i-ticket"></i> Resgates</a></li>
+            <li><a class="sidebar-link" href="../history/coin-history.html" aria-current="page"><i class="icone i-coin"></i> Moedas</a></li>
+            <li><a class="sidebar-link" href="../report/report.html"><i class="icone i-chart"></i> Relatório</a></li>
+            <li><a class="sidebar-link" href="../setting/setting.html"><i class="icone i-gear"></i> Configurações</a></li>
+        </ul>
+        <div class="nav-foot">
+            <a class="sidebar-link" href="../choose-profile/profiles.html"><i class="icone i-swap"></i> Trocar perfil</a>
+            <button type="button" class="sidebar-link btn-logout"><i class="icone i-logout"></i> Sair da conta</button>
+        </div>
+    </nav>
+
+    <!-- barra do topo: só aparece no celular -->
+    <header class="topbar">
+        <button type="button" class="btn-menu" popovertarget="menu-nav" aria-label="Abrir menu"><i class="icone i-menu"></i></button>
+        <a class="nav-brand" href="../home/dashboard.html"><img src="../../assets/img/color_primary.png" alt=""> GUP</a>
+    </header>
+
     <div class="app-layout">
-        <main class="page coin-page" id="main-coin-history">
+        <main class="page coin-page">
             <header class="page-head">
                 <div>
                     <h1 class="page-title">Moedas</h1>
                     <p class="page-sub">Tudo o que entrou e saiu da carteira.</p>
                 </div>
             </header>
+            <p id="mensagem" class="mensagem"></p>
+            <div class="empty" id="sem-criancas" hidden>
+                <p>Ainda não há nenhuma criança na sua conta família.</p>
+                <a class="btn-primary" href="../family-account/family-account.html">Adicionar uma criança</a>
+            </div>
+            <div class="chip-row so-responsavel" id="escolher-crianca"></div>
 
-            <section class="coin-history-filters">
-                <div class="filter-children"></div>
-            </section>
-
-            <section class="coin-balance-card" aria-live="polite"></section>
-
-            <section class="coin-statement">
-                <div class="section-head">
-                    <h2 class="section-title">Extrato</h2>
-                    <div class="filter-type"></div>
+            <!-- saldo: o coin-history.js coloca o nome e o número -->
+            <section class="coin-balance-card">
+                <div class="balance-who">
+                    <span id="saldo-avatar"></span>
+                    <div>
+                        <p class="balance-label" id="saldo-dono">Sua carteira</p>
+                        <p class="balance-value"><img class="moeda" src="../../assets/icons/coin-color.svg" alt=""><span id="saldo-valor"></span><small>moedas</small></p>
+                    </div>
                 </div>
-                <section class="transaction-group"></section>
+                <button type="button" class="btn so-responsavel" id="ajustar">Ajustar moedas</button>
             </section>
 
-            <p class="mensagem" id="mensagem"></p>
+            <div class="section-head">
+                <h2 class="section-title">Extrato</h2>
+                <div class="segmented" id="filtro-tipo">
+                    <button type="button" class="active" data-tipo="">Tudo</button>
+                    <button type="button" data-tipo="credit">Entradas</button>
+                    <button type="button" data-tipo="debit">Saídas</button>
+                </div>
+            </div>
+            <div class="coin-list" id="extrato"></div>
         </main>
     </div>
+
+    <dialog id="dialogo-ajuste">
+        <div class="dialog-head">
+            <h2 class="dialog-title">Ajustar moedas</h2>
+            <form method="dialog"><button class="btn btn-ghost btn-icon" aria-label="Fechar"><i class="icone i-close"></i></button></form>
+        </div>
+        <form class="form-stack" id="form-ajuste">
+            <div class="pick-group">
+                <label class="pick"><input type="radio" name="tipo" value="add" checked> + Dar moedas</label>
+                <label class="pick"><input type="radio" name="tipo" value="remove"> − Tirar moedas</label>
+            </div>
+            <div class="field">
+                <label for="quantidade">Quantidade</label>
+                <input id="quantidade" type="number" min="1" step="1" required>
+            </div>
+            <div class="field">
+                <label for="motivo">Motivo</label>
+                <input id="motivo" type="text" maxlength="30" placeholder="Ajudou a vizinha" required>
+            </div>
+            <p class="mensagem" id="ajuste-mensagem"></p>
+            <div class="dialog-actions"><button type="submit" class="btn-primary">Salvar ajuste</button></div>
+        </form>
+    </dialog>
+
+    <!-- aparece se o backend estiver desligado (o api.js tira o "hidden") -->
+    <div id="aviso-offline" hidden>Não foi possível falar com o servidor. Confira se o backend está rodando.</div>
 </body>
 </html>

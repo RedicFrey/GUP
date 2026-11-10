@@ -5,21 +5,130 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
     <title>Configurações - GUP</title>
-    <script src="./setting/setting.js" type="module"></script>
     <link rel="stylesheet" href="../../styles/global.css">
     <link rel="stylesheet" href="../../styles/style.css">
     <link rel="stylesheet" href="../../components/sidebar/sidebar.css">
-    <link rel="stylesheet" href="../../components/giraffe-view/giraffe-view.css">
+    <link rel="stylesheet" href="../../components/giraffe/giraffe.css">
     <link rel="stylesheet" href="./setting.css">
+    <script type="module" src="../../components/sidebar/sidebar.js"></script>
+    <script type="module" src="./setting.js"></script>
 </head>
 <body>
+    <!-- ===== menu lateral (igual em todas as páginas) =====
+         No celular ele vira um "popover": o botão ☰ lá embaixo abre e fecha sozinho. -->
+    <nav id="menu-nav" popover>
+        <a class="nav-brand" href="../home/dashboard.html"><img src="../../assets/img/color_primary.png" alt=""> GUP</a>
+        <!-- o sidebar.js coloca aqui o nome e o avatar de quem está logado -->
+        <a class="nav-player" href="../home/dashboard.html"></a>
+        <ul class="sidebar-pages">
+            <li><a class="sidebar-link" href="../home/dashboard.html"><i class="icone i-user"></i> Meu perfil</a></li>
+            <li><a class="sidebar-link" href="../reward/reward.html"><i class="icone i-gift"></i> Recompensas</a></li>
+            <li><a class="sidebar-link" href="../redemption/redemption.html"><i class="icone i-ticket"></i> Resgates</a></li>
+            <li><a class="sidebar-link" href="../history/coin-history.html"><i class="icone i-coin"></i> Moedas</a></li>
+            <li><a class="sidebar-link" href="../report/report.html"><i class="icone i-chart"></i> Relatório</a></li>
+            <li><a class="sidebar-link" href="../setting/setting.html" aria-current="page"><i class="icone i-gear"></i> Configurações</a></li>
+        </ul>
+        <div class="nav-foot">
+            <a class="sidebar-link" href="../choose-profile/profiles.html"><i class="icone i-swap"></i> Trocar perfil</a>
+            <button type="button" class="sidebar-link btn-logout"><i class="icone i-logout"></i> Sair da conta</button>
+        </div>
+    </nav>
+
+    <!-- barra do topo: só aparece no celular -->
+    <header class="topbar">
+        <button type="button" class="btn-menu" popovertarget="menu-nav" aria-label="Abrir menu"><i class="icone i-menu"></i></button>
+        <a class="nav-brand" href="../home/dashboard.html"><img src="../../assets/img/color_primary.png" alt=""> GUP</a>
+    </header>
+
     <div class="app-layout">
-        <main id="setting-container" class="page settings-page">
-            <header class="page-head">
-                <h1 class="page-title">Configurações</h1>
-            </header>
-            <p class="loading">Carregando…</p>
+        <main class="page settings-page">
+            <header class="page-head"><h1 class="page-title">Configurações</h1></header>
+            <p id="mensagem" class="mensagem"></p>
+
+            <section class="settings-id card">
+                <span id="eu-avatar"></span>
+                <div>
+                    <p class="settings-id-name" id="eu-nome"></p>
+                    <p class="settings-id-role" id="eu-papel"></p>
+                </div>
+            </section>
+
+            <section class="settings-group">
+                <h2 class="settings-group-title">Seu perfil</h2>
+                <form class="settings-row" id="form-nome">
+                    <label class="settings-row-text" for="nome">Nome
+                        <input type="text" id="nome" maxlength="20" required>
+                    </label>
+                    <button type="submit" class="btn">Salvar nome</button>
+                    <p class="mensagem settings-row-message" id="nome-mensagem"></p>
+                </form>
+                <form class="settings-row" id="form-pin">
+                    <label class="settings-row-text" for="pin">PIN
+                        <span class="settings-row-hint">Com PIN, só quem sabe o código entra neste perfil.</span>
+                        <input type="password" id="pin" inputmode="numeric" autocomplete="new-password" placeholder="Novo PIN" required>
+                    </label>
+                    <button type="submit" class="btn">Salvar PIN</button>
+                    <button type="button" class="btn btn-ghost" id="remover-pin" hidden>Remover PIN</button>
+                    <p class="mensagem settings-row-message" id="pin-mensagem"></p>
+                </form>
+            </section>
+
+            <section class="settings-group so-crianca">
+                <h2 class="settings-group-title">Sua girafa</h2>
+                <div class="settings-row giraffe-row">
+                    <div class="giraffe-scene" id="mini-girafa"></div>
+                    <p class="settings-row-text">Troque a cor, o cenário e o acessório. Subir de nível libera itens novos.</p>
+                    <a class="btn" href="../custom/custom.html">Personalizar</a>
+                </div>
+            </section>
+
+            <section class="settings-group">
+                <h2 class="settings-group-title">Família</h2>
+                <div class="settings-row">
+                    <p class="settings-row-text">Veja quem faz parte da família.</p>
+                    <a class="btn" href="../family-account/family-account.html">Abrir conta da família</a>
+                </div>
+            </section>
+
+            <section class="settings-group so-responsavel">
+                <h2 class="settings-group-title">Notificações por e-mail</h2>
+                <form class="settings-row" id="form-email">
+                    <label class="settings-row-text" for="email">E-mail para avisos
+                        <span class="settings-row-hint">Deixe vazio para não receber nada.</span>
+                        <input type="email" id="email" placeholder="nome@email.com">
+                    </label>
+                    <button type="submit" class="btn">Salvar e-mail</button>
+                    <p class="mensagem settings-row-message" id="email-mensagem"></p>
+                </form>
+                <div id="interruptores">
+                <label class="settings-row">
+                    <span class="settings-row-text">Tarefas enviadas
+                        <span class="settings-row-hint">Quando uma criança mandar uma tarefa para você aprovar.</span>
+                    </span>
+                    <!-- role="switch" + o CSS deixam o checkbox com cara de botão liga/desliga -->
+                    <input type="checkbox" role="switch" class="switch" data-chave="tasks">
+                </label>
+                <label class="settings-row">
+                    <span class="settings-row-text">Resgates
+                        <span class="settings-row-hint">Quando uma criança trocar moedas por uma recompensa.</span>
+                    </span>
+                    <!-- role="switch" + o CSS deixam o checkbox com cara de botão liga/desliga -->
+                    <input type="checkbox" role="switch" class="switch" data-chave="redemptions">
+                </label>
+                <label class="settings-row">
+                    <span class="settings-row-text">Eventos
+                        <span class="settings-row-hint">Quando um evento novo for marcado na família.</span>
+                    </span>
+                    <!-- role="switch" + o CSS deixam o checkbox com cara de botão liga/desliga -->
+                    <input type="checkbox" role="switch" class="switch" data-chave="events">
+                </label>
+                </div>
+            </section>
         </main>
     </div>
+
+
+    <!-- aparece se o backend estiver desligado (o api.js tira o "hidden") -->
+    <div id="aviso-offline" hidden>Não foi possível falar com o servidor. Confira se o backend está rodando.</div>
 </body>
 </html>

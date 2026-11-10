@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+    <title>Tarefa - GUP</title>
+    <link rel="stylesheet" href="../../styles/global.css">
+    <link rel="stylesheet" href="../../styles/style.css">
+    <link rel="stylesheet" href="../../components/sidebar/sidebar.css">
+    <link rel="stylesheet" href="./task.css">
+    <script type="module" src="../../components/sidebar/sidebar.js"></script>
+    <script type="module" src="./task-child.js"></script>
+</head>
+<body>
+    <!-- ===== menu lateral (igual em todas as páginas) =====
+         No celular ele vira um "popover": o botão ☰ lá embaixo abre e fecha sozinho. -->
+    <nav id="menu-nav" popover>
+        <a class="nav-brand" href="../home/dashboard.html"><img src="../../assets/img/color_primary.png" alt=""> GUP</a>
+        <!-- o sidebar.js coloca aqui o nome e o avatar de quem está logado -->
+        <a class="nav-player" href="../home/dashboard.html"></a>
+        <ul class="sidebar-pages">
+            <li><a class="sidebar-link" href="../home/dashboard.html" aria-current="page"><i class="icone i-user"></i> Meu perfil</a></li>
+            <li><a class="sidebar-link" href="../reward/reward.html"><i class="icone i-gift"></i> Recompensas</a></li>
+            <li><a class="sidebar-link" href="../redemption/redemption.html"><i class="icone i-ticket"></i> Resgates</a></li>
+            <li><a class="sidebar-link" href="../history/coin-history.html"><i class="icone i-coin"></i> Moedas</a></li>
+            <li><a class="sidebar-link" href="../report/report.html"><i class="icone i-chart"></i> Relatório</a></li>
+            <li><a class="sidebar-link" href="../setting/setting.html"><i class="icone i-gear"></i> Configurações</a></li>
+        </ul>
+        <div class="nav-foot">
+            <a class="sidebar-link" href="../choose-profile/profiles.html"><i class="icone i-swap"></i> Trocar perfil</a>
+            <button type="button" class="sidebar-link btn-logout"><i class="icone i-logout"></i> Sair da conta</button>
+        </div>
+    </nav>
+
+    <!-- barra do topo: só aparece no celular -->
+    <header class="topbar">
+        <button type="button" class="btn-menu" popovertarget="menu-nav" aria-label="Abrir menu"><i class="icone i-menu"></i></button>
+        <a class="nav-brand" href="../home/dashboard.html"><img src="../../assets/img/color_primary.png" alt=""> GUP</a>
+    </header>
+
+    <div class="app-layout">
+        <main class="page task-page">
+            <a class="back-link" href="../home/dashboard.html">‹ Voltar para o perfil</a>
+            <p id="mensagem" class="mensagem"></p>
+
+            <article class="card task-detail">
+                <div class="task-detail-head">
+                    <div>
+                        <h1 class="task-detail-title" id="tarefa-titulo"></h1>
+                        <p class="task-detail-desc" id="tarefa-detalhes"></p>
+                    </div>
+                    <span class="tag" id="tarefa-situacao"></span>
+                </div>
+                <dl class="task-facts">
+                    <div><dt>Prazo</dt><dd><i class="icone i-clock"></i> <span id="tarefa-prazo-texto"></span></dd></div>
+                    <div><dt>Recompensa</dt><dd>
+                        <span class="coin-amount"><img class="moeda" src="../../assets/icons/coin-color.svg" alt=""><span id="tarefa-moedas"></span></span>
+                        <span class="xp-amount"><i class="icone i-star"></i><span id="tarefa-xp"></span></span>
+                    </dd></div>
+                    <div><dt>Foto de comprovação</dt><dd><i class="icone i-camera"></i> <span id="tarefa-foto-texto"></span></dd></div>
+                </dl>
+
+                <!-- Só UM desses 3 painéis aparece, conforme o status da tarefa -->
+                <div class="proof-panel proof-state-done" id="painel-feita" hidden>
+                    <p class="proof-panel-title"><i class="icone i-check"></i> Tarefa concluída!</p>
+                    <p class="proof-panel-text">As moedas e o XP já foram para a sua carteira.</p>
+                </div>
+
+                <div class="proof-panel proof-state-wait" id="painel-espera" hidden>
+                    <p class="proof-panel-title"><i class="icone i-clock"></i> Enviada!</p>
+                    <p class="proof-panel-text">Agora é só esperar um responsável aprovar.</p>
+                    <img class="proof-photo-preview" id="foto-enviada" alt="Foto enviada" hidden>
+                </div>
+
+                <form class="proof-panel" id="form-envio" hidden>
+                    <p class="proof-panel-title">Terminou? Mande para aprovação</p>
+                    <p class="proof-panel-text" id="aviso-foto"></p>
+                    <!-- o input de arquivo fica escondido; o botão "Escolher foto" é um <label> ligado a ele -->
+                    <input type="file" id="arquivo" accept="image/png, image/jpeg, image/gif, image/webp" hidden>
+                    <img class="proof-thumb" id="previa" alt="Prévia da foto" hidden>
+                    <div class="proof-panel-actions">
+                        <label for="arquivo" class="btn"><i class="icone i-camera"></i> Escolher foto</label>
+                        <button type="submit" class="btn-primary" id="enviar">Enviar para aprovação</button>
+                    </div>
+                </form>
+            </article>
+        </main>
+    </div>
+
+
+    <!-- aparece se o backend estiver desligado (o api.js tira o "hidden") -->
+    <div id="aviso-offline" hidden>Não foi possível falar com o servidor. Confira se o backend está rodando.</div>
+</body>
+</html>

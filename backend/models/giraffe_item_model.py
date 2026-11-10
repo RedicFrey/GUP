@@ -24,7 +24,8 @@ class GiraffeItemModel(ModeloBase, ComDatas):
         ).all()
 
     def is_unlocked_for(self, level):
-        return self.required_level <= (level or 0)
+        print(level)
+        return self.required_level <= (level or 1)
 
     def to_dict(self):
         return {
@@ -41,10 +42,6 @@ class GiraffeItemModel(ModeloBase, ComDatas):
 class GiraffeColorModel(GiraffeItemModel):
     __tablename__ = "giraffe_colors"
     ITEM_TYPE = "color"
-
-    # segundo jeito de descrever a cor, mantido porque existe no schema.sql
-    primary_color = db.Column(db.String(20), nullable=True)
-    secondary_color = db.Column(db.String(20), nullable=True)
 
     giraffes = db.relationship("GiraffeModel", back_populates="color")
 

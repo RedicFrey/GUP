@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../../assets/icons/favicon.svg" type="image/svg+xml">
+    <title>Tarefa - GUP</title>
+    <link rel="stylesheet" href="../../styles/global.css">
+    <link rel="stylesheet" href="../../styles/style.css">
+    <link rel="stylesheet" href="../../components/sidebar/sidebar.css">
+    <link rel="stylesheet" href="./task.css">
+    <script type="module" src="../../components/sidebar/sidebar.js"></script>
+    <script type="module" src="./task-responsible.js"></script>
+</head>
+<body>
+    <!-- ===== menu lateral (igual em todas as páginas) =====
+         No celular ele vira um "popover": o botão ☰ lá embaixo abre e fecha sozinho. -->
+    <nav id="menu-nav" popover>
+        <a class="nav-brand" href="../home/dashboard.html"><img src="../../assets/img/color_primary.png" alt=""> GUP</a>
+        <!-- o sidebar.js coloca aqui o nome e o avatar de quem está logado -->
+        <a class="nav-player" href="../home/dashboard.html"></a>
+        <ul class="sidebar-pages">
+            <li><a class="sidebar-link" href="../home/dashboard.html" aria-current="page"><i class="icone i-user"></i> Meu perfil</a></li>
+            <li><a class="sidebar-link" href="../reward/reward.html"><i class="icone i-gift"></i> Recompensas</a></li>
+            <li><a class="sidebar-link" href="../redemption/redemption.html"><i class="icone i-ticket"></i> Resgates</a></li>
+            <li><a class="sidebar-link" href="../history/coin-history.html"><i class="icone i-coin"></i> Moedas</a></li>
+            <li><a class="sidebar-link" href="../report/report.html"><i class="icone i-chart"></i> Relatório</a></li>
+            <li><a class="sidebar-link" href="../setting/setting.html"><i class="icone i-gear"></i> Configurações</a></li>
+        </ul>
+        <div class="nav-foot">
+            <a class="sidebar-link" href="../choose-profile/profiles.html"><i class="icone i-swap"></i> Trocar perfil</a>
+            <button type="button" class="sidebar-link btn-logout"><i class="icone i-logout"></i> Sair da conta</button>
+        </div>
+    </nav>
+
+    <!-- barra do topo: só aparece no celular -->
+    <header class="topbar">
+        <button type="button" class="btn-menu" popovertarget="menu-nav" aria-label="Abrir menu"><i class="icone i-menu"></i></button>
+        <a class="nav-brand" href="../home/dashboard.html"><img src="../../assets/img/color_primary.png" alt=""> GUP</a>
+    </header>
+
+    <div class="app-layout">
+        <main class="page task-page">
+            <a class="back-link" href="../home/dashboard.html">‹ Voltar para o perfil</a>
+            <p id="mensagem" class="mensagem"></p>
+
+            <!-- o task-responsible.js preenche os campos com id -->
+            <article class="card task-detail">
+                <div class="task-detail-head">
+                    <div>
+                        <h1 class="task-detail-title" id="tarefa-titulo"></h1>
+                        <p class="task-detail-desc" id="tarefa-detalhes"></p>
+                    </div>
+                    <div class="task-detail-buttons">
+                        <button type="button" class="btn btn-sm" id="editar"><i class="icone i-edit"></i> Editar</button>
+                        <button type="button" class="btn btn-sm btn-danger" id="excluir"><i class="icone i-trash"></i> Excluir</button>
+                    </div>
+                </div>
+                <dl class="task-facts">
+                    <div><dt>Prazo</dt><dd><i class="icone i-clock"></i> <span id="tarefa-prazo-texto"></span></dd></div>
+                    <div><dt>Recompensa</dt><dd>
+                        <span class="coin-amount"><img class="moeda" src="../../assets/icons/coin-color.svg" alt=""><span id="tarefa-moedas"></span></span>
+                        <span class="xp-amount"><i class="icone i-star"></i><span id="tarefa-xp"></span></span>
+                    </dd></div>
+                    <div><dt>Foto de comprovação</dt><dd><i class="icone i-camera"></i> <span id="tarefa-foto-texto"></span></dd></div>
+                </dl>
+            </article>
+
+            <section class="assignees">
+                <h2 class="section-title">Quem vai fazer</h2>
+                <ul class="assignee-list" id="quem-faz"></ul>
+            </section>
+        </main>
+    </div>
+
+    <!-- janelinha de criar/editar tarefa. As crianças são colocadas pelo JS -->
+    <dialog id="dialogo-tarefa">
+        <div class="dialog-head">
+            <h2 class="dialog-title">Editar tarefa</h2>
+            <form method="dialog"><button class="btn btn-ghost btn-icon" aria-label="Fechar"><i class="icone i-close"></i></button></form>
+        </div>
+        <form class="form-stack" id="form-tarefa">
+            <div class="field">
+                <label for="tarefa-nome">O que precisa ser feito</label>
+                <input type="text" id="tarefa-nome" maxlength="100" placeholder="Arrumar a cama" required>
+            </div>
+            <div class="field">
+                <label for="tarefa-descricao">Detalhes (opcional)</label>
+                <textarea id="tarefa-descricao" rows="2"></textarea>
+            </div>
+            <div class="field">
+                <label for="tarefa-prazo">Até quando (pelo menos 30 minutos a partir de agora)</label>
+                <input type="datetime-local" id="tarefa-prazo" required>
+            </div>
+            <fieldset class="field">
+                <legend>Para quem</legend>
+                <div class="pick-group" id="tarefa-criancas"></div>
+            </fieldset>
+            <fieldset class="field">
+                <legend>Recompensa</legend>
+                <div class="pick-group">
+                    <label class="pick"><input type="radio" name="dificuldade" value="10" checked>
+                        <span class="pick-text"><strong>Fácil</strong><small>10 moedas, 15 XP</small></span></label>
+                    <label class="pick"><input type="radio" name="dificuldade" value="15">
+                        <span class="pick-text"><strong>Normal</strong><small>15 moedas, 15 XP</small></span></label>
+                    <label class="pick"><input type="radio" name="dificuldade" value="20">
+                        <span class="pick-text"><strong>Difícil</strong><small>20 moedas, 15 XP</small></span></label>
+                </div>
+            </fieldset>
+            <label class="check-row"><input type="checkbox" id="tarefa-foto"> Pedir uma foto como comprovação</label>
+            <p class="mensagem" id="tarefa-mensagem"></p>
+            <div class="dialog-actions">
+                <button type="submit" class="btn-primary">Salvar alterações</button>
+            </div>
+        </form>
+    </dialog>
+    <dialog id="dialogo-foto" class="dialog-largo">
+        <div class="dialog-head">
+            <h2 class="dialog-title">Foto de comprovação</h2>
+            <form method="dialog"><button class="btn btn-ghost btn-icon" aria-label="Fechar"><i class="icone i-close"></i></button></form>
+        </div>
+        <img class="foto-grande" id="foto-grande" alt="Foto enviada">
+    </dialog>
+
+    <!-- aparece se o backend estiver desligado (o api.js tira o "hidden") -->
+    <div id="aviso-offline" hidden>Não foi possível falar com o servidor. Confira se o backend está rodando.</div>
+</body>
+</html>
